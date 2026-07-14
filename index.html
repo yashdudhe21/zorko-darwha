@@ -29,7 +29,7 @@
 </script>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sanity/client@6/dist/sanityClient.browser.js"></script>
+<script src="https://unpkg.com/@sanity/client@6.1.0/dist/index.browser.js"></script>
 
 <style>
   html { scroll-behavior: smooth; }
@@ -325,7 +325,7 @@
     const DELIVERY_MIN = 150, OPEN_HOUR = 11, CLOSE_HOUR = 23, COLD_COFFEE_UPGRADE = 10;
 
     /* SANITY CMS CLIENT — menu items are managed by the cafe owner in Sanity Studio */
-    const sanity = SanityClient.createClient({
+    const sanity = window.SanityClient.createClient({
       projectId: "aghzsrff",
       dataset: "production",
       useCdn: true,          // fast, edge-cached reads — fine for a public menu
