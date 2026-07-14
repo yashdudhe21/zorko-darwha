@@ -29,7 +29,11 @@
 </script>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-<script src="https://unpkg.com/@sanity/client@6.1.0/dist/index.browser.js"></script>
+<!-- No Sanity script tag needed: menu data is loaded with a plain fetch() call
+     straight to Sanity's HTTP Query API (see loadMenuFromSanity() below).
+     This sidesteps the @sanity/client CDN bundle entirely, which is what was
+     causing "sanityClient is not defined" and "import statements outside a
+     module" — more on that below the code. -->
 
 <style>
   html { scroll-behavior: smooth; }
@@ -324,13 +328,17 @@
     const ZORKO_WHATSAPP_NUMBER = "919876543210";
     const DELIVERY_MIN = 150, OPEN_HOUR = 11, CLOSE_HOUR = 23, COLD_COFFEE_UPGRADE = 10;
 
-    /* SANITY CMS CLIENT — menu items are managed by the cafe owner in Sanity Studio */
-    const client = window.SanityClient.createClient({
-      projectId: "aghzsrff",
-      dataset: "production",
-      useCdn: true,          // fast, edge-cached reads — fine for a public menu
-      apiVersion: "2024-01-01"
-    });
+    /* SANITY CMS CONFIG — menu items are managed by the cafe owner in Sanity Studio.
+       No client library/global object required: loadMenuFromSanity() below talks
+       to Sanity's HTTP Query API directly with fetch(), so there's nothing here
+       that can throw "X is not defined" or module-format errors. */
+    const SANITY_PROJECT_ID = "aghzsrff";
+    const SANITY_DATASET = "production";
+    const SANITY_API_VERSION = "2024-01-01";
+    // apicdn.sanity.io = fast, edge-cached reads — fine for a public menu.
+    // Swap to api.sanity.io if you ever need to bypass the CDN cache.
+    const SANITY_QUERY_ENDPOINT =
+      "https://" + SANITY_PROJECT_ID + ".apicdn.sanity.io/v" + SANITY_API_VERSION + "/data/query/" + SANITY_DATASET;
 
     /* menuItems is now populated at runtime by loadMenuFromSanity() below.
        It starts empty; renderCategoryNav()/renderMenu() run once the fetch resolves. */
@@ -796,27 +804,48 @@
     ------------------------------------------------------------ */
     async function loadMenuFromSanity() {
       renderMenuSkeleton();
-      const query = '*[_type == "menuItem"] | order(category asc, order asc, name asc) {' +
-        '"id": _id, name, category, subtitle, price, description, ' +
-        '"image": image.asset->url, isBestSeller' +
+
+      // Pulls the image asset URL directly in the projection (no separate
+      // image-URL-builder plugin needed), sorts server-side, and falls back
+      // "Uncategorised" for any doc missing a category so nothing silently
+      // vanishes from the category filter.
+      const query =
+        '*[_type == "menuItem"] | order(order asc, name asc) {' +
+          '_id, id, name, ' +
+          '"category": coalesce(category, "Uncategorised"), ' +
+          'price, description, isBestSeller, subtitle, order, ' +
+          '"image": image.asset->url' +
         '}';
+
+      const url = SANITY_QUERY_ENDPOINT + "?query=" + encodeURIComponent(query);
+
       try {
-        const docs = await sanity.fetch(query);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Sanity API responded with " + res.status);
+
+        const payload = await res.json();
+        const docs = Array.isArray(payload.result) ? payload.result : [];
+
         menuItems = docs.map(function (d) {
           return {
-            id: d.id,
-            category: d.category,
-            name: d.name,
+            // Prefer the Studio's own "id" field; fall back to the document's
+            // built-in _id so a row never gets dropped just because "id" is blank.
+            id: d.id || d._id,
+            category: d.category || "Uncategorised",
+            name: d.name || "Untitled item",
             subtitle: d.subtitle || undefined,
             tag: d.isBestSeller ? "Best Seller" : undefined,
-            price: d.price,
-            description: d.description,
-            image: d.image
+            price: typeof d.price === "number" ? d.price : 0,
+            description: d.description || "",
+            image: d.image || null
           };
         });
+
         rebuildCategoryOrder();
         if (!menuItems.length) { renderMenuEmpty(); return; }
         activeCategory = categoryOrder[0];
+        // Explicitly re-run both render functions the moment data resolves
+        // so the UI refreshes instantly instead of waiting on anything else.
         renderCategoryNav();
         renderMenu();
       } catch (err) {
