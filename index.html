@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Zorko | Local Order Hub — Darwha</title>
+<meta name="description" content="Browse the full Zorko Darwha menu and send an order request in seconds — no app, no login, just fresh vegetarian food.">
+<meta name="theme-color" content="#FDFBF7">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          charcoal: '#1F2937', cream: '#FDFBF7', surface: '#F9FAFB',
+          zorko: { DEFAULT: '#EA580C', dark: '#C2410C', light: '#FFEDD5' },
+          leaf: { DEFAULT: '#16A34A', dark: '#15803D', light: '#DCFCE7' }
+        },
+        fontFamily: { sora: ['Sora', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
+        boxShadow: { soft: '0 10px 30px -12px rgba(234,88,12,0.20)', card: '0 2px 10px -4px rgba(31,41,55,0.10)' }
+      }
+    }
+  };
+</script>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sanity/client@6/dist/sanityClient.browser.js"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, .font-display { font-family: 'Sora', sans-serif; }
+
+  #menu, #combos { scroll-margin-top: 140px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #EA580C; outline-offset: 2px; border-radius: 4px; }
+
+  .veg-mark { width: 15px; height: 15px; border: 1.5px solid #16A34A; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .veg-mark::after { content: ""; width: 7px; height: 7px; background: #16A34A; border-radius: 50%; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { animation: fadeUp 0.7s cubic-bezier(.16,.84,.44,1) both; }
+  @keyframes floatSlow { 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-14px) rotate(2deg);} }
+  .float-slow { animation: floatSlow 7s ease-in-out infinite; }
+  @keyframes floatSlower { 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(12px) rotate(-3deg);} }
+  .float-slower { animation: floatSlower 9s ease-in-out infinite; }
+  @keyframes bumpBadge { 0%{transform:scale(1);} 40%{transform:scale(1.35);} 100%{transform:scale(1);} }
+  .bump { animation: bumpBadge 0.4s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes pulseBar { 0%{transform:scale(1);} 45%{transform:scale(1.04);} 100%{transform:scale(1);} }
+  .pulse { animation: pulseBar 0.4s ease-out; }
+  @keyframes toastIn { from{opacity:0; transform:translate(-50%,12px);} to{opacity:1; transform:translate(-50%,0);} }
+  .toast-in { animation: toastIn 0.35s ease-out both; }
+
+  .menu-card { transition: transform 0.35s ease, box-shadow 0.35s ease; }
+  .menu-card:hover { transform: translateY(-6px); }
+  .addr-wrapper { transition: max-height 0.35s ease, opacity 0.3s ease; overflow: hidden; }
+
+  .thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+  .thin-scroll::-webkit-scrollbar-track { background: transparent; }
+  .thin-scroll::-webkit-scrollbar-thumb { background: #FFEDD5; border-radius: 999px; }
+  .cat-nav-scroll::-webkit-scrollbar { display: none; }
+  .cat-nav-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+
+  .img-broken { background: linear-gradient(135deg, #FFEDD5, #DCFCE7); }
+  .img-broken img { display: none; }
+  .img-broken::after { content: "\1F37D"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem; opacity: .5; }
+
+  .sheet-wrap, #cart-overlay { transition: opacity .3s ease; }
+  .sheet-panel, #cart-drawer { transition: transform .35s cubic-bezier(.16,.84,.44,1); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .fade-up, .float-slow, .float-slower, .bump, .pulse, .toast-in, .menu-card, .addr-wrapper, .sheet-panel, #cart-drawer, #cart-overlay { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+
+<body class="bg-cream text-charcoal antialiased">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 inset-x-0 z-50">
+    <nav class="backdrop-blur-md bg-cream/80 border-b border-charcoal/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+        <a href="#hero" class="flex items-baseline gap-1.5 shrink-0 min-w-0">
+          <span class="font-display font-extrabold text-xl sm:text-2xl tracking-tight text-charcoal">ZORKO</span>
+          <span class="hidden sm:inline font-display font-semibold text-xs sm:text-sm text-zorko tracking-widest uppercase truncate">| Darwha</span>
+        </a>
+        <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-charcoal/80 shrink-0">
+          <a href="#special" class="hover:text-zorko transition-colors">Special</a>
+          <a href="#menu" class="hover:text-zorko transition-colors">Menu</a>
+          <a href="#combos" class="hover:text-zorko transition-colors">Combos</a>
+          <a href="#our-store" class="hover:text-zorko transition-colors">Store</a>
+        </div>
+        <button onclick="openCart()" id="cart-nav-btn" class="relative inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full transition-colors shadow-soft shrink-0" aria-label="View cart">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">View Cart</span>
+          <span id="cart-count-badge" class="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1 flex items-center justify-center rounded-full bg-leaf-light text-leaf-dark text-xs font-extrabold border-2 border-cream opacity-0 scale-0 transition-all duration-300">0</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="relative overflow-hidden pt-28 sm:pt-40 pb-20 sm:pb-28">
+    <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-zorko-light rounded-full blur-3xl opacity-70 float-slow"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute top-1/2 -left-24 w-64 h-64 sm:w-80 sm:h-80 bg-leaf/10 rounded-full blur-3xl opacity-80 float-slower"></div>
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="fade-up inline-flex items-center gap-2 bg-leaf-light text-leaf-dark text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-1.5 rounded-full mb-6">
+        <span class="veg-mark" aria-hidden="true"></span> 100% Vegetarian &middot; Darwha Local
+      </div>
+      <h1 class="fade-up font-display font-extrabold text-4xl sm:text-6xl leading-[1.08] tracking-tight text-charcoal" style="animation-delay:.05s">Pure Veg. Pure Joy.<br class="hidden sm:block"> Crafted Fresh Daily.</h1>
+      <p class="fade-up mt-6 text-base sm:text-lg text-charcoal/70 max-w-2xl mx-auto leading-relaxed" style="animation-delay:.12s">Browse your Darwha neighborhood Zorko favorites. Tap below to select your items and build a quick order request.</p>
+      <div class="fade-up mt-9" style="animation-delay:.2s">
+        <a href="#menu" class="group inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-base px-8 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">Explore Today's Menu <i data-lucide="arrow-down" class="w-4 h-4 transition-transform duration-300 group-hover:translate-y-1"></i></a>
+      </div>
+      <div class="fade-up mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-charcoal/60 font-medium" style="animation-delay:.28s">
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="flame" class="w-4 h-4 text-zorko"></i>Cooked Fresh to Order</span>
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-zorko"></i>Darwha Neighborhood</span>
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="bike" class="w-4 h-4 text-zorko"></i>Pickup &amp; Delivery</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TODAY'S SPECIAL -->
+  <section id="special" class="pt-10 sm:pt-14 pb-12 sm:pb-16 scroll-mt-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- EDIT TODAY'S SPECIAL -> the todaysSpecial object in the JavaScript below -->
+      <div id="special-banner"></div>
+    </div>
+  </section>
+
+  <!-- COMBOS -->
+  <section id="combos" class="py-16 sm:py-24 bg-white/70 border-y border-charcoal/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Try Our Popular Combos</h2>
+        <p class="mt-3 text-charcoal/60">Two favourites, one price — tap to add and pick your drink as you go.</p>
+      </div>
+      <!-- EDIT COMBOS HERE -> the `combos` array in JavaScript drives these cards -->
+      <div id="combos-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <p class="mt-6 text-center text-sm text-charcoal/55 font-medium">Every combo includes a drink. Swap in a Premium Cold Coffee for just &#8377;10 more.</p>
+    </div>
+  </section>
+
+  <!-- MENU (filtered by category) -->
+  <section id="menu" class="py-16 sm:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-xl mx-auto mb-8">
+        <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Full Menu</h2>
+        <p class="mt-3 text-charcoal/60">Pick a category, add what you love, and customise the extras.</p>
+      </div>
+      <div id="category-nav" class="cat-nav-scroll sticky top-16 sm:top-20 z-40 bg-cream/95 backdrop-blur -mx-4 sm:mx-0 px-4 sm:px-0 py-3 mb-8 flex gap-2 overflow-x-auto"></div>
+      <div id="menu-categories" class="space-y-14"></div>
+    </div>
+  </section>
+
+  <!-- STORE -->
+  <section id="our-store" class="py-16 sm:py-24 bg-white/70 border-y border-charcoal/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Local Store</h2>
+        <p class="mt-3 text-charcoal/60">Right in your neighborhood — come say hi, call us, or just drop by.</p>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
+        <div class="bg-cream border border-charcoal/10 rounded-3xl p-7 sm:p-8 shadow-card flex flex-col gap-6">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="map-pin" class="w-5 h-5 text-zorko-dark"></i></div>
+            <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/50">Address</p><p class="mt-1 font-semibold text-charcoal leading-relaxed">Zorko — Brand of Food Lovers, Darwha, Dist. Yavatmal, Maharashtra - 445202</p></div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5 text-zorko-dark"></i></div>
+            <div class="min-w-0 flex-1"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/50">Phone</p>
+              <div class="mt-1 flex flex-wrap items-center gap-3">
+                <a href="tel:+919876543210" class="font-semibold text-charcoal hover:text-zorko transition-colors">+91 98765-43210</a>
+                <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-leaf-light hover:bg-leaf text-leaf-dark hover:text-white text-xs font-bold px-3 py-1.5 rounded-full transition-colors"><i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp</a>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="clock" class="w-5 h-5 text-zorko-dark"></i></div>
+            <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/50">Store Timings</p><p class="mt-1 font-semibold text-charcoal">Open Daily: 11:00 AM - 11:00 PM</p><span id="store-status-pill" class="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"></span></div>
+          </div>
+        </div>
+        <div class="relative rounded-3xl overflow-hidden shadow-card border border-charcoal/10 min-h-[280px] lg:min-h-0">
+          <div class="absolute inset-0 bg-surface">
+            <div class="absolute inset-0 opacity-60" style="background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px); background-size: 32px 32px;"></div>
+            <div class="absolute inset-0 opacity-70" style="background-image: linear-gradient(120deg, transparent 46%, #DCFCE7 46%, #DCFCE7 54%, transparent 54%), linear-gradient(30deg, transparent 70%, #DCFCE7 70%, #DCFCE7 76%, transparent 76%);"></div>
+            <div aria-hidden="true" class="absolute top-6 left-6 w-16 h-16 rounded-full bg-leaf-light/70 blur-xl"></div>
+            <div aria-hidden="true" class="absolute bottom-10 right-10 w-24 h-24 rounded-full bg-zorko-light/70 blur-xl"></div>
+          </div>
+          <div class="relative h-full min-h-[280px] flex flex-col items-center justify-center gap-3 px-6 text-center">
+            <div class="flex flex-col items-center"><i data-lucide="map-pin" class="w-10 h-10 text-zorko drop-shadow-md" stroke-width="2.5"></i><span class="-mt-1 w-3 h-1.5 bg-charcoal/20 rounded-full blur-[2px]"></span></div>
+            <div class="bg-white/90 backdrop-blur px-4 py-2 rounded-xl shadow-card"><p class="font-display font-bold text-sm text-charcoal">Zorko Café</p><p class="text-xs text-charcoal/60">Darwha, Yavatmal</p></div>
+            <a href="https://maps.app.goo.gl/FQkL7oaog9JANKNs8" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm px-5 py-2.5 rounded-full transition-colors shadow-soft"><i data-lucide="navigation" class="w-4 h-4"></i> Open in Google Maps</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OWNER -->
+  <section id="owner-story" class="py-14 sm:py-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white border border-charcoal/10 rounded-3xl shadow-card p-7 sm:p-10 flex flex-col sm:flex-row items-center gap-7 sm:gap-10">
+        <div class="relative shrink-0">
+          <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-zorko to-leaf flex items-center justify-center ring-4 ring-zorko-light"><span class="font-display font-extrabold text-3xl sm:text-4xl text-white">YD</span></div>
+          <div class="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-white border border-charcoal/10 shadow-card flex items-center justify-center"><i data-lucide="quote" class="w-4 h-4 text-zorko"></i></div>
+        </div>
+        <div class="text-center sm:text-left">
+          <p class="text-xs font-bold uppercase tracking-wide text-leaf-dark mb-2">Meet the Franchise Owner</p>
+          <p class="text-charcoal/80 leading-relaxed text-base sm:text-lg italic">"Welcome to Zorko Darwha! Our mission is simple: to serve our neighborhood the freshest, most delicious pure vegetarian street food at prices that put a smile on your face. We craft every burger, wrap, and pizza with love and strict hygiene. Thank you for supporting local!"</p>
+          <p class="mt-4 font-display font-bold text-charcoal">Yash Dudhe <span class="font-normal text-charcoal/50">&middot; Franchise Owner</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-charcoal text-white/80 py-10 pb-28">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-baseline gap-1.5"><span class="font-display font-extrabold text-lg text-white">ZORKO</span><span class="font-display font-semibold text-xs text-leaf-light tracking-widest uppercase">| Darwha</span></div>
+      <p class="text-sm text-white/50 text-center sm:text-right">Pure veg, crafted fresh daily &middot; Order requests are sent straight to our WhatsApp</p>
+    </div>
+  </footer>
+
+  <!-- STICKY BOTTOM CART BAR (primary CTA; hidden when empty) -->
+  <div id="cart-bar" class="hidden fixed inset-x-4 sm:inset-x-auto sm:right-6 sm:w-80 z-40" style="bottom: calc(1rem + env(safe-area-inset-bottom));">
+    <button onclick="openCart()" class="w-full flex items-center justify-between gap-3 bg-zorko hover:bg-zorko-dark text-white rounded-full shadow-soft px-5 py-3.5 transition-colors">
+      <span class="flex items-center gap-2 font-semibold text-sm"><i data-lucide="shopping-bag" class="w-4 h-4"></i><span id="cart-bar-count">0 items</span></span>
+      <span class="flex items-center gap-2"><span class="font-display font-extrabold" id="cart-bar-total">₹0</span><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+    </button>
+  </div>
+
+  <div id="toast" class="hidden fixed bottom-24 left-1/2 z-[80] bg-charcoal text-white text-sm font-semibold px-5 py-3 rounded-full shadow-2xl toast-in"></div>
+
+  <!-- ============================================================ -->
+  <!-- CART SIDE DRAWER                                              -->
+  <!-- ============================================================ -->
+  <div id="cart-overlay" class="hidden fixed inset-0 z-[60] bg-charcoal/50 backdrop-blur-sm opacity-0" onclick="closeCart()"></div>
+  <aside id="cart-drawer" class="fixed top-0 right-0 z-[61] h-full w-full sm:w-[430px] bg-cream shadow-2xl translate-x-full flex flex-col" role="dialog" aria-modal="true" aria-label="Your order">
+    <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-charcoal/10 bg-cream/90 backdrop-blur">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-zorko-light flex items-center justify-center"><i data-lucide="shopping-bag" class="w-5 h-5 text-zorko-dark"></i></div>
+        <div><h2 class="font-display font-extrabold text-lg text-charcoal leading-tight">Your Order</h2><p class="text-xs text-charcoal/55" id="drawer-count">0 items</p></div>
+      </div>
+      <button onclick="closeCart()" aria-label="Close cart" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-charcoal/5 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto thin-scroll px-5 py-4">
+      <div id="closed-banner" class="hidden mb-4 flex items-start gap-3 bg-zorko-light border border-zorko/20 rounded-2xl p-4">
+        <i data-lucide="moon" class="w-5 h-5 text-zorko-dark shrink-0 mt-0.5"></i>
+        <div><p class="font-bold text-charcoal text-sm">We're closed right now</p><p class="text-charcoal/60 text-sm mt-0.5">Order requests open daily at 11:00 AM. You can still build your cart — come back during store hours to send it.</p></div>
+      </div>
+
+      <div id="cart-empty-state" class="text-center py-16">
+        <i data-lucide="shopping-bag" class="w-12 h-12 text-zorko/30 mx-auto mb-4"></i>
+        <p class="text-charcoal/60 font-medium">Your cart is empty.</p>
+        <p class="text-charcoal/40 text-sm mt-1">Add something tasty from the menu.</p>
+        <button onclick="closeCart()" class="mt-5 inline-flex items-center gap-2 bg-zorko-light text-zorko-dark font-bold text-sm px-5 py-2.5 rounded-full hover:bg-zorko hover:text-white transition-colors"><i data-lucide="arrow-left" class="w-4 h-4"></i> Browse Menu</button>
+      </div>
+
+      <ul id="cart-items" class="space-y-3 hidden"></ul>
+
+      <div id="cart-subtotal-row" class="hidden mt-5 pt-5 border-t border-charcoal/10 flex items-center justify-between">
+        <span class="font-semibold text-charcoal/70">Total <span class="text-charcoal/40 text-sm font-normal">(all inclusive)</span></span>
+        <span id="cart-subtotal-value" class="font-display font-extrabold text-2xl text-zorko-dark">&#8377;0</span>
+      </div>
+
+      <form id="order-form" class="hidden mt-6 space-y-4" novalidate onsubmit="handleFormSubmit(event)">
+        <div><label for="customer-name" class="block text-sm font-semibold text-charcoal/80 mb-1.5">Customer Full Name</label>
+          <input type="text" id="customer-name" name="customer-name" placeholder="e.g. Priya Sharma" autocomplete="name" class="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-surface focus:border-zorko outline-none transition-colors text-sm"></div>
+        <div><label for="customer-phone" class="block text-sm font-semibold text-charcoal/80 mb-1.5">WhatsApp Mobile Number</label>
+          <input type="tel" id="customer-phone" name="customer-phone" placeholder="e.g. 98765 43210" autocomplete="tel" inputmode="numeric" class="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-surface focus:border-zorko outline-none transition-colors text-sm"></div>
+        <div><label for="fulfillment-method" class="block text-sm font-semibold text-charcoal/80 mb-1.5">Fulfillment Mode</label>
+          <select id="fulfillment-method" name="fulfillment-method" onchange="handleFulfillmentChange()" class="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-surface focus:border-zorko outline-none transition-colors text-sm">
+            <option value="Store Pickup">Store Pickup</option><option value="Home Delivery">Home Delivery</option>
+          </select>
+          <p id="delivery-note" class="hidden mt-1.5 text-xs text-charcoal/50 font-medium flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5"></i> Home delivery has a &#8377;150 minimum order (free local delivery).</p>
+        </div>
+        <div id="address-wrapper" class="addr-wrapper" style="max-height:0; opacity:0;">
+          <label for="customer-address" class="block text-sm font-semibold text-charcoal/80 mb-1.5">Complete Delivery Address</label>
+          <textarea id="customer-address" name="customer-address" rows="3" placeholder="Flat / House no., street, landmark, area..." class="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-surface focus:border-zorko outline-none transition-colors text-sm resize-none"></textarea>
+        </div>
+        <p id="form-error" class="hidden text-sm text-red-600 font-medium"></p>
+        <button type="submit" id="submit-btn" class="w-full inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm sm:text-base py-4 rounded-full shadow-soft transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+          <i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- CUSTOMISATION SHEET -->
+  <div id="config-sheet" class="sheet-wrap hidden fixed inset-0 z-[70] opacity-0">
+    <div class="absolute inset-0 bg-charcoal/50 backdrop-blur-sm" onclick="closeConfig()"></div>
+    <div class="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-md sm:h-max bg-cream rounded-t-3xl sm:rounded-3xl shadow-2xl translate-y-full sm:translate-y-4 overflow-hidden" role="dialog" aria-modal="true" aria-label="Customise item">
+      <div class="p-6 max-h-[80vh] overflow-y-auto thin-scroll">
+        <div class="flex items-start justify-between gap-3 mb-1">
+          <h3 id="config-title" class="font-display font-extrabold text-xl text-charcoal leading-snug"></h3>
+          <button onclick="closeConfig()" aria-label="Close" class="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-charcoal/5 hover:bg-charcoal/10 transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <p id="config-subtitle" class="text-sm text-charcoal/55 mb-5"></p>
+        <div id="config-options" class="space-y-2 mb-6"></div>
+        <div class="flex items-center justify-between gap-4">
+          <div class="inline-flex items-center gap-1 bg-white border border-charcoal/10 rounded-full p-1">
+            <button type="button" onclick="configQtyChange(-1)" aria-label="Decrease" class="w-9 h-9 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="minus" class="w-4 h-4"></i></button>
+            <span id="config-qty" class="w-8 text-center font-bold">1</span>
+            <button type="button" onclick="configQtyChange(1)" aria-label="Increase" class="w-9 h-9 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="plus" class="w-4 h-4"></i></button>
+          </div>
+          <button type="button" onclick="confirmConfig()" class="flex-1 inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm py-3.5 rounded-full shadow-soft transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i> <span id="config-cta">Add</span> <span id="config-total"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- JAVASCRIPT                                                    -->
+  <!-- ============================================================ -->
+  <script>
+    const ZORKO_WHATSAPP_NUMBER = "919876543210";
+    const DELIVERY_MIN = 150, OPEN_HOUR = 11, CLOSE_HOUR = 23, COLD_COFFEE_UPGRADE = 10;
+
+    /* SANITY CMS CLIENT — menu items are managed by the cafe owner in Sanity Studio */
+    const sanity = sanityClient({
+      projectId: "aghzsrff",
+      dataset: "production",
+      useCdn: true,          // fast, edge-cached reads — fine for a public menu
+      apiVersion: "2024-01-01"
+    });
+
+    /* menuItems is now populated at runtime by loadMenuFromSanity() below.
+       It starts empty; renderCategoryNav()/renderMenu() run once the fetch resolves. */
+    let menuItems = [];
+
+    /* ---- Reference data kept from the old hardcoded array, for local testing ----
+       Uncomment and use as a fallback / offline demo set if you ever need one.
+    const _sampleMenuItems = [
+      { id: 1, category: "Burger", name: "Mexican King Burger", tag: "Best Seller", price: 79, addon: 15,
+        description: "The ultimate burger packed with a tsunami of flavor & succulence — veg patty, fresh veggies, and ZORKO special sauces.",
+        image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?q=80&w=800&auto=format&fit=crop" },
+      { id: 2, category: "Burger", name: "Spicy Salsa Barbeque Burger", price: 79, addon: 15,
+        description: "A smoky barbeque patty loaded with zesty salsa and ZORKO special sauces for a bold, spicy bite.",
+        image: "https://images.unsplash.com/photo-1627754468549-6ed1a4813a53?q=80&w=800&auto=format&fit=crop" },
+      { id: 3, category: "Burger", name: "Korean Burger", price: 69, addon: 15,
+        description: "A Korean-style veg patty with a sweet-spicy gochujang glaze and crunchy slaw.",
+        image: "https://images.unsplash.com/photo-1595834894604-6a38962cb666?q=80&w=800&auto=format&fit=crop" },
+      { id: 4, category: "Burger", name: "Double Tikki Burger", price: 79, addon: 15,
+        description: "Two crispy veg tikki patties stacked high with fresh veggies and house sauces.",
+        image: "https://images.unsplash.com/photo-1591972619306-0a13c4ab5c1a?q=80&w=800&auto=format&fit=crop" },
+      { id: 5, category: "Burger", name: "Classic OG Burger", price: 49, addon: 15,
+        description: "Budget-friendly local favorite layered with a delicious vegetable patty, fresh veggies, and ZORKO special sauces.",
+        image: "https://images.unsplash.com/photo-1552422273-f56265a5f375?q=80&w=800&auto=format&fit=crop" },
+      { id: 6, category: "Burger", name: "Royal Paneer Grilled Burger", price: 149, addon: 15,
+        description: "A grilled paneer patty finished with exotic sauces for our most indulgent burger yet.",
+        image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- BURGERS & WRAPS: Fries ----------------
+      { id: 7, category: "Fries", name: "Peri Peri French Fries", price: 99, addon: 40,
+        description: "Golden, crispy fries tossed in extra spicy African peri peri seasoning.",
+        image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop" },
+      { id: 8, category: "Fries", name: "Salted French Fries", price: 79, addon: 40,
+        description: "Classic golden fries, perfectly salted and served piping hot.",
+        image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop" },
+      { id: 9, category: "Fries", name: "Korean Cheesy Fries", tag: "NEW", price: 149,
+        description: "Crinkle fries smothered in a creamy Korean-style cheese sauce.",
+        image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop" },
+      { id: 10, category: "Fries", name: "Sizzling Italian Fries", price: 129, addon: 40,
+        description: "Fries tossed in Italian herbs and seasoning, served sizzling hot.",
+        image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- BURGERS & WRAPS: Wraps ----------------
+      { id: 11, category: "Wraps", name: "Mexican Salsa Wrap", price: 129, addon: 30,
+        description: "A soft tortilla wrap packed with Mexican-spiced veggies and tangy salsa.",
+        image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=800&auto=format&fit=crop" },
+      { id: 12, category: "Wraps", name: "Classic Veg Wrap", price: 109, addon: 30,
+        description: "Fresh crunchy veggies rolled up in a soft tortilla with house sauces.",
+        image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=800&auto=format&fit=crop" },
+      { id: 13, category: "Wraps", name: "Grilled Paneer Wrap", price: 149, addon: 30,
+        description: "Marinated paneer tossed in ZORKO exotic sauce with fresh crunchy veggies and spices.",
+        image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- PIZZAS & SIDES: Pizza ----------------
+      { id: 14, category: "Pizza", name: "Veg Exotica Pizza", tag: "Best Seller", price: 149, addon: 40,
+        description: "A vibrant thin-crust pizza loaded with exotic fresh vegetables.",
+        image: "https://images.unsplash.com/photo-1617343251257-b5d709934ddd?q=80&w=800&auto=format&fit=crop" },
+      { id: 15, category: "Pizza", name: "Paneer Barbeque Pizza", tag: "Best Seller", price: 149, addon: 40,
+        description: "Smoky barbeque paneer chunks over melted mozzarella.",
+        image: "https://images.unsplash.com/photo-1611007304706-279fe3d29bda?q=80&w=800&auto=format&fit=crop" },
+      { id: 16, category: "Pizza", name: "Hot Te Hell Pizza", price: 149, addon: 40,
+        description: "For spice lovers — a fiery blend of chillies and peppers on a bubbling cheese base.",
+        image: "https://images.unsplash.com/photo-1743615357618-de4ac111c79c?q=80&w=800&auto=format&fit=crop" },
+      { id: 17, category: "Pizza", name: "Pizza Di Sicilia", subtitle: "World's Thinnest Pizza", price: 129, addon: 40,
+        description: "Ultra thin crust pizza loaded with exotic fresh veggies and a punch of red paprika.",
+        image: "https://images.unsplash.com/photo-1590947132387-155cc02f3212?q=80&w=800&auto=format&fit=crop" },
+      { id: 18, category: "Pizza", name: "Margherita", price: 89, addon: 40,
+        description: "The timeless classic — tomato, mozzarella, and basil on a golden crust.",
+        image: "https://images.unsplash.com/photo-1694717065203-8cb0de9918f3?q=80&w=800&auto=format&fit=crop" },
+      { id: 19, category: "Pizza", name: "The Xplod", price: 169, addon: 40,
+        description: "An explosion of toppings, sauces, and melted cheese in every bite.",
+        image: "https://images.unsplash.com/photo-1743615357602-f0711d1bc06f?q=80&w=800&auto=format&fit=crop" },
+      { id: 20, category: "Pizza", name: "Golden Harvest Pizza", subtitle: "Self Made", price: 169, addon: 40,
+        description: "A hearty harvest of seasonal vegetables over our signature golden crust.",
+        image: "https://images.unsplash.com/photo-1635832801146-102d3bb7f88e?q=80&w=800&auto=format&fit=crop" },
+      { id: 21, category: "Pizza", name: "Four Cheese Pizza", price: 169, addon: 40,
+        description: "A rich, gooey blend of four cheeses for the ultimate cheese-lover's pizza.",
+        image: "https://images.unsplash.com/photo-1617470703152-7bc3ab20893e?q=80&w=800&auto=format&fit=crop" },
+      { id: 22, category: "Pizza", name: "Korean Pizza", price: 169, addon: 40,
+        description: "A fusion pizza topped with sweet-spicy Korean-style sauce and veggies.",
+        image: "https://images.unsplash.com/photo-1617470703245-ed7bc56788e9?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- PIZZAS & SIDES: Momos ----------------
+      { id: 23, category: "Momos", name: "Steam Momos", price: 89,
+        description: "Handcrafted steamed dumplings packed with finely minced garden fresh veggies.",
+        image: "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop" },
+      { id: 24, category: "Momos", name: "Fried Momos", price: 89,
+        description: "Crispy pan-fried dumplings served with spicy red chutney.",
+        image: "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop" },
+      { id: 25, category: "Momos", name: "Cheese Melting Gravy Momos", price: 149,
+        description: "Momos smothered in a rich, melting cheese gravy.",
+        image: "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- PIZZAS & SIDES: Kulhad ----------------
+      { id: 26, category: "Kulhad", name: "Cheese Volcano Kulhad Momos", price: 149,
+        description: "Handcrafted fried momos tossed in special creamy cheese sauce, stuffed inside a traditional clay kulhad, topped with mozzarella and baked.",
+        image: "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop" },
+      { id: 27, category: "Kulhad", name: "Cheese Loaded Kulhad Pizza", price: 149,
+        description: "Our signature pizza, baked and served bubbling hot in a traditional clay kulhad.",
+        image: "https://images.unsplash.com/photo-1617470702355-94a48c0b9729?q=80&w=800&auto=format&fit=crop" },
+      { id: 28, category: "Kulhad", name: "Cheese Chatori Kulhad Maggi", price: 149,
+        description: "Cheesy masala Maggi noodles served sizzling in a traditional clay kulhad.",
+        image: "https://images.unsplash.com/photo-1585410304004-56ae05651552?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- SANDWICHES: Grilled ----------------
+      { id: 29, category: "Sandwiches", name: "Veg Mexican Sandwich", price: 129, addon: 40,
+        description: "A grilled sandwich packed with Mexican-spiced vegetables and melted cheese.",
+        image: "https://images.unsplash.com/photo-1621852004158-f3bc188ace2d?q=80&w=800&auto=format&fit=crop" },
+      { id: 30, category: "Sandwiches", name: "Paneer Maharaja Sandwich", price: 149, addon: 40,
+        description: "A royal grilled sandwich stuffed with spiced paneer and fresh veggies.",
+        image: "https://images.unsplash.com/photo-1528736235302-52922df5c122?q=80&w=800&auto=format&fit=crop" },
+      { id: 31, category: "Sandwiches", name: "Veggie Mumbai Grilled Sandwich", price: 149, addon: 30,
+        description: "Mumbai street-style grilled sandwich loaded with veggies and chutneys.",
+        image: "https://images.unsplash.com/photo-1709689156424-16fe0e05b47b?q=80&w=800&auto=format&fit=crop" },
+      { id: 32, category: "Sandwiches", name: "Cheese Chilli Sandwich", price: 129, addon: 30,
+        description: "A gooey, spicy grilled sandwich loaded with cheese and green chillies.",
+        image: "https://images.unsplash.com/photo-1700937314577-898450cafe35?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- PASTA ----------------
+      { id: 33, category: "Pasta", name: "Alfredo", subtitle: "White Sauce", price: 139, addon: 40,
+        description: "Creamy white sauce pasta finished with herbs and parmesan.",
+        image: "https://images.unsplash.com/photo-1570549986390-6bd150ac3515?q=80&w=800&auto=format&fit=crop" },
+      { id: 34, category: "Pasta", name: "Arrabbiata", subtitle: "Red Sauce", price: 139, addon: 40,
+        description: "A fiery tomato-based pasta with garlic and chilli flakes.",
+        image: "https://images.unsplash.com/photo-1528738064262-9f834cbdfda1?q=80&w=800&auto=format&fit=crop" },
+      { id: 35, category: "Pasta", name: "Ala Rosey", subtitle: "Pink Sauce", price: 139, addon: 40,
+        description: "A silky blend of red and white sauces for the best of both worlds.",
+        image: "https://images.unsplash.com/photo-1573821201069-dbf297ca410a?q=80&w=800&auto=format&fit=crop" },
+      { id: 36, category: "Pasta", name: "Peri Peri Pasta", price: 139, addon: 40,
+        description: "Pasta tossed in a spicy peri peri seasoning for a bold kick.",
+        image: "https://images.unsplash.com/photo-1579631542720-3a87824fff86?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- GARLIC BREAD ----------------
+      { id: 37, category: "Garlic Bread", name: "Cheese Garlic Bread", price: 89, addon: 40,
+        description: "Toasted garlic bread topped with melted cheese.",
+        image: "https://images.unsplash.com/photo-1556008531-57e6eefc7be4?q=80&w=800&auto=format&fit=crop" },
+      { id: 38, category: "Garlic Bread", name: "Supreme Treat Garlic Bread", price: 129, addon: 40,
+        description: "Loaded garlic bread topped with veggies and extra cheese.",
+        image: "https://images.unsplash.com/photo-1587676353811-1708ddf47031?q=80&w=800&auto=format&fit=crop" },
+      { id: 39, category: "Garlic Bread", name: "Paneer Toofani Garlic Bread", price: 149, addon: 40,
+        description: "Garlic bread piled high with spicy paneer and melted cheese.",
+        image: "https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- SPECIAL BUNS ----------------
+      { id: 40, category: "Special Buns", name: "Cheese Pull & Tear Garlic Bun", price: 149,
+        description: "A shareable pull-apart bun stuffed and topped with gooey garlic cheese.",
+        image: "https://images.unsplash.com/photo-1707886114218-fb2bcfbcb1e7?q=80&w=800&auto=format&fit=crop" },
+      { id: 41, category: "Special Buns", name: "Korean Jalapeno Bun", price: 149,
+        description: "A soft baked bun with a spicy Korean jalapeno-cheese filling.",
+        image: "https://images.unsplash.com/photo-1716393374741-02f485f25d61?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- TOASTIE ----------------
+      { id: 42, category: "Toastie", name: "Korean Spicy Paneer", price: 129, addon: 40,
+        description: "A grilled toastie stuffed with Korean-spiced paneer and veggies.",
+        image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=800&auto=format&fit=crop" },
+      { id: 43, category: "Toastie", name: "Peri Peri Cheese Blast", price: 99, addon: 40,
+        description: "A cheesy toastie with a spicy peri peri kick.",
+        image: "https://images.unsplash.com/photo-1665233272941-ae681d11fc06?q=80&w=800&auto=format&fit=crop" },
+      { id: 44, category: "Toastie", name: "Italian Treat", price: 79, addon: 40,
+        description: "A herby, cheesy toastie inspired by Italian flavors.",
+        image: "https://images.unsplash.com/photo-1475090169767-40ed8d18f67d?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- NACHOS ----------------
+      { id: 45, category: "Nachos", name: "Cheesy Delight Nachos", price: 129, addon: 40,
+        description: "Crispy nachos loaded with molten cheese.",
+        image: "https://images.unsplash.com/photo-1775708856908-aafcf9baa5d0?q=80&w=800&auto=format&fit=crop" },
+      { id: 46, category: "Nachos", name: "Nachos with Cheese Dip", price: 79, addon: 40,
+        description: "Crispy tortilla chips served with a warm, creamy cheese dip.",
+        image: "https://images.unsplash.com/photo-1775708856908-aafcf9baa5d0?q=80&w=800&auto=format&fit=crop" },
+      { id: 47, category: "Nachos", name: "Nachos & Salsa", price: 149, addon: 40,
+        description: "Loaded nachos topped with fresh, tangy salsa and cheese.",
+        image: "https://images.unsplash.com/photo-1775708856908-aafcf9baa5d0?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- MAGGI ----------------
+      { id: 48, category: "Maggi", name: "Veg Masala Maggi", price: 69,
+        description: "Classic masala Maggi noodles cooked with fresh vegetables.",
+        image: "https://images.unsplash.com/photo-1585410304004-56ae05651552?q=80&w=800&auto=format&fit=crop" },
+      { id: 49, category: "Maggi", name: "Hot Passion Spicy Maggi", price: 69,
+        description: "Fiery spicy Maggi for those who love the heat.",
+        image: "https://images.unsplash.com/photo-1692273212247-f5efb3fc9b87?q=80&w=800&auto=format&fit=crop" },
+      { id: 50, category: "Maggi", name: "Double Masala Maggi", price: 89,
+        description: "Extra masala, extra flavor — a double dose of our signature spice mix.",
+        image: "https://images.unsplash.com/photo-1708608291875-3be71a930202?q=80&w=800&auto=format&fit=crop" },
+      { id: 51, category: "Maggi", name: "Cheese Chatori Maggi", price: 99,
+        description: "Masala Maggi loaded with melted cheese for the ultimate comfort bowl.",
+        image: "https://images.unsplash.com/photo-1603033172872-c2525115c7b9?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- COLD COFFEE ----------------
+      { id: 52, category: "Cold Coffee", name: "Premium Cold Coffee", price: 49, addon: 25,
+        description: "Rich, creamy, thick blended cold coffee served chilled in a cafe-style cup.",
+        image: "https://images.unsplash.com/photo-1527156231393-7023794f363c?q=80&w=800&auto=format&fit=crop" },
+      { id: 53, category: "Cold Coffee", name: "Strong Cold Coffee", price: 59, addon: 25,
+        description: "An extra-strong blend for serious coffee lovers.",
+        image: "https://images.unsplash.com/photo-1527156231393-7023794f363c?q=80&w=800&auto=format&fit=crop" },
+      { id: 54, category: "Cold Coffee", name: "Chocolate Cold Coffee", price: 79, addon: 25,
+        description: "Cold coffee blended with rich chocolate for a decadent treat.",
+        image: "https://images.unsplash.com/photo-1527156231393-7023794f363c?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- MOJITO ----------------
+      { id: 55, category: "Mojito", name: "Surprise Mojito", tag: "Best Seller", price: 49,
+        description: "A fizzy, icy, refreshing mystery blend of fresh mint, lime, and our secret fruit syrup.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 56, category: "Mojito", name: "Korean Mojito", price: 49,
+        description: "A fusion twist on the classic mojito with a hint of Korean fruit syrup.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 57, category: "Mojito", name: "Strawberry Mojito", price: 49,
+        description: "Fresh mint and lime with a burst of strawberry sweetness.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 58, category: "Mojito", name: "Tangy Mango Mojito", price: 49,
+        description: "A tangy mango twist on our fizzy, minty mojito.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 59, category: "Mojito", name: "Pineapple Punch Mojito", price: 49,
+        description: "Sweet pineapple meets fresh mint and lime for a tropical punch.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 60, category: "Mojito", name: "Mary Litchi Mojito", price: 49,
+        description: "Fragrant litchi syrup blended into our classic fizzy mojito base.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 61, category: "Mojito", name: "Mint Mojito", price: 49,
+        description: "A refreshing blend of fresh mint leaves, zesty lime juice, sugar, and sparkling soda over crushed ice.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 62, category: "Mojito", name: "Orange Cinderella Mojito", price: 49,
+        description: "A citrusy orange twist on our signature fizzy mojito.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 63, category: "Mojito", name: "Blue Heaven Mojito", price: 49,
+        description: "A dreamy blue-hued mojito with a fruity blue curacao-style syrup.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 64, category: "Mojito", name: "Rose Petal Mojito", price: 49,
+        description: "A floral rose-infused twist on the classic mojito.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 65, category: "Mojito", name: "Cranberry Mojito", price: 49,
+        description: "Tart cranberry syrup shaken into our fizzy mint-lime mojito.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 66, category: "Mojito", name: "Passion Mojito", price: 49,
+        description: "Exotic passion fruit syrup blended into our signature mojito.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+      { id: 67, category: "Mojito", name: "Peach Mojito", price: 49,
+        description: "Juicy peach syrup meets fresh mint and lime.",
+        image: "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- MILK SHAKES ----------------
+      { id: 68, category: "Milk Shakes", name: "Oreo Chocolate Shake", price: 99, addon: 25,
+        description: "A thick chocolate shake blended with crushed Oreo cookies.",
+        image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=800&auto=format&fit=crop" },
+      { id: 69, category: "Milk Shakes", name: "Rose Delight Shake", price: 99, addon: 25,
+        description: "A fragrant, creamy shake infused with rose syrup.",
+        image: "https://images.unsplash.com/photo-1553787499-6f9133860278?q=80&w=800&auto=format&fit=crop" },
+      { id: 70, category: "Milk Shakes", name: "Strawberry Shake", price: 109, addon: 25,
+        description: "A classic thick and creamy strawberry milkshake.",
+        image: "https://images.unsplash.com/photo-1591864384134-8a21ffb51cb5?q=80&w=800&auto=format&fit=crop" },
+      { id: 71, category: "Milk Shakes", name: "Kitkat Chocolate Shake", price: 109, addon: 25,
+        description: "A rich chocolate shake loaded with crushed Kitkat.",
+        image: "https://images.unsplash.com/photo-1696487773677-c0c8061fe3d2?q=80&w=800&auto=format&fit=crop" },
+      { id: 72, category: "Milk Shakes", name: "Brownie Blast Shake", price: 119, addon: 25,
+        description: "A decadent shake blended with chunks of fudgy brownie.",
+        image: "https://images.unsplash.com/photo-1634112957296-3f60457b21e6?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- ICE TEA ----------------
+      { id: 73, category: "Ice Tea", name: "Lemon Ice Tea", price: 49,
+        description: "A crisp, refreshing lemon iced tea.",
+        image: "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop" },
+      { id: 74, category: "Ice Tea", name: "Peach Ice Tea", price: 49,
+        description: "Sweet peach flavor meets classic chilled iced tea.",
+        image: "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop" },
+      { id: 75, category: "Ice Tea", name: "Passion Fruit Ice Tea", price: 49,
+        description: "Exotic passion fruit blended into a chilled iced tea.",
+        image: "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop" },
+      { id: 76, category: "Ice Tea", name: "Cranberry Ice Tea", price: 49,
+        description: "Tart cranberry flavor in a refreshing chilled iced tea.",
+        image: "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop" },
+      { id: 77, category: "Ice Tea", name: "American Blue Ice Tea", price: 49,
+        description: "A fruity blue-hued iced tea with a cool, refreshing finish.",
+        image: "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- HOT ----------------
+      { id: 78, category: "Hot", name: "Hot Coffee", price: 29,
+        description: "A comforting cup of freshly brewed hot coffee.",
+        image: "https://images.unsplash.com/photo-1596098823457-74e360fcd023?q=80&w=800&auto=format&fit=crop" },
+      { id: 79, category: "Hot", name: "Hot Chocolate", price: 39,
+        description: "Rich, warm, and creamy hot chocolate.",
+        image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?q=80&w=800&auto=format&fit=crop" },
+
+      // ---------------- DESSERTS ----------------
+      { id: 80, category: "Desserts", name: "Sizzling Brownie", price: 149,
+        description: "Rich chocolate brownie served sizzling hot with ice cream.",
+        image: "https://images.unsplash.com/photo-1566855833528-35bcc17ae9ce?q=80&w=800&auto=format&fit=crop" },
+      { id: 81, category: "Desserts", name: "Special Kulhad Chocolate Mud Pie", price: 169,
+        description: "A decadent layered chocolate mud pie served in a traditional clay kulhad.",
+        image: "https://images.unsplash.com/photo-1732105094945-a22182f23169?q=80&w=800&auto=format&fit=crop" }
+    ];
+    */
+
+    const ADDON_MAP = {
+      "Burger": [{label:"Cheese",price:15},{label:"Cheese Injector",price:30}],
+      "Wraps": [{label:"Extra Cheese",price:30}], "Sandwiches": [{label:"Extra Cheese",price:30}],
+      "Fries": [{label:"Extra Cheese",price:40}], "Pizza": [{label:"Extra Cheese",price:40}],
+      "Pasta": [{label:"Extra Cheese",price:40}], "Garlic Bread": [{label:"Extra Cheese",price:40}],
+      "Toastie": [{label:"Extra Cheese",price:40}], "Nachos": [{label:"Extra Cheese",price:40}],
+      "Maggi": [{label:"Cheese",price:20},{label:"Butter",price:10}],
+      "Mojito": [{label:"Rose",price:10},{label:"Injector",price:10}],
+      "Cold Coffee": [{label:"Ice Cream",price:25}], "Milk Shakes": [{label:"Ice Cream",price:25}]
+    };
+    function addonsFor(category) { return ADDON_MAP[category] || []; }
+
+    const combos = [
+      { id:"c1", name:"Classic OG Burger + Drink", full:"Classic OG Burger + Any Mojito / Ice Tea", price:69, drink:true, icon:"sparkles" },
+      { id:"c2", name:"Pizza Di Sicilia + Drink", full:"Pizza Di Sicilia + Any Mojito / Ice Tea", price:149, drink:true, icon:"pizza" },
+      { id:"c3", name:"Toastie + Fries + Drink", full:"Any Toastie + French Fries + Any Mojito / Ice Tea", price:199, drink:true, icon:"sandwich" },
+      { id:"c4", name:"Any Kulhad + Drink", full:"Any Kulhad + Any Mojito / Ice Tea", price:169, drink:true, icon:"soup" },
+      { id:"c5", name:"Any Pizza + Drink", full:"Any Pizza + Any Mojito / Ice Tea", price:199, drink:true, icon:"pizza" },
+      { id:"c6", name:"3 Grilled Sandwich + Drink", full:"3 Any Grilled Sandwich + Any Mojito / Ice Tea", price:169, drink:true, icon:"sandwich" },
+      { id:"c7", name:"Korean Burger + Fries + Drink", full:"Korean Burger + French Fries + Any Mojito / Ice Tea", price:149, drink:true, icon:"beef" },
+      { id:"c8", name:"2 Premium Cold Coffee", full:"2 Premium Cold Coffee", price:89, drink:false, icon:"coffee" },
+      { id:"m1", name:"French Fries + Drink", full:"French Fries + Any Mojito / Ice Tea", price:99, drink:true, meal:true, icon:"utensils" },
+      { id:"m2", name:"Garlic Bread + Drink", full:"Garlic Bread + Any Mojito / Ice Tea", price:109, drink:true, meal:true, icon:"wheat" }
+    ];
+    function getCombo(id) { return combos.find(function (c) { return c.id === id; }); }
+    function drinkOptions() {
+      const d = menuItems.filter(function (m) { return m.category === "Mojito" || m.category === "Ice Tea"; }).map(function (m) { return { label: m.name, price: 0 }; });
+      d.push({ label: "Premium Cold Coffee (swap)", price: COLD_COFFEE_UPGRADE });
+      return d;
+    }
+
+    /* Built by rebuildCategoryOrder() once menu items arrive from Sanity */
+    let categoryOrder = [];
+    function rebuildCategoryOrder() {
+      categoryOrder = [];
+      menuItems.forEach(function (item) { if (categoryOrder.indexOf(item.category) === -1) categoryOrder.push(item.category); });
+    }
+    const categoryIcons = { "Burger":"beef","Fries":"utensils","Wraps":"sandwich","Pizza":"pizza","Momos":"soup","Kulhad":"flame","Sandwiches":"sandwich","Pasta":"utensils-crossed","Garlic Bread":"wheat","Special Buns":"croissant","Toastie":"sandwich","Nachos":"triangle","Maggi":"soup","Cold Coffee":"coffee","Mojito":"cup-soda","Milk Shakes":"milk","Ice Tea":"cup-soda","Hot":"coffee","Desserts":"cake" };
+    const categoryFootnotes = { "Burger":"Double Cheese &#8377;15/- Only &middot; Add Any Burger @ &#8377;30/- Only","Maggi":"Add Cheese &#8377;20/- Only &middot; Add Butter &#8377;10/- Only","Mojito":"Add Rose &#8377;10/- Only &middot; Add Injector &#8377;10/- Only" };
+    function slugify(str) { return "cat-" + str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""); }
+    function getItem(id) { return menuItems.find(function (m) { return m.id === id; }); }
+    function imgFallback(el) { el.onerror = null; if (el.parentElement) el.parentElement.classList.add("img-broken"); }
+
+    /* ------------------------------------------------------------
+       TODAY'S SPECIAL - EDIT TODAY'S SPECIAL. Change the fields below;
+       set originalPrice to null to hide the strike-through / savings.
+    ------------------------------------------------------------ */
+    const todaysSpecial = {
+      itemName: "Cheese Volcano Kulhad Momos",
+      description: "Fried momos tossed in creamy cheese sauce, stuffed in a traditional clay kulhad, topped with mozzarella and baked. Today only!",
+      price: 129,
+      originalPrice: 149,
+      image: "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop"
+    };
+
+    function renderSpecial() {
+      const s = todaysSpecial;
+      let dateStr = "";
+      try { dateStr = new Date().toLocaleDateString("en-IN", { weekday:"long", day:"numeric", month:"long" }); } catch (e) { dateStr = ""; }
+      const save = s.originalPrice && s.originalPrice > s.price ? (s.originalPrice - s.price) : 0;
+      const priceBlock = '<span class="font-display font-extrabold text-3xl text-white">₹' + s.price + '</span>' +
+        (save ? ' <span class="text-white/50 line-through text-lg align-middle">₹' + s.originalPrice + '</span>' : '');
+      const saveBadge = save ? '<span class="absolute top-4 right-4 z-10 bg-leaf text-white text-xs font-extrabold px-3 py-1.5 rounded-full shadow-soft">SAVE ₹' + save + '</span>' : '';
+      document.getElementById("special-banner").innerHTML =
+        '<div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-charcoal to-zorko-dark text-white shadow-soft">' +
+          '<div aria-hidden="true" class="pointer-events-none absolute -top-16 -left-10 w-56 h-56 bg-zorko/40 rounded-full blur-3xl"></div>' +
+          '<div class="grid sm:grid-cols-2 items-stretch">' +
+            '<div class="relative p-7 sm:p-10 flex flex-col justify-center order-2 sm:order-1">' +
+              '<div class="flex flex-wrap items-center gap-2 mb-4">' +
+                '<span class="inline-flex items-center gap-1.5 bg-zorko text-white text-xs font-extrabold uppercase tracking-wide px-3 py-1 rounded-full"><i data-lucide="star" class="w-3.5 h-3.5"></i> Today&#39;s Special</span>' +
+                (dateStr ? '<span class="text-white/60 text-xs font-semibold">' + dateStr + '</span>' : '') +
+              '</div>' +
+              '<h3 class="font-display font-extrabold text-2xl sm:text-3xl leading-tight">' + s.itemName + '</h3>' +
+              '<p class="mt-3 text-white/70 text-sm sm:text-base leading-relaxed max-w-md">' + s.description + '</p>' +
+              '<div class="mt-5 flex items-center gap-4">' + priceBlock + '</div>' +
+              '<button onclick="addSpecial()" class="mt-6 self-start inline-flex items-center gap-2 bg-white text-zorko-dark hover:bg-zorko hover:text-white font-bold text-sm px-6 py-3.5 rounded-full shadow-soft transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
+            '</div>' +
+            '<div class="relative min-h-[220px] sm:min-h-[320px] order-1 sm:order-2 bg-zorko-light overflow-hidden">' + saveBadge +
+              '<img src="' + s.image + '" alt="' + s.itemName + '" loading="lazy" onerror="imgFallback(this)" style="filter:saturate(1.12) brightness(1.06);" class="absolute inset-0 w-full h-full object-cover">' +
+              '<div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/10 to-transparent sm:bg-gradient-to-r sm:from-zorko-dark/85 sm:via-zorko-dark/10 sm:to-transparent"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addSpecial() {
+      const s = todaysSpecial;
+      mergeLine({ lineId:0, type:"special", refId:"special", name:s.itemName, image:s.image, qty:1, unit:s.price, addons:[], drink:null });
+      renderCart();
+      showToast('Added "' + s.itemName + '" to your order');
+    }
+
+    /* State */
+    let cart = [];
+    let lineSeq = 1;
+    let prevCount = 0;
+    let activeCategory = "All"; // set to the first real category once Sanity data loads
+    let drawerOpen = false, sheetOpen = false;
+    function syncBody() { document.body.style.overflow = (drawerOpen || sheetOpen) ? "hidden" : ""; }
+
+    /* CATEGORY FILTER NAV */
+    function renderCategoryNav() {
+      const nav = document.getElementById("category-nav");
+      const chips = ["All"].concat(categoryOrder);
+      nav.innerHTML = chips.map(function (cat) {
+        const active = cat === activeCategory;
+        const icon = cat === "All" ? "layout-grid" : (categoryIcons[cat] || "utensils");
+        const cls = active ? "bg-zorko text-white border-zorko" : "bg-white text-charcoal/70 border-charcoal/10 hover:border-zorko hover:text-zorko";
+        return '<button type="button" onclick="setCategory(\'' + cat.replace(/'/g, "\\'") + '\')" class="shrink-0 inline-flex items-center gap-1.5 border text-xs sm:text-sm font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap ' + cls + '">' +
+          '<i data-lucide="' + icon + '" class="w-3.5 h-3.5"></i>' + cat + '</button>';
+      }).join("");
+      if (window.lucide) lucide.createIcons();
+    }
+    function setCategory(cat) {
+      activeCategory = cat;
+      renderCategoryNav();
+      renderMenu();
+      document.getElementById("menu").scrollIntoView({ block: "start" });
+    }
+
+    /* COMBOS */
+    function renderCombos() {
+      document.getElementById("combos-grid").innerHTML = combos.map(function (c) {
+        return '<div class="menu-card relative bg-cream border border-zorko/20 rounded-3xl p-6 shadow-card hover:shadow-soft overflow-hidden flex flex-col">' +
+          '<div aria-hidden="true" class="absolute -top-8 -right-8 w-24 h-24 bg-zorko-light rounded-full opacity-70"></div>' +
+          '<div class="relative flex-1"><span class="inline-flex items-center gap-1.5 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full"><i data-lucide="' + (c.icon || "sparkles") + '" class="w-3.5 h-3.5"></i> ' + (c.meal ? "Make a Meal" : "Combo") + '</span>' +
+          '<p class="mt-4 font-display font-bold text-lg text-charcoal leading-snug">' + c.full + '</p><p class="mt-2 font-display font-extrabold text-zorko-dark text-xl">₹' + c.price + '</p></div>' +
+          '<button onclick="openComboConfig(\'' + c.id + '\')" class="relative mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm py-3 rounded-full transition-colors duration-300"><i data-lucide="plus" class="w-4 h-4"></i> Add Combo</button></div>';
+      }).join("");
+      if (window.lucide) lucide.createIcons();
+    }
+
+    /* MENU (filtered) */
+    function renderMenuCard(item) {
+      const hasAddons = addonsFor(item.category).length > 0;
+      return '<div class="menu-card bg-white rounded-3xl border border-charcoal/8 shadow-card overflow-hidden flex flex-col">' +
+        '<div class="relative h-44 sm:h-48 overflow-hidden bg-zorko-light">' +
+          '<img src="' + item.image + '" alt="' + item.name + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover">' +
+          (item.tag ? '<span class="absolute top-3 left-3 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full flex items-center gap-1 z-10"><i data-lucide="star" class="w-3 h-3"></i>' + item.tag + '</span>' : '') +
+          '<span class="absolute top-3 right-3 veg-mark bg-white/90 z-10" aria-hidden="true"></span></div>' +
+        '<div class="p-5 flex flex-col flex-1"><div class="flex items-start justify-between gap-3"><div>' +
+          '<h3 class="font-display font-bold text-base text-charcoal leading-snug">' + item.name + '</h3>' +
+          (item.subtitle ? '<p class="text-xs font-semibold text-leaf-dark mt-0.5">' + item.subtitle + '</p>' : '') + '</div>' +
+          '<div class="shrink-0 text-right"><span class="block font-display font-extrabold text-zorko-dark text-base">₹' + item.price + '</span>' +
+          (hasAddons ? '<span class="block text-[11px] text-charcoal/40 font-medium">customisable</span>' : '') + '</div></div>' +
+          '<p class="mt-2 text-sm text-charcoal/60 leading-relaxed flex-1">' + item.description + '</p>' +
+          '<button onclick="addToCart(' + item.id + ')" data-add-btn="' + item.id + '" class="mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm py-3 rounded-full transition-colors duration-300"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button></div></div>';
+    }
+    function renderMenu() {
+      const container = document.getElementById("menu-categories");
+      const cats = activeCategory === "All" ? categoryOrder : [activeCategory];
+      container.innerHTML = cats.map(function (category) {
+        const itemsInCategory = menuItems.filter(function (i) { return i.category === category; });
+        if (!itemsInCategory.length) return "";
+        const footnote = categoryFootnotes[category];
+        const burgerBanner = category === "Burger" ? '<div class="mb-5 inline-flex items-center gap-2 bg-zorko-light text-zorko-dark text-xs sm:text-sm font-bold px-4 py-2 rounded-full"><i data-lucide="syringe" class="w-4 h-4"></i> Add Cheese Injector for just ₹30/-</div>' : '';
+        return '<div id="' + slugify(category) + '">' +
+          '<div class="flex items-center gap-3 mb-2"><span class="h-px flex-1 bg-charcoal/10"></span><h3 class="font-display font-extrabold text-lg sm:text-xl text-zorko-dark uppercase tracking-wide whitespace-nowrap">' + category + '</h3><span class="h-px flex-1 bg-charcoal/10"></span></div>' +
+          '<div class="text-center mb-5">' + burgerBanner + '</div>' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">' + itemsInCategory.map(renderMenuCard).join("") + '</div>' +
+          (footnote ? '<p class="mt-5 text-center text-xs text-charcoal/50 font-medium">' + footnote + '</p>' : '') + '</div>';
+      }).join("");
+      if (window.lucide) lucide.createIcons();
+    }
+
+    /* ------------------------------------------------------------
+       SANITY MENU LOADING
+       Fetches menuItem documents, maps them into the same shape the
+       rest of the app already expects ({id, category, name, tag,
+       price, description, image, subtitle}), rebuilds categoryOrder,
+       and hands off to the existing render functions.
+    ------------------------------------------------------------ */
+    async function loadMenuFromSanity() {
+      renderMenuSkeleton();
+      const query = '*[_type == "menuItem"] | order(category asc, order asc, name asc) {' +
+        '"id": _id, name, category, subtitle, price, description, ' +
+        '"image": image.asset->url, isBestSeller' +
+        '}';
+      try {
+        const docs = await sanity.fetch(query);
+        menuItems = docs.map(function (d) {
+          return {
+            id: d.id,
+            category: d.category,
+            name: d.name,
+            subtitle: d.subtitle || undefined,
+            tag: d.isBestSeller ? "Best Seller" : undefined,
+            price: d.price,
+            description: d.description,
+            image: d.image
+          };
+        });
+        rebuildCategoryOrder();
+        if (!menuItems.length) { renderMenuEmpty(); return; }
+        activeCategory = categoryOrder[0];
+        renderCategoryNav();
+        renderMenu();
+      } catch (err) {
+        console.error("Failed to load menu from Sanity:", err);
+        renderMenuError();
+      }
+    }
+
+    function renderMenuSkeleton() {
+      document.getElementById("category-nav").innerHTML = Array.from({ length: 5 }).map(function () {
+        return '<div class="shrink-0 w-24 h-9 rounded-full bg-charcoal/10 animate-pulse"></div>';
+      }).join("");
+      document.getElementById("menu-categories").innerHTML =
+        '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">' +
+        Array.from({ length: 6 }).map(function () {
+          return '<div class="bg-white rounded-3xl border border-charcoal/8 shadow-card overflow-hidden">' +
+            '<div class="h-44 sm:h-48 bg-charcoal/10 animate-pulse"></div>' +
+            '<div class="p-5 space-y-3">' +
+              '<div class="h-4 w-3/4 rounded bg-charcoal/10 animate-pulse"></div>' +
+              '<div class="h-3 w-full rounded bg-charcoal/10 animate-pulse"></div>' +
+              '<div class="h-3 w-5/6 rounded bg-charcoal/10 animate-pulse"></div>' +
+              '<div class="h-10 w-full rounded-full bg-charcoal/10 animate-pulse mt-4"></div>' +
+            '</div></div>';
+        }).join("") +
+        '</div>';
+    }
+
+    function renderMenuEmpty() {
+      document.getElementById("category-nav").innerHTML = "";
+      document.getElementById("menu-categories").innerHTML =
+        '<p class="text-center text-charcoal/50 py-10">Menu coming soon — check back shortly.</p>';
+    }
+
+    function renderMenuError() {
+      document.getElementById("category-nav").innerHTML = "";
+      document.getElementById("menu-categories").innerHTML =
+        '<div class="text-center py-10">' +
+          '<p class="text-charcoal/60 mb-4">Couldn\u2019t load the menu right now. Please check your connection.</p>' +
+          '<button onclick="loadMenuFromSanity()" class="inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm px-5 py-2.5 rounded-full transition-colors"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Try Again</button>' +
+        '</div>';
+      if (window.lucide) lucide.createIcons();
+    }
+
+    /* CUSTOMISATION SHEET */
+    let configState = null;
+    function openItemConfig(itemId) {
+      const item = getItem(itemId);
+      if (!item) return;
+      configState = { kind:"item", ref:item, qty:1, base:item.price, editingLineId:null,
+        options: addonsFor(item.category).map(function (a) { return { label:a.label, price:a.price, selected:false, type:"check" }; }) };
+      document.getElementById("config-title").textContent = item.name;
+      document.getElementById("config-subtitle").textContent = "Base ₹" + item.price + " · pick any add-ons";
+      document.getElementById("config-cta").textContent = "Add";
+      renderConfigOptions(); openSheet();
+    }
+    function openComboConfig(comboId) {
+      const combo = getCombo(comboId);
+      if (!combo) return;
+      let options = [];
+      if (combo.drink) options = drinkOptions().map(function (d, i) { return { label:d.label, price:d.price, selected:i===0, type:"radio" }; });
+      configState = { kind:"combo", ref:combo, qty:1, base:combo.price, editingLineId:null, options:options };
+      document.getElementById("config-title").textContent = combo.full;
+      document.getElementById("config-subtitle").textContent = combo.drink ? ("Combo ₹" + combo.price + " · choose your drink") : ("Combo ₹" + combo.price);
+      document.getElementById("config-cta").textContent = "Add";
+      renderConfigOptions(); openSheet();
+    }
+    /* Re-open an existing cart line to change add-ons / drink / qty */
+    function openLineConfig(lineId) {
+      const line = cart.find(function (l) { return l.lineId === lineId; });
+      if (!line) return;
+      if (line.type === "item") {
+        const item = getItem(line.refId);
+        configState = { kind:"item", ref:item, qty:line.qty, base:item.price, editingLineId:lineId,
+          options: addonsFor(item.category).map(function (a) { return { label:a.label, price:a.price, selected: line.addons.some(function (x) { return x.label === a.label; }), type:"check" }; }) };
+        document.getElementById("config-title").textContent = item.name;
+        document.getElementById("config-subtitle").textContent = "Base ₹" + item.price + " · update your add-ons";
+      } else {
+        const combo = getCombo(line.refId);
+        configState = { kind:"combo", ref:combo, qty:line.qty, base:combo.price, editingLineId:lineId,
+          options: drinkOptions().map(function (d) { return { label:d.label, price:d.price, selected: d.label === line.drink, type:"radio" }; }) };
+        document.getElementById("config-title").textContent = combo.full;
+        document.getElementById("config-subtitle").textContent = "Combo ₹" + combo.price + " · change your drink";
+      }
+      document.getElementById("config-cta").textContent = "Update";
+      renderConfigOptions(); openSheet();
+    }
+    function renderConfigOptions() {
+      const wrap = document.getElementById("config-options");
+      if (!configState.options.length) {
+        wrap.innerHTML = '<p class="text-sm text-charcoal/50">No customisation needed - just add to your order.</p>';
+      } else {
+        const heading = configState.kind === "combo" ? '<p class="text-xs font-bold uppercase tracking-wide text-charcoal/45 mb-2">Choose your drink</p>' : '<p class="text-xs font-bold uppercase tracking-wide text-charcoal/45 mb-2">Add-ons</p>';
+        wrap.innerHTML = heading + configState.options.map(function (o, i) {
+          const priceLabel = o.price > 0 ? '<span class="font-semibold text-zorko-dark">+₹' + o.price + '</span>' : '<span class="text-charcoal/40 text-sm">included</span>';
+          const mark = o.type === "radio"
+            ? '<span class="w-5 h-5 rounded-full border-2 ' + (o.selected ? "border-zorko" : "border-charcoal/25") + ' flex items-center justify-center">' + (o.selected ? '<span class="w-2.5 h-2.5 rounded-full bg-zorko"></span>' : '') + '</span>'
+            : '<span class="w-5 h-5 rounded-md border-2 ' + (o.selected ? "border-zorko bg-zorko" : "border-charcoal/25") + ' flex items-center justify-center text-white">' + (o.selected ? '<i data-lucide="check" class="w-3.5 h-3.5"></i>' : '') + '</span>';
+          return '<button type="button" onclick="toggleConfigOption(' + i + ')" class="w-full flex items-center gap-3 bg-white border border-charcoal/10 rounded-xl px-4 py-3 text-left hover:border-zorko/40 transition-colors">' + mark + '<span class="flex-1 text-sm font-semibold text-charcoal">' + o.label + '</span>' + priceLabel + '</button>';
+        }).join("");
+      }
+      if (window.lucide) lucide.createIcons();
+      updateConfigTotal();
+    }
+    function toggleConfigOption(i) {
+      const o = configState.options[i];
+      if (o.type === "radio") { configState.options.forEach(function (x) { x.selected = false; }); o.selected = true; }
+      else { o.selected = !o.selected; }
+      renderConfigOptions();
+    }
+    function configQtyChange(delta) { configState.qty = Math.max(1, configState.qty + delta); document.getElementById("config-qty").textContent = configState.qty; updateConfigTotal(); }
+    function configUnitPrice() { let u = configState.base; configState.options.forEach(function (o) { if (o.selected) u += o.price; }); return u; }
+    function updateConfigTotal() { document.getElementById("config-total").textContent = "· ₹" + (configUnitPrice() * configState.qty); }
+
+    function openSheet() {
+      const sheet = document.getElementById("config-sheet");
+      document.getElementById("config-qty").textContent = configState.qty;
+      sheet.classList.remove("hidden"); void sheet.offsetWidth;
+      sheet.classList.remove("opacity-0");
+      sheet.querySelector(".sheet-panel").classList.remove("translate-y-full", "sm:translate-y-4");
+      sheetOpen = true; syncBody();
+      setTimeout(function(){ var c=document.querySelector("#config-sheet button[aria-label='Close']"); if(c) c.focus(); }, 60);
+    }
+    function closeConfig() {
+      const sheet = document.getElementById("config-sheet");
+      sheet.classList.add("opacity-0");
+      sheet.querySelector(".sheet-panel").classList.add("translate-y-full");
+      sheetOpen = false; syncBody();
+      setTimeout(function () { sheet.classList.add("hidden"); }, 300);
+    }
+    function confirmConfig() {
+      const selected = configState.options.filter(function (o) { return o.selected; });
+      const unit = configUnitPrice();
+      const label = configState.ref.name;
+      let line;
+      if (configState.kind === "item") {
+        const item = configState.ref;
+        line = { lineId:0, type:"item", refId:item.id, name:item.name, image:item.image, qty:configState.qty, unit:unit, addons:selected.map(function (o) { return { label:o.label, price:o.price }; }), drink:null };
+      } else {
+        const combo = configState.ref;
+        line = { lineId:0, type:"combo", refId:combo.id, name:combo.full, image:null, qty:configState.qty, unit:unit, addons:[], drink: selected.length ? selected[0].label : null };
+      }
+      const wasEditing = configState.editingLineId;
+      if (wasEditing) cart = cart.filter(function (l) { return l.lineId !== wasEditing; });
+      mergeLine(line);
+      closeConfig();
+      renderCart();
+      showToast(wasEditing ? "Updated your order" : ('Added "' + label + '" to your order'));
+    }
+    function mergeLine(line) {
+      const key = function (l) { return l.type + "|" + l.refId + "|" + l.addons.map(function (a) { return a.label; }).sort().join(",") + "|" + (l.drink || ""); };
+      const existing = cart.find(function (l) { return key(l) === key(line); });
+      if (existing) { existing.qty += line.qty; } else { line.lineId = lineSeq++; cart.push(line); }
+    }
+
+    /* ADD FROM MENU CARD */
+    function addToCart(itemId) {
+      const item = getItem(itemId);
+      if (!item) return;
+      if (addonsFor(item.category).length > 0) { openItemConfig(itemId); return; }
+      mergeLine({ lineId:0, type:"item", refId:item.id, name:item.name, image:item.image, qty:1, unit:item.price, addons:[], drink:null });
+      renderCart();
+      showToast('Added "' + item.name + '" to your order');
+      const btn = document.querySelector('[data-add-btn="' + itemId + '"]');
+      if (btn) { btn.classList.add("bump"); setTimeout(function () { btn.classList.remove("bump"); }, 400); }
+    }
+    function updateQuantity(lineId, delta) {
+      const entry = cart.find(function (e) { return e.lineId === lineId; });
+      if (!entry) return;
+      entry.qty += delta;
+      if (entry.qty <= 0) cart = cart.filter(function (e) { return e.lineId !== lineId; });
+      renderCart();
+    }
+    function removeFromCart(lineId) { cart = cart.filter(function (e) { return e.lineId !== lineId; }); renderCart(); }
+    function getSubtotal() { return cart.reduce(function (sum, l) { return sum + l.unit * l.qty; }, 0); }
+    function linePrefix(line) { return line.type === "combo" ? "[Combo] " : (line.type === "special" ? "[Today's Special] " : ""); }
+
+    /* RENDER CART (drawer + bottom bar + header badge) */
+    function renderCart() {
+      const itemsList = document.getElementById("cart-items");
+      const emptyState = document.getElementById("cart-empty-state");
+      const subtotalRow = document.getElementById("cart-subtotal-row");
+      const form = document.getElementById("order-form");
+      const badge = document.getElementById("cart-count-badge");
+      const bar = document.getElementById("cart-bar");
+      const totalCount = cart.reduce(function (sum, e) { return sum + e.qty; }, 0);
+      const subtotal = getSubtotal();
+
+      if (totalCount > 0) {
+        badge.textContent = totalCount; badge.classList.remove("opacity-0", "scale-0");
+        badge.classList.add("bump"); setTimeout(function () { badge.classList.remove("bump"); }, 400);
+        bar.classList.remove("hidden");
+        if (totalCount > prevCount) { bar.classList.remove("pulse"); void bar.offsetWidth; bar.classList.add("pulse"); }
+        document.getElementById("cart-bar-count").textContent = totalCount + (totalCount === 1 ? " item" : " items");
+        document.getElementById("cart-bar-total").textContent = "₹" + subtotal;
+      } else {
+        badge.classList.add("opacity-0", "scale-0");
+        bar.classList.add("hidden");
+      }
+      document.getElementById("drawer-count").textContent = totalCount + (totalCount === 1 ? " item" : " items");
+      prevCount = totalCount;
+
+      if (cart.length === 0) {
+        emptyState.classList.remove("hidden"); itemsList.classList.add("hidden");
+        subtotalRow.classList.add("hidden"); form.classList.add("hidden"); itemsList.innerHTML = "";
+        return;
+      }
+      emptyState.classList.add("hidden"); itemsList.classList.remove("hidden");
+      subtotalRow.classList.remove("hidden"); form.classList.remove("hidden");
+
+      itemsList.innerHTML = cart.map(function (line) {
+        const lineTotal = line.unit * line.qty;
+        const item = line.type === "item" ? getItem(line.refId) : null;
+        const canEdit = (line.type === "item" && item && addonsFor(item.category).length > 0) || (line.type === "combo" && getCombo(line.refId).drink);
+        const thumb = line.type === "combo"
+          ? '<div class="w-14 h-14 rounded-xl bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="gift" class="w-6 h-6 text-zorko-dark"></i></div>'
+          : '<div class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-zorko-light"><img src="' + line.image + '" alt="' + line.name + '" onerror="imgFallback(this)" class="w-14 h-14 object-cover"></div>';
+        const meta = [];
+        if (line.addons && line.addons.length) meta.push("+ " + line.addons.map(function (a) { return a.label; }).join(", "));
+        if (line.drink) meta.push("Drink: " + line.drink);
+        const metaHtml = meta.length ? '<p class="text-xs text-leaf-dark mt-0.5 truncate">' + meta.join(" · ") + '</p>' : '';
+        const editBtn = canEdit ? '<button onclick="openLineConfig(' + line.lineId + ')" class="text-xs font-semibold text-zorko hover:text-zorko-dark inline-flex items-center gap-1 mt-1"><i data-lucide="sliders-horizontal" class="w-3 h-3"></i> ' + (line.type === "combo" ? "Change drink" : "Customise") + '</button>' : '';
+        return '<li class="flex items-start gap-3 bg-surface border border-charcoal/8 rounded-2xl p-3">' + thumb +
+          '<div class="flex-1 min-w-0"><p class="font-semibold text-sm text-charcoal truncate">' + linePrefix(line) + line.name + '</p>' + metaHtml +
+          '<p class="text-xs text-charcoal/50 mt-0.5">₹' + line.unit + ' each</p>' + editBtn + '</div>' +
+          '<div class="flex flex-col items-end gap-2 shrink-0">' +
+            '<div class="flex items-center gap-1.5"><button onclick="updateQuantity(' + line.lineId + ', -1)" aria-label="Decrease" class="w-8 h-8 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button>' +
+            '<span class="w-5 text-center text-sm font-bold">' + line.qty + '</span>' +
+            '<button onclick="updateQuantity(' + line.lineId + ', 1)" aria-label="Increase" class="w-8 h-8 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button></div>' +
+            '<div class="flex items-center gap-2"><span class="font-bold text-sm text-zorko-dark">₹' + lineTotal + '</span>' +
+            '<button onclick="removeFromCart(' + line.lineId + ')" aria-label="Remove" class="text-charcoal/30 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>' +
+          '</div></li>';
+      }).join("");
+
+      document.getElementById("cart-subtotal-value").textContent = "₹" + subtotal;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    /* CART DRAWER OPEN/CLOSE */
+    function openCart() {
+      const overlay = document.getElementById("cart-overlay"), drawer = document.getElementById("cart-drawer");
+      overlay.classList.remove("hidden"); void overlay.offsetWidth;
+      overlay.classList.remove("opacity-0"); drawer.classList.remove("translate-x-full");
+      drawerOpen = true; syncBody();
+      setTimeout(function(){ var c=drawer.querySelector("button[aria-label='Close cart']"); if(c) c.focus(); }, 60);
+    }
+    function closeCart() {
+      const overlay = document.getElementById("cart-overlay"), drawer = document.getElementById("cart-drawer");
+      overlay.classList.add("opacity-0"); drawer.classList.add("translate-x-full");
+      drawerOpen = false; syncBody();
+      setTimeout(function () { overlay.classList.add("hidden"); }, 300);
+    }
+
+    function handleFulfillmentChange() {
+      const method = document.getElementById("fulfillment-method").value;
+      const wrapper = document.getElementById("address-wrapper"), note = document.getElementById("delivery-note");
+      if (method === "Home Delivery") { wrapper.style.maxHeight = "220px"; wrapper.style.opacity = "1"; note.classList.remove("hidden"); }
+      else { wrapper.style.maxHeight = "0px"; wrapper.style.opacity = "0"; note.classList.add("hidden"); }
+    }
+
+    /* STORE HOURS */
+    function isStoreOpen() { const h = new Date().getHours(); return h >= OPEN_HOUR && h < CLOSE_HOUR; }
+    function applyStoreHours() {
+      const open = isStoreOpen();
+      const banner = document.getElementById("closed-banner"), btn = document.getElementById("submit-btn"), pill = document.getElementById("store-status-pill");
+      banner.classList.toggle("hidden", open);
+      if (btn) { btn.disabled = !open; btn.innerHTML = open ? '<i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp' : '<i data-lucide="moon" class="w-5 h-5"></i> Closed · Opens 11:00 AM'; }
+      if (pill) { pill.className = "mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold " + (open ? "bg-leaf-light text-leaf-dark" : "bg-zorko-light text-zorko-dark"); pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + (open ? "bg-leaf" : "bg-zorko") + '"></span> ' + (open ? "Open now" : "Closed now"); }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message; toast.classList.remove("hidden", "toast-in"); void toast.offsetWidth; toast.classList.add("toast-in");
+      clearTimeout(window._zorkoToastTimer); window._zorkoToastTimer = setTimeout(function () { toast.classList.add("hidden"); }, 2800);
+    }
+    function showFormError(m) { const e = document.getElementById("form-error"); e.textContent = m; e.classList.remove("hidden"); }
+    function clearFormError() { const e = document.getElementById("form-error"); e.textContent = ""; e.classList.add("hidden"); }
+
+    function handleFormSubmit(event) {
+      event.preventDefault(); clearFormError();
+      if (!isStoreOpen()) { applyStoreHours(); showFormError("We're closed. Order requests open at 11:00 AM."); return; }
+      if (cart.length === 0) { showFormError("Your cart is empty - add something from the menu first."); return; }
+      const name = document.getElementById("customer-name").value.trim();
+      const phone = document.getElementById("customer-phone").value.trim();
+      const method = document.getElementById("fulfillment-method").value;
+      const address = document.getElementById("customer-address").value.trim();
+      if (!name) { showFormError("Please enter your full name."); document.getElementById("customer-name").focus(); return; }
+      const phoneDigits = phone.replace(/\D/g, "");
+      if (phoneDigits.length < 10) { showFormError("Enter a valid 10-digit number."); document.getElementById("customer-phone").focus(); return; }
+      if (method === "Home Delivery") {
+        if (getSubtotal() < DELIVERY_MIN) { showFormError("Home delivery needs a ₹" + DELIVERY_MIN + " minimum order."); return; }
+        if (!address) { showFormError("Please add a delivery address so we know where to send it."); document.getElementById("customer-address").focus(); return; }
+      }
+      const itemLines = cart.map(function (line) {
+        let s = line.qty + "x " + linePrefix(line) + line.name;
+        if (line.addons && line.addons.length) s += " (+" + line.addons.map(function (a) { return a.label; }).join(", ") + ")";
+        if (line.drink) s += " - Drink: " + line.drink;
+        return s;
+      }).join("\n");
+      const subtotal = getSubtotal();
+      let message = "Hello Zorko (Darwha), I want to place an order request.\n\n";
+      message += "Name: " + name + "\nPhone: " + phone + "\nItems:\n" + itemLines + "\nTotal: ₹" + subtotal + "\nMethod: " + method;
+      if (method === "Home Delivery") message += "\nAddress: " + address;
+      window.open("https://wa.me/" + ZORKO_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message), "_blank");
+      showToast("Order request ready - opening WhatsApp...");
+      cart = []; renderCart(); event.target.reset(); handleFulfillmentChange(); closeCart();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      renderSpecial(); renderCombos(); renderCart();
+      loadMenuFromSanity();
+      handleFulfillmentChange(); applyStoreHours();
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeConfig(); closeCart(); } });
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "Tab") return;
+        var panel = sheetOpen ? document.querySelector("#config-sheet .sheet-panel") : (drawerOpen ? document.getElementById("cart-drawer") : null);
+        if (!panel) return;
+        var f = Array.prototype.slice.call(panel.querySelectorAll('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])')).filter(function(el){ return el.offsetParent !== null; });
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
