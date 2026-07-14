@@ -763,16 +763,22 @@
     }
 
     /* MENU (filtered) */
+    // Escapes a value for safe use inside an HTML attribute. CMS text can
+    // contain characters (quotes, angle brackets) that would otherwise break
+    // out of the attribute and corrupt the tag — this makes that impossible.
+    function escapeAttr(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
     function renderMenuCard(item) {
       const hasAddons = addonsFor(item.category).length > 0;
-      // JSON.stringify safely quotes+escapes item.id for the inline onclick.
-      // Without this, a non-numeric Sanity _id (e.g. "8f5b1c3e-...") produces
-      // invalid inline JS (addToCart(8f5b1c3e-...)), which silently fails to
-      // parse and makes the button do nothing when clicked.
-      const safeId = JSON.stringify(item.id);
       return '<div class="menu-card bg-white rounded-3xl border border-charcoal/8 shadow-card overflow-hidden flex flex-col h-full">' +
         '<div class="relative h-44 sm:h-48 overflow-hidden bg-zorko-light shrink-0">' +
-          '<img src="' + item.image + '" alt="' + item.name + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover">' +
+          '<img src="' + escapeAttr(item.image) + '" alt="' + escapeAttr(item.name) + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover">' +
           (item.tag ? '<span class="absolute top-3 left-3 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full flex items-center gap-1 z-10"><i data-lucide="star" class="w-3 h-3"></i>' + item.tag + '</span>' : '') +
           '<span class="absolute top-3 right-3 veg-mark bg-white/90 z-10" aria-hidden="true"></span></div>' +
         '<div class="p-5 flex flex-col flex-1">' +
@@ -784,8 +790,14 @@
             '<div class="shrink-0 text-right"><span class="block font-display font-extrabold text-zorko-dark text-base">₹' + item.price + '</span>' +
             (hasAddons ? '<span class="block text-[11px] text-charcoal/40 font-medium">customisable</span>' : '') + '</div>' +
           '</div>' +
-          '<p class="mt-2 text-sm text-charcoal/60 leading-relaxed line-clamp-3">' + item.description + '</p>' +
-          '<button type="button" onclick="addToCart(' + safeId + ')" data-add-btn="' + safeId + '" class="relative z-10 mt-auto pt-5 w-full inline-flex items-center justify-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm py-3 rounded-full transition-colors duration-300"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
+          '<p class="mt-2 text-sm text-charcoal/60 leading-relaxed line-clamp-3 flex-1">' + item.description + '</p>' +
+          // No inline onclick: the id lives only in data-add-btn (a plain,
+          // fully-escaped attribute, never executable JS), and a single
+          // delegated listener on #menu-categories (wired up once in
+          // DOMContentLoaded — see below) reads it and calls addToCart().
+          // This removes the entire class of "id breaks out of the onclick
+          // string" bugs for good, no matter what a CMS value contains.
+          '<button type="button" data-add-btn="' + escapeAttr(item.id) + '" class="relative z-10 mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm py-3 rounded-full transition-colors duration-300"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
         '</div></div>';
     }
     function renderMenu() {
@@ -840,7 +852,10 @@
           return {
             // Prefer the Studio's own "id" field; fall back to the document's
             // built-in _id so a row never gets dropped just because "id" is blank.
-            id: d.id || d._id,
+            // Always coerce to a string: if "id" happens to be a number in the
+            // Studio schema, this keeps it consistent with the string
+            // getAttribute() always returns, so lookups never fail on a type mismatch.
+            id: String(d.id || d._id),
             category: d.category || "Uncategorised",
             name: d.name || "Untitled item",
             subtitle: d.subtitle || undefined,
@@ -1011,15 +1026,17 @@
     }
 
     /* ADD FROM MENU CARD */
-    function addToCart(itemId) {
+    // triggerBtn is optional (only the delegated menu-card listener passes
+    // it) — used purely for the bump animation, so addToCart never needs to
+    // re-query the DOM by id, no matter what characters that id contains.
+    function addToCart(itemId, triggerBtn) {
       const item = getItem(itemId);
       if (!item) return;
       if (addonsFor(item.category).length > 0) { openItemConfig(itemId); return; }
       mergeLine({ lineId:0, type:"item", refId:item.id, name:item.name, image:item.image, qty:1, unit:item.price, addons:[], drink:null });
       renderCart();
       showToast('Added "' + item.name + '" to your order');
-      const btn = document.querySelector('[data-add-btn="' + itemId + '"]');
-      if (btn) { btn.classList.add("bump"); setTimeout(function () { btn.classList.remove("bump"); }, 400); }
+      if (triggerBtn) { triggerBtn.classList.add("bump"); setTimeout(function () { triggerBtn.classList.remove("bump"); }, 400); }
     }
     function updateQuantity(lineId, delta) {
       const entry = cart.find(function (e) { return e.lineId === lineId; });
@@ -1168,6 +1185,15 @@
       renderSpecial(); renderCombos(); renderCart();
       loadMenuFromSanity();
       handleFulfillmentChange(); applyStoreHours();
+      // One delegated listener for every "Add to Order" button, present and
+      // future. #menu-categories itself is never replaced (only its
+      // innerHTML is, on every renderMenu() call), so this never needs to
+      // be re-attached after the menu re-renders.
+      document.getElementById("menu-categories").addEventListener("click", function (e) {
+        const btn = e.target.closest("[data-add-btn]");
+        if (!btn) return;
+        addToCart(btn.getAttribute("data-add-btn"), btn);
+      });
       document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeConfig(); closeCart(); } });
       document.addEventListener("keydown", function (e) {
         if (e.key !== "Tab") return;
