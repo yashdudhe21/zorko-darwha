@@ -80,7 +80,14 @@
     html { scroll-behavior: auto; }
     .fade-up, .float-slow, .float-slower, .bump, .pulse, .toast-in, .menu-card, .addr-wrapper, .sheet-panel, #cart-drawer, #cart-overlay { animation: none !important; transition: none !important; }
   }
+  /* Guided tour */
+  #tour-overlay { position: fixed; inset: 0; z-index: 90; display: none; }
+  #tour-overlay.on { display: block; }
+  #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(31,41,55,0.72); border: 2px solid #EA580C; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
+  #tour-tip { position: absolute; max-width: min(320px, 92vw); background: #fff; border-radius: 18px; box-shadow: 0 20px 50px -12px rgba(0,0,0,.45); padding: 18px; transition: left .25s ease, top .25s ease; }
+  @media (prefers-reduced-motion: reduce) { #tour-spot, #tour-tip { transition: none; } }
 </style>
+
 </head>
 
 <body class="bg-cream text-charcoal antialiased">
@@ -301,7 +308,9 @@
         <button type="submit" id="submit-btn" class="w-full inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm sm:text-base py-4 rounded-full shadow-soft transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
           <i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp
         </button>
+        <p class="mt-3 text-center text-xs text-charcoal/50 leading-relaxed flex items-start justify-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-leaf shrink-0 mt-0.5"></i> <span>No online payment - pay at the store or on delivery. Your order is sent to our WhatsApp.</span></p>
       </form>
+
     </div>
   </aside>
 
@@ -318,13 +327,33 @@
           <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-zorko-light text-zorko-dark flex items-center justify-center shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Add items &amp; customise your add-ons</p></div>
           <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-leaf-light text-leaf-dark flex items-center justify-center shrink-0"><i data-lucide="message-circle" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Send your order request on WhatsApp</p></div>
         </div>
-        <button onclick="startOrdering()" class="mt-7 w-full inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold py-4 rounded-full shadow-soft transition-colors"><i data-lucide="arrow-right" class="w-4 h-4"></i> Start Ordering</button>
-        <button onclick="closeWelcome(true)" class="mt-3 w-full text-center text-sm font-semibold text-charcoal/50 hover:text-charcoal transition-colors">Maybe later</button>
+        <button onclick="closeWelcome(true); setTimeout(startTour, 350)" class="mt-7 w-full inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold py-4 rounded-full shadow-soft transition-colors"><i data-lucide="sparkles" class="w-4 h-4"></i> Take a quick tour</button>
+        <button onclick="startOrdering()" class="mt-3 w-full text-center text-sm font-semibold text-charcoal/50 hover:text-charcoal transition-colors">Skip - I know how</button>
       </div>
     </div>
   </div>
 
+  <!-- GUIDED TOUR (teach-by-doing overlay) -->
+  <div id="tour-overlay" aria-hidden="true">
+    <div id="tour-spot"></div>
+    <div id="tour-tip" role="dialog" aria-live="polite"></div>
+  </div>
+
+  <!-- ALWAYS-ON HELP BUTTON -->
+  <button id="help-btn" onclick="startTour()" class="fixed left-4 z-40 inline-flex items-center gap-1.5 bg-white border border-charcoal/15 text-charcoal font-bold text-sm px-4 py-2.5 rounded-full shadow-soft hover:border-zorko hover:text-zorko transition-colors" style="bottom: calc(1rem + env(safe-area-inset-bottom));" aria-label="How to order">
+    <i data-lucide="help-circle" class="w-4 h-4 text-zorko"></i> How to order
+  </button>
+
+  <!-- FIRST-ADD HINT -->
+  <div id="firstadd-callout" class="hidden opacity-0 transition-opacity duration-300 fixed left-1/2 z-[55] max-w-[92vw]" style="bottom: calc(5.6rem + env(safe-area-inset-bottom)); transform: translateX(-50%);">
+    <div class="flex items-center gap-2 bg-leaf text-white text-sm font-semibold px-4 py-3 rounded-2xl shadow-2xl">
+      <i data-lucide="party-popper" class="w-4 h-4 shrink-0"></i>
+      <span>Added! Your order is saved below - tap it to review &amp; send.</span>
+    </div>
+  </div>
+
   <!-- CUSTOMISATION SHEET -->
+
   <div id="config-sheet" class="sheet-wrap hidden fixed inset-0 z-[70] opacity-0">
     <div class="absolute inset-0 bg-charcoal/50 backdrop-blur-sm" onclick="closeConfig()"></div>
     <div class="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-md sm:h-max bg-cream rounded-t-3xl sm:rounded-3xl shadow-2xl translate-y-full sm:translate-y-4 overflow-hidden" role="dialog" aria-modal="true" aria-label="Customise item">
@@ -1134,6 +1163,8 @@
       document.getElementById("drawer-count").textContent = totalCount + (totalCount === 1 ? " item" : " items");
       prevCount = totalCount;
       saveCart();
+      updateHelpBtnPos(totalCount);
+      maybeFirstAddHint(totalCount);
 
       if (cart.length === 0) {
         emptyState.classList.remove("hidden"); itemsList.classList.add("hidden");
@@ -1350,6 +1381,103 @@
     }
     function startOrdering() { closeWelcome(true); document.getElementById("menu").scrollIntoView({ block: "start" }); }
 
+    /* ---- Guided tour (teach-by-doing for first-timers) ---- */
+    const TOUR_STEPS = [
+      { sel: "#category-nav", title: "Browse by category", text: "Tap a category - Burgers, Pizza, Mojito and more - to see those items." },
+      { sel: "#menu-search", title: "Or just search", text: "Type any dish name here to find it in a second." },
+      { sel: "[data-add-btn]", title: "Add what you like", text: "Tap Add to Order on any item. If it has extras like cheese, we will ask what you would like." },
+      { sel: "#cart-nav-btn", title: "Your basket", text: "Everything you add collects here. Tap it anytime to review your order." },
+      { sel: null, title: "Send it on WhatsApp", text: "When you are ready, open your basket, add your name and number, and tap Send. No online payment - you pay at the store or on delivery. That is it!" }
+    ];
+    let tourIdx = -1, tourOpen = false;
+    function tourReposition() { if (tourOpen && tourIdx >= 0) { var s = TOUR_STEPS[tourIdx]; var t = s && s.sel ? document.querySelector(s.sel) : null; if (t) positionTour(t); } }
+    function startTour() {
+      closeWelcome(true);
+      tourOpen = true; tourIdx = -1;
+      document.getElementById("tour-overlay").classList.add("on");
+      window.addEventListener("scroll", tourReposition, true);
+      window.addEventListener("resize", tourReposition);
+      tourGoto(0);
+      try { localStorage.setItem("zorko_tour", "1"); } catch (e) {}
+    }
+    function endTour() {
+      if (!tourOpen) return;
+      tourOpen = false;
+      document.getElementById("tour-overlay").classList.remove("on");
+      window.removeEventListener("scroll", tourReposition, true);
+      window.removeEventListener("resize", tourReposition);
+    }
+    function tourNext() { tourGoto(tourIdx + 1); }
+    function tourPrev() { tourGoto(tourIdx - 1); }
+    function tourGoto(i) {
+      if (i >= TOUR_STEPS.length) { endTour(); return; }
+      if (i < 0) i = 0;
+      tourIdx = i;
+      var step = TOUR_STEPS[i];
+      var spot = document.getElementById("tour-spot");
+      var tip = document.getElementById("tour-tip");
+      var isLast = i === TOUR_STEPS.length - 1;
+      var backBtn = i > 0 ? '<button onclick="tourPrev()" class="text-sm font-semibold text-charcoal/60 hover:text-charcoal px-2 py-2">Back</button>' : '';
+      var nextIcon = isLast ? "check" : "arrow-right";
+      var nextLabel = isLast ? "Got it!" : "Next";
+      tip.innerHTML =
+        '<div class="flex items-center justify-between mb-2">' +
+          '<span class="text-xs font-extrabold text-zorko uppercase tracking-wide">Step ' + (i + 1) + ' of ' + TOUR_STEPS.length + '</span>' +
+          '<button onclick="endTour()" class="text-xs font-semibold text-charcoal/40 hover:text-charcoal">Skip</button>' +
+        '</div>' +
+        '<h4 class="font-display font-extrabold text-charcoal text-base leading-snug">' + step.title + '</h4>' +
+        '<p class="text-sm text-charcoal/70 mt-1 leading-relaxed">' + step.text + '</p>' +
+        '<div class="mt-4 flex items-center gap-2">' + backBtn +
+          '<button onclick="tourNext()" class="ml-auto inline-flex items-center gap-1.5 bg-zorko text-white font-bold text-sm px-5 py-2.5 rounded-full hover:bg-zorko-dark transition-colors">' + nextLabel + ' <i data-lucide="' + nextIcon + '" class="w-4 h-4"></i></button>' +
+        '</div>';
+      if (window.lucide) lucide.createIcons();
+      var target = step.sel ? document.querySelector(step.sel) : null;
+      if (target) {
+        target.scrollIntoView({ block: "center", behavior: "smooth" });
+        setTimeout(function () { positionTour(target); }, 320);
+      } else {
+        spot.style.opacity = "1"; spot.style.width = "0"; spot.style.height = "0";
+        spot.style.left = "50%"; spot.style.top = "50%";
+        tip.style.transform = "translate(-50%,-50%)"; tip.style.left = "50%"; tip.style.top = "50%";
+      }
+    }
+    function positionTour(target) {
+      var spot = document.getElementById("tour-spot");
+      var tip = document.getElementById("tour-tip");
+      var r = target.getBoundingClientRect();
+      var pad = 6;
+      spot.style.opacity = "1";
+      spot.style.left = (r.left - pad) + "px";
+      spot.style.top = (r.top - pad) + "px";
+      spot.style.width = (r.width + pad * 2) + "px";
+      spot.style.height = (r.height + pad * 2) + "px";
+      tip.style.transform = "none";
+      var tr = tip.getBoundingClientRect();
+      var top = r.bottom + 12;
+      if (top + tr.height > window.innerHeight - 12) top = Math.max(12, r.top - tr.height - 12);
+      var left = Math.min(Math.max(12, r.left), window.innerWidth - tr.width - 12);
+      if (!isFinite(left) || left < 12) left = 12;
+      tip.style.left = left + "px";
+      tip.style.top = top + "px";
+    }
+
+    /* ---- First-add hint + help button positioning ---- */
+    function firstAddSeen() { try { return localStorage.getItem("zorko_firstadd") === "1"; } catch (e) { return false; } }
+    function maybeFirstAddHint(count) {
+      if (count <= 0 || firstAddSeen()) return;
+      try { localStorage.setItem("zorko_firstadd", "1"); } catch (e) {}
+      var el = document.getElementById("firstadd-callout");
+      if (!el) return;
+      el.classList.remove("hidden"); void el.offsetWidth; el.classList.remove("opacity-0");
+      clearTimeout(window._zorkoFirstAdd);
+      window._zorkoFirstAdd = setTimeout(function () { el.classList.add("opacity-0"); setTimeout(function () { el.classList.add("hidden"); }, 300); }, 5200);
+    }
+    function updateHelpBtnPos(count) {
+      var b = document.getElementById("help-btn");
+      if (!b) return;
+      b.style.bottom = count > 0 ? "calc(5.6rem + env(safe-area-inset-bottom))" : "calc(1rem + env(safe-area-inset-bottom))";
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
       renderSpecial(); renderCombos(); loadCart(); prefillProfile(); renderCart();
       loadMenuFromSanity();
@@ -1369,7 +1497,7 @@
         if (!btn) return;
         quickAdd(btn.getAttribute("data-quick-add"));
       });
-      document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeConfig(); closeCart(); closeWelcome(true); } });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") { if (tourOpen) { endTour(); return; } closeConfig(); closeCart(); closeWelcome(true); } });
       document.addEventListener("keydown", function (e) {
         if (e.key !== "Tab") return;
         var panel = sheetOpen ? document.querySelector("#config-sheet .sheet-panel") : (drawerOpen ? document.getElementById("cart-drawer") : null);
