@@ -811,13 +811,46 @@
     }
 
     /* COMBOS */
+    /* Combo component photos — pulled from the Sanity menu so combos are visual,
+       not just text. Each combo maps to the categories it's built from; we grab a
+       representative photo from each and show the main one big + the rest as chips. */
+    const COMBO_PARTS = {
+      c1: ["Burger", "Mojito"], c2: ["Pizza", "Mojito"], c3: ["Toastie", "Fries", "Mojito"],
+      c4: ["Kulhad", "Mojito"], c5: ["Pizza", "Mojito"], c6: ["Sandwiches", "Mojito"],
+      c7: ["Burger", "Fries", "Mojito"], c8: ["Cold Coffee"], m1: ["Fries", "Mojito"], m2: ["Garlic Bread", "Mojito"]
+    };
+    function partImg(cat) { var it = firstInCategory(cat); return it && it.image ? it.image : null; }
     function renderCombos() {
       document.getElementById("combos-grid").innerHTML = combos.map(function (c) {
-        return '<div class="menu-card snap-start shrink-0 w-[82%] sm:w-auto relative bg-cream border border-zorko/20 rounded-3xl p-5 sm:p-6 shadow-card hover:shadow-soft overflow-hidden flex flex-col">' +
-          '<div aria-hidden="true" class="absolute -top-8 -right-8 w-24 h-24 bg-zorko-light rounded-full opacity-70"></div>' +
-          '<div class="relative flex-1"><span class="inline-flex items-center gap-1.5 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full"><i data-lucide="' + (c.icon || "sparkles") + '" class="w-3.5 h-3.5"></i> ' + (c.meal ? "Make a Meal" : "Combo") + '</span>' +
-          '<p class="mt-4 font-display font-bold text-lg text-charcoal leading-snug">' + c.full + '</p><p class="mt-2 font-display font-extrabold text-zorko-dark text-xl">₹' + c.price + '</p></div>' +
-          '<button onclick="openComboConfig(\'' + c.id + '\')" class="relative mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm py-3 rounded-full transition-colors duration-300"><i data-lucide="plus" class="w-4 h-4"></i> Add Combo</button></div>';
+        var parts = COMBO_PARTS[c.id] || [];
+        var imgs = [];
+        for (var k = 0; k < parts.length; k++) { var u = partImg(parts[k]); if (u) imgs.push(u); }
+        var hero = imgs.length ? imgs[0] : null;
+        var extras = imgs.slice(1);
+        var heroHtml = hero
+          ? '<img src="' + escapeAttr(hero) + '" alt="" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover">'
+          : '<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-zorko-light to-leaf-light"><i data-lucide="' + (c.icon || "sparkles") + '" class="w-10 h-10 text-zorko/50"></i></div>';
+        var extrasHtml = "";
+        if (extras.length) {
+          extrasHtml = '<div class="absolute bottom-3 right-3 flex -space-x-3">';
+          for (var j = 0; j < extras.length; j++) {
+            extrasHtml += '<span class="w-11 h-11 rounded-full ring-2 ring-white overflow-hidden bg-zorko-light inline-block shadow-soft"><img src="' + escapeAttr(extras[j]) + '" alt="" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover"></span>';
+          }
+          extrasHtml += '</div>';
+        }
+        return '<div class="menu-card snap-start shrink-0 w-[82%] sm:w-auto relative bg-white border border-zorko/15 rounded-3xl shadow-card hover:shadow-soft overflow-hidden flex flex-col">' +
+          '<div class="relative h-40 sm:h-44 bg-zorko-light overflow-hidden">' + heroHtml +
+            '<span class="absolute top-3 left-3 bg-zorko text-white text-[11px] font-extrabold uppercase tracking-wide px-2.5 py-1 rounded-full inline-flex items-center gap-1 shadow-soft"><i data-lucide="' + (c.icon || "sparkles") + '" class="w-3 h-3"></i> ' + (c.meal ? "Make a Meal" : "Combo") + '</span>' +
+            extrasHtml +
+          '</div>' +
+          '<div class="p-4 flex flex-col flex-1">' +
+            '<p class="font-display font-bold text-base text-charcoal leading-snug flex-1">' + c.full + '</p>' +
+            '<div class="mt-3 flex items-center justify-between gap-2">' +
+              '<span class="font-display font-extrabold text-zorko-dark text-lg">₹' + c.price + '</span>' +
+              '<button onclick="openComboConfig(\'' + c.id + '\')" class="inline-flex items-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm px-4 py-2.5 rounded-full transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Add</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       }).join("");
       if (window.lucide) lucide.createIcons();
     }
@@ -947,6 +980,7 @@
         // so the UI refreshes instantly instead of waiting on anything else.
         renderCategoryNav();
         renderMenu();
+        renderCombos();
         renderCart();
       } catch (err) {
         console.error("Failed to load menu from Sanity:", err);
