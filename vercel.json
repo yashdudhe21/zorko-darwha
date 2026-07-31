@@ -3,7 +3,6 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "public",
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/studio/:path*", "destination": "/studio/index.html" }
   ]

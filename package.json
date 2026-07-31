@@ -4,6 +4,6 @@
   "private": true,
   "description": "Zorko Darwha static order-hub site + embedded Sanity Studio at /studio",
   "scripts": {
-    "build": "npm --prefix studio install --no-audit --no-fund && npm --prefix studio run build && rm -rf public && mkdir -p public && cp index.html public/index.html && cp -r studio/dist public/studio"
+    "build": "npm --prefix studio install --no-audit --no-fund && npm --prefix studio run build && rm -rf public && mkdir -p public/studio && cp index.html public/index.html && cp studio/dist/index.html public/studio/index.html && cp -r studio/dist/static public/static"
   }
 }
