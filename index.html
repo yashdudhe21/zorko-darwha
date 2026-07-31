@@ -17,14 +17,14 @@
     theme: {
       extend: {
         colors: {
-          charcoal: '#1A1512', cream: '#F4F1EA', surface: '#FFFFFF',
-          zorko: { DEFAULT: '#A65A3C', dark: '#7E4229', light: '#F1E9E3' },
-          accent: { DEFAULT: '#A65A3C', dark: '#7E4229', light: '#F1E9E3' },
-          leaf: { DEFAULT: '#6B6560', dark: '#4A453F', light: '#EEEBE6' }
+          charcoal: '#23261F', cream: '#F6F3EC', surface: '#FFFFFF',
+          zorko: { DEFAULT: '#276749', dark: '#173D29', light: '#E6F0E9' },
+          accent: { DEFAULT: '#C25A1C', dark: '#9E4512', light: '#FBE9DD' },
+          leaf: { DEFAULT: '#767068', dark: '#514C45', light: '#ECEAE4' }
         },
         fontFamily: { sora: ['Sora', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
         letterSpacing: { premium: '-0.022em' },
-        boxShadow: { soft: '0 18px 50px -24px rgba(26,21,18,0.28)', card: '0 1px 2px rgba(26,21,18,0.04), 0 12px 34px -18px rgba(26,21,18,0.13)' }
+        boxShadow: { soft: '0 18px 50px -24px rgba(32,36,31,0.28)', card: '0 1px 2px rgba(32,36,31,0.04), 0 12px 34px -18px rgba(32,36,31,0.13)' }
       }
     }
   };
@@ -43,11 +43,11 @@
   h1, h2, h3, .font-display { font-family: 'Sora', sans-serif; letter-spacing: -0.022em; }
   h1 { letter-spacing: -0.03em; }
   body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-  .hairline { border-color: rgba(26,21,18,0.08); }
-  ::selection { background: rgba(166,90,60,0.18); }
+  .hairline { border-color: rgba(32,36,31,0.08); }
+  ::selection { background: rgba(44,96,67,0.18); }
 
   #menu, #combos { scroll-margin-top: 140px; }
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #A65A3C; outline-offset: 2px; border-radius: 4px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #2C6043; outline-offset: 2px; border-radius: 4px; }
 
   .veg-mark { width: 15px; height: 15px; border: 1.5px solid #16A34A; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .veg-mark::after { content: ""; width: 7px; height: 7px; background: #16A34A; border-radius: 50%; }
@@ -66,7 +66,7 @@
   .toast-in { animation: toastIn 0.35s ease-out both; }
 
   .menu-card { transition: transform 0.4s cubic-bezier(.16,.84,.44,1), box-shadow 0.4s ease, border-color 0.4s ease; }
-  .menu-card:hover { transform: translateY(-6px); box-shadow: 0 28px 55px -28px rgba(26,21,18,0.28); border-color: rgba(26,21,18,0.14); }
+  .menu-card:hover { transform: translateY(-6px); box-shadow: 0 28px 55px -28px rgba(32,36,31,0.28); border-color: rgba(32,36,31,0.14); }
   .addr-wrapper { transition: max-height 0.35s ease, opacity 0.3s ease; overflow: hidden; }
 
   .thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -89,11 +89,13 @@
   /* Guided tour */
   #tour-overlay { position: fixed; inset: 0; z-index: 90; display: none; }
   #tour-overlay.on { display: block; }
-  #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(26,21,18,0.74); border: 2px solid #A65A3C; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
+  #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(32,36,31,0.76); border: 2px solid #2C6043; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
   #tour-tip { position: absolute; max-width: min(320px, 92vw); background: #fff; border-radius: 18px; box-shadow: 0 20px 50px -12px rgba(0,0,0,.45); padding: 18px; transition: left .25s ease, top .25s ease; }
   @media (prefers-reduced-motion: reduce) { #tour-spot, #tour-tip { transition: none; } }
   input::placeholder, textarea::placeholder { color: #6B7280; opacity: 1; }
-  #category-nav { -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%); mask-image: linear-gradient(to right, #000 90%, transparent 100%); }
+  @media (max-width: 639px) {
+    #category-nav { -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%); mask-image: linear-gradient(to right, #000 90%, transparent 100%); }
+  }
   /* Hero food marquee */
   .marquee { position: relative; }
   .marquee-track { display: flex; gap: .75rem; width: max-content; animation: marquee 40s linear infinite; }
@@ -130,7 +132,7 @@
           <a href="#combos" class="hover:text-zorko transition-colors">Combos</a>
           <a href="#our-store" class="hover:text-zorko transition-colors">Store</a>
         </div>
-        <button onclick="openCart()" id="cart-nav-btn" class="relative inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full transition-colors shadow-soft shrink-0" aria-label="View cart">
+        <button onclick="openCart()" id="cart-nav-btn" class="relative inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full transition-colors shadow-soft shrink-0" aria-label="View cart">
           <i data-lucide="shopping-bag" class="w-4 h-4"></i>
           <span class="hidden sm:inline">View Cart</span>
           <span id="cart-count-badge" class="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1 flex items-center justify-center rounded-full bg-leaf-light text-leaf-dark text-xs font-extrabold border-2 border-cream opacity-0 scale-0 transition-all duration-300">0</span>
@@ -146,7 +148,7 @@
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
       <div class="absolute -top-24 -right-24 w-80 h-80 sm:w-[28rem] sm:h-[28rem] bg-zorko-light rounded-full blur-3xl opacity-70 float-slow"></div>
       <div class="absolute top-1/3 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-leaf/10 rounded-full blur-3xl opacity-80 float-slower"></div>
-      <div class="absolute inset-0" style="background: radial-gradient(60% 55% at 50% 0%, rgba(166,90,60,0.06), transparent 70%);"></div>
+      <div class="absolute inset-0" style="background: radial-gradient(60% 55% at 50% 0%, rgba(44,96,67,0.07), transparent 70%);"></div>
     </div>
     <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="fade-up inline-flex items-center gap-2 bg-white/70 backdrop-blur text-charcoal/75 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.16em] px-4 py-1.5 rounded-full mb-7 border border-charcoal/10">
@@ -161,11 +163,11 @@
         Sizzling burgers, the world&#39;s thinnest pizzas, molten kulhad specials and fizzy mojitos — all made to order in your Darwha neighbourhood. Tap, build your plate, and we&#39;ll have it ready.
       </p>
       <div class="fade-up mt-8 flex flex-col sm:flex-row items-center justify-center gap-3" style="animation-delay:.2s">
-        <a href="#menu" class="group inline-flex items-center gap-2 bg-charcoal hover:bg-accent-dark text-white font-semibold text-base px-8 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
+        <a href="#menu" class="group inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-base px-8 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
           Explore the Menu <i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"></i>
         </a>
-        <a href="#combos" class="inline-flex items-center gap-2 bg-white text-charcoal font-bold text-base px-7 py-4 rounded-full border border-charcoal/10 shadow-soft hover:border-zorko/40 hover:text-zorko transition-all duration-300 active:scale-95">
-          <i data-lucide="sparkles" class="w-4 h-4 text-zorko"></i> Popular Combos
+        <a href="#combos" class="inline-flex items-center gap-2 bg-white hover:bg-cream text-charcoal font-semibold text-base px-7 py-4 rounded-full border border-charcoal/15 hover:border-charcoal/30 shadow-soft transition-all duration-300 hover:-translate-y-0.5 active:scale-95">
+          <i data-lucide="sparkles" class="w-4 h-4 text-accent"></i> Popular Combos
         </a>
       </div>
       <div class="fade-up mt-9 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm text-charcoal/70 font-medium" style="animation-delay:.28s">
@@ -173,13 +175,6 @@
         <span class="inline-flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4 text-zorko"></i>Open 11 AM &ndash; 11 PM</span>
         <span class="inline-flex items-center gap-1.5"><i data-lucide="bike" class="w-4 h-4 text-zorko"></i>Pickup &amp; delivery</span>
       </div>
-    </div>
-    <div id="hero-food-wrap" class="hidden fade-up mt-12 sm:mt-14 relative" style="animation-delay:.34s">
-      <div class="marquee overflow-hidden">
-        <div id="hero-food" class="marquee-track px-4"></div>
-      </div>
-      <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-20 bg-gradient-to-r from-cream to-transparent"></div>
-      <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-20 bg-gradient-to-l from-cream to-transparent"></div>
     </div>
     <div class="text-center">
       <a href="#menu" aria-label="Scroll to menu" class="mt-10 inline-flex w-10 h-10 items-center justify-center rounded-full border border-charcoal/15 text-charcoal/70 hover:text-zorko hover:border-zorko/40 transition-colors animate-bounce-slow"><i data-lucide="chevron-down" class="w-5 h-5"></i></a>
@@ -245,7 +240,7 @@
           <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-charcoal/5 hover:bg-charcoal/10 flex items-center justify-center" aria-label="Clear search"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
         </div>
       </div>
-      <div id="category-nav" class="cat-nav-scroll sticky top-16 sm:top-20 z-40 bg-cream/95 backdrop-blur -mx-4 sm:mx-0 px-4 sm:px-0 py-3 mb-8 flex gap-2 overflow-x-auto"></div>
+      <div id="category-nav" class="cat-nav-scroll sticky top-16 sm:top-20 z-40 bg-cream/95 backdrop-blur -mx-4 sm:mx-0 px-4 sm:px-0 py-3 mb-8 flex gap-2 overflow-x-auto sm:flex-wrap sm:justify-center sm:overflow-visible"></div>
       <div id="menu-categories" class="space-y-14"></div>
     </div>
   </section>
@@ -313,9 +308,9 @@
 
   </main>
 
-  <footer class="relative bg-charcoal text-white/70 overflow-hidden">
+  <footer class="relative bg-[#102A1B] text-white/70 overflow-hidden">
     <div aria-hidden="true" class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent"></div>
-    <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-16 w-72 h-72 bg-zorko/12 rounded-full blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-16 w-72 h-72 bg-accent/12 rounded-full blur-3xl"></div>
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-24">
 
       <!-- Tier 1 — brand + primary action -->
@@ -335,7 +330,7 @@
           <p class="font-display font-bold text-base text-white leading-tight">Hungry? Order in seconds.</p>
           <p class="mt-1 text-xs text-white/55 leading-relaxed">No app, no online payment &mdash; send your order on WhatsApp, pay on pickup or delivery.</p>
           <div class="mt-4 flex items-center gap-3">
-            <a href="https://wa.me/919373345225" target="_blank" rel="noopener" class="flex-1 inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-colors active:scale-95"><i data-lucide="message-circle" class="w-4 h-4"></i> Order on WhatsApp</a>
+            <a href="https://wa.me/919373345225" target="_blank" rel="noopener" class="flex-1 inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-colors active:scale-95"><i data-lucide="message-circle" class="w-4 h-4"></i> Order on WhatsApp</a>
             <a href="tel:+919373345225" aria-label="Call +91 93733 45225" class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/15 text-white/70 hover:text-white hover:border-white/30 transition-colors shrink-0"><i data-lucide="phone" class="w-4 h-4"></i></a>
           </div>
         </div>
@@ -355,16 +350,16 @@
         <div>
           <h3 class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 mb-3.5">Visit</h3>
           <ul class="space-y-2.5 text-sm text-white/60">
-            <li class="flex items-start gap-2"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 text-zorko shrink-0"></i><span>Darwha, Yavatmal 445202</span></li>
-            <li class="flex items-start gap-2"><i data-lucide="clock" class="w-4 h-4 mt-0.5 text-zorko shrink-0"></i><span>Daily &middot; 11 AM &ndash; 11 PM</span></li>
-            <li><a href="https://maps.app.goo.gl/FQkL7oaog9JANKNs8" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-white/80 hover:text-white transition-colors font-semibold"><i data-lucide="navigation" class="w-3.5 h-3.5 text-zorko"></i> Get directions</a></li>
+            <li class="flex items-start gap-2"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 text-accent shrink-0"></i><span>Darwha, Yavatmal 445202</span></li>
+            <li class="flex items-start gap-2"><i data-lucide="clock" class="w-4 h-4 mt-0.5 text-accent shrink-0"></i><span>Daily &middot; 11 AM &ndash; 11 PM</span></li>
+            <li><a href="https://maps.app.goo.gl/FQkL7oaog9JANKNs8" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-white/80 hover:text-white transition-colors font-semibold"><i data-lucide="navigation" class="w-3.5 h-3.5 text-accent"></i> Get directions</a></li>
           </ul>
         </div>
         <div class="col-span-2 sm:col-span-1">
           <h3 class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 mb-3.5">Follow &amp; Contact</h3>
           <ul class="space-y-2.5 text-sm text-white/60 sm:block flex flex-wrap gap-x-6">
-            <li><a href="tel:+919373345225" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="phone" class="w-4 h-4 text-zorko shrink-0"></i> +91 93733 45225</a></li>
-            <li><a href="https://instagram.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="instagram" class="w-4 h-4 text-zorko shrink-0"></i> Instagram</a></li>
+            <li><a href="tel:+919373345225" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="phone" class="w-4 h-4 text-accent shrink-0"></i> +91 93733 45225</a></li>
+            <li><a href="https://instagram.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="instagram" class="w-4 h-4 text-accent shrink-0"></i> Instagram</a></li>
           </ul>
         </div>
       </div>
@@ -382,7 +377,7 @@
 
   <!-- STICKY BOTTOM CART BAR (primary CTA; hidden when empty) -->
   <div id="cart-bar" class="hidden fixed inset-x-4 sm:inset-x-auto sm:right-6 sm:w-80 z-40" style="bottom: calc(1rem + env(safe-area-inset-bottom));">
-    <button onclick="openCart()" class="w-full flex items-center justify-between gap-3 bg-zorko hover:bg-zorko-dark text-white rounded-full shadow-soft px-5 py-3.5 transition-colors">
+    <button onclick="openCart()" class="w-full flex items-center justify-between gap-3 bg-accent hover:bg-accent-dark text-white rounded-full shadow-soft px-5 py-3.5 transition-colors">
       <span class="flex items-center gap-2 font-semibold text-sm"><i data-lucide="shopping-bag" class="w-4 h-4"></i><span id="cart-bar-count">0 items</span></span>
       <span class="flex items-center gap-2"><span class="font-display font-extrabold" id="cart-bar-total">₹0</span><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
     </button>
@@ -442,7 +437,7 @@
           <textarea id="customer-address" name="customer-address" rows="3" placeholder="Flat / House no., street, landmark, area..." class="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-surface focus:border-zorko outline-none transition-colors text-sm resize-none"></textarea>
         </div>
         <p id="form-error" role="alert" aria-live="assertive" class="hidden text-sm text-red-600 font-medium"></p>
-        <button type="submit" id="submit-btn" class="w-full inline-flex items-center justify-center gap-2 bg-charcoal hover:bg-accent-dark text-white font-semibold text-sm sm:text-base py-4 rounded-full shadow-soft transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+        <button type="submit" id="submit-btn" class="w-full inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-sm sm:text-base py-4 rounded-full shadow-soft transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
           <i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp
         </button>
         <p class="mt-3 text-center text-xs text-charcoal/70 leading-relaxed flex items-start justify-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-zorko shrink-0 mt-0.5"></i> <span>No online payment &mdash; pay on pickup or delivery. Your order goes straight to our WhatsApp and is cooked fresh after you confirm.</span></p>
@@ -515,7 +510,7 @@
             <span id="config-qty" class="w-8 text-center font-bold">1</span>
             <button type="button" onclick="configQtyChange(1)" aria-label="Increase" class="w-9 h-9 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="plus" class="w-4 h-4"></i></button>
           </div>
-          <button type="button" onclick="confirmConfig()" class="flex-1 inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm py-3.5 rounded-full shadow-soft transition-colors">
+          <button type="button" onclick="confirmConfig()" class="flex-1 inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white font-bold text-sm py-3.5 rounded-full shadow-soft transition-colors">
             <i data-lucide="plus" class="w-4 h-4"></i> <span id="config-cta">Add</span> <span id="config-total"></span>
           </button>
         </div>
@@ -1111,7 +1106,7 @@
             '<p class="font-display font-bold text-base text-charcoal leading-snug flex-1">' + c.full + '</p>' +
             '<div class="mt-3 flex items-center justify-between gap-2">' +
               '<span class="font-display font-extrabold text-zorko-dark text-lg">₹' + c.price + '</span>' +
-              '<button onclick="openComboConfig(\'' + c.id + '\')" class="inline-flex items-center gap-1.5 bg-charcoal hover:bg-accent-dark text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
+              '<button onclick="openComboConfig(\'' + c.id + '\')" class="inline-flex items-center gap-1.5 bg-accent hover:bg-accent-dark text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -1154,7 +1149,7 @@
           // DOMContentLoaded — see below) reads it and calls addToCart().
           // This removes the entire class of "id breaks out of the onclick
           // string" bugs for good, no matter what a CMS value contains.
-          '<button type="button" data-add-btn="' + escapeAttr(item.id) + '" class="relative z-10 mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-charcoal hover:bg-accent-dark text-white font-semibold text-sm py-3 rounded-full transition-all duration-300 active:scale-[0.97]"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
+          '<button type="button" data-add-btn="' + escapeAttr(item.id) + '" class="relative z-10 mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-accent hover:bg-accent-dark text-white font-semibold text-sm py-3 rounded-full transition-all duration-300 active:scale-[0.97]"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
         '</div></div>';
     }
     function renderMenu() {
@@ -1246,7 +1241,6 @@
         renderMenu();
         renderCombos();
         renderCart();
-        renderHeroFood();
       } catch (err) {
         console.error("Failed to load menu from Sanity:", err);
         renderMenuError();
@@ -1850,7 +1844,6 @@
       loadMenuFromSanity();
       var _yr = document.getElementById("year"); if (_yr) _yr.textContent = new Date().getFullYear();
       initReveal();
-      renderHeroFood();
       handleFulfillmentChange(); applyStoreHours();
       if (!ftuSeen()) setTimeout(openWelcome, 800);
       // One delegated listener for every "Add to Order" button, present and
