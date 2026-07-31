@@ -1,0 +1,9 @@
+{
+  "name": "zorko-darwha",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zorko Darwha static order-hub site + embedded Sanity Studio at /studio",
+  "scripts": {
+    "build": "npm --prefix studio install --no-audit --no-fund && npm --prefix studio run build && rm -rf public && mkdir -p public && cp index.html public/index.html && cp -r studio/dist public/studio"
+  }
+}

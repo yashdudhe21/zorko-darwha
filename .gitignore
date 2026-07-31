@@ -1,0 +1,15 @@
+# dependencies
+node_modules/
+studio/node_modules/
+
+# build output (Vercel builds these fresh)
+public/
+studio/dist/
+dist/
+
+# sanity / misc
+.sanity/
+*.log
+.DS_Store
+.env
+.env.local
