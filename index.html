@@ -18,8 +18,8 @@
       extend: {
         colors: {
           charcoal: '#1F2937', cream: '#FDFBF7', surface: '#F9FAFB',
-          zorko: { DEFAULT: '#EA580C', dark: '#C2410C', light: '#FFEDD5' },
-          leaf: { DEFAULT: '#16A34A', dark: '#15803D', light: '#DCFCE7' }
+          zorko: { DEFAULT: '#C2410C', dark: '#9A3412', light: '#FFEDD5' },
+          leaf: { DEFAULT: '#15803D', dark: '#166534', light: '#DCFCE7' }
         },
         fontFamily: { sora: ['Sora', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
         boxShadow: { soft: '0 10px 30px -12px rgba(234,88,12,0.20)', card: '0 2px 10px -4px rgba(31,41,55,0.10)' }
@@ -86,11 +86,14 @@
   #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(31,41,55,0.72); border: 2px solid #EA580C; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
   #tour-tip { position: absolute; max-width: min(320px, 92vw); background: #fff; border-radius: 18px; box-shadow: 0 20px 50px -12px rgba(0,0,0,.45); padding: 18px; transition: left .25s ease, top .25s ease; }
   @media (prefers-reduced-motion: reduce) { #tour-spot, #tour-tip { transition: none; } }
+  input::placeholder, textarea::placeholder { color: #6B7280; opacity: 1; }
+  #category-nav { -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%); mask-image: linear-gradient(to right, #000 90%, transparent 100%); }
 </style>
 
 </head>
 
 <body class="bg-cream text-charcoal antialiased">
+  <a href="#menu" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-3 focus:left-3 focus:bg-zorko focus:text-white focus:font-bold focus:px-4 focus:py-2 focus:rounded-full">Skip to menu</a>
 
   <!-- HEADER -->
   <header class="fixed top-0 inset-x-0 z-50">
@@ -115,6 +118,8 @@
     </nav>
   </header>
 
+  <main id="main-content">
+
   <!-- HERO -->
   <section id="hero" class="relative overflow-hidden pt-28 sm:pt-40 pb-20 sm:pb-28">
     <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-zorko-light rounded-full blur-3xl opacity-70 float-slow"></div>
@@ -128,7 +133,7 @@
       <div class="fade-up mt-9" style="animation-delay:.2s">
         <a href="#menu" class="group inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-base px-8 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">Explore Today's Menu <i data-lucide="arrow-down" class="w-4 h-4 transition-transform duration-300 group-hover:translate-y-1"></i></a>
       </div>
-      <div class="fade-up mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-charcoal/60 font-medium" style="animation-delay:.28s">
+      <div class="fade-up mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-charcoal/70 font-medium" style="animation-delay:.28s">
         <span class="inline-flex items-center gap-1.5"><i data-lucide="flame" class="w-4 h-4 text-zorko"></i>Cooked Fresh to Order</span>
         <span class="inline-flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-zorko"></i>Darwha Neighborhood</span>
         <span class="inline-flex items-center gap-1.5"><i data-lucide="bike" class="w-4 h-4 text-zorko"></i>Pickup &amp; Delivery</span>
@@ -149,11 +154,11 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-xl mx-auto mb-12">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Try Our Popular Combos</h2>
-        <p class="mt-3 text-charcoal/60">Two favourites, one price — tap to add and pick your drink as you go.</p>
+        <p class="mt-3 text-charcoal/70">Two favourites, one price — tap to add and pick your drink as you go.</p>
       </div>
       <!-- EDIT COMBOS HERE -> the `combos` array in JavaScript drives these cards -->
       <div id="combos-grid" class="flex gap-4 overflow-x-auto cat-nav-scroll snap-x snap-mandatory pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5"></div>
-      <p class="mt-6 text-center text-sm text-charcoal/55 font-medium">Every combo includes a drink. Swap in a Premium Cold Coffee for just &#8377;10 more.</p>
+      <p class="mt-6 text-center text-sm text-charcoal/70 font-medium">Every combo includes a drink. Swap in a Premium Cold Coffee for just &#8377;10 more.</p>
     </div>
   </section>
 
@@ -162,12 +167,12 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-xl mx-auto mb-8">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Full Menu</h2>
-        <p class="mt-3 text-charcoal/60">Pick a category, add what you love, and customise the extras.</p>
+        <p class="mt-3 text-charcoal/70">Pick a category, add what you love, and customise the extras.</p>
       </div>
       <div class="mb-5">
         <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-charcoal/40 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-          <input id="menu-search" type="search" inputmode="search" placeholder="Search the menu…" oninput="onSearch(this.value)" class="w-full pl-11 pr-10 py-3 rounded-full border border-charcoal/15 bg-white focus:border-zorko outline-none transition-colors text-sm">
+          <i data-lucide="search" class="w-4 h-4 text-charcoal/70 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          <input id="menu-search" type="text" inputmode="search" placeholder="Search the menu…" oninput="onSearch(this.value)" class="w-full pl-11 pr-10 py-3 rounded-full border border-charcoal/15 bg-white focus:border-zorko outline-none transition-colors text-sm">
           <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-charcoal/5 hover:bg-charcoal/10 flex items-center justify-center" aria-label="Clear search"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
         </div>
       </div>
@@ -181,17 +186,17 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-xl mx-auto mb-12">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Local Store</h2>
-        <p class="mt-3 text-charcoal/60">Right in your neighborhood — come say hi, call us, or just drop by.</p>
+        <p class="mt-3 text-charcoal/70">Right in your neighborhood — come say hi, call us, or just drop by.</p>
       </div>
       <div class="grid lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
         <div class="bg-cream border border-charcoal/10 rounded-3xl p-7 sm:p-8 shadow-card flex flex-col gap-6">
           <div class="flex items-start gap-4">
             <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="map-pin" class="w-5 h-5 text-zorko-dark"></i></div>
-            <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/50">Address</p><p class="mt-1 font-semibold text-charcoal leading-relaxed">Zorko — Brand of Food Lovers, Darwha, Dist. Yavatmal, Maharashtra - 445202</p></div>
+            <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/70">Address</p><p class="mt-1 font-semibold text-charcoal leading-relaxed">Zorko — Brand of Food Lovers, Darwha, Dist. Yavatmal, Maharashtra - 445202</p></div>
           </div>
           <div class="flex items-start gap-4">
             <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5 text-zorko-dark"></i></div>
-            <div class="min-w-0 flex-1"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/50">Phone</p>
+            <div class="min-w-0 flex-1"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/70">Phone</p>
               <div class="mt-1 flex flex-wrap items-center gap-3">
                 <a href="tel:+919876543210" class="font-semibold text-charcoal hover:text-zorko transition-colors">+91 98765-43210</a>
                 <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-leaf-light hover:bg-leaf text-leaf-dark hover:text-white text-xs font-bold px-3 py-1.5 rounded-full transition-colors"><i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp</a>
@@ -200,7 +205,7 @@
           </div>
           <div class="flex items-start gap-4">
             <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="clock" class="w-5 h-5 text-zorko-dark"></i></div>
-            <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/50">Store Timings</p><p class="mt-1 font-semibold text-charcoal">Open Daily: 11:00 AM - 11:00 PM</p><span id="store-status-pill" class="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"></span></div>
+            <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/70">Store Timings</p><p class="mt-1 font-semibold text-charcoal">Open Daily: 11:00 AM - 11:00 PM</p><span id="store-status-pill" class="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"></span></div>
           </div>
         </div>
         <div class="relative rounded-3xl overflow-hidden shadow-card border border-charcoal/10 min-h-[280px] lg:min-h-0">
@@ -212,7 +217,7 @@
           </div>
           <div class="relative h-full min-h-[280px] flex flex-col items-center justify-center gap-3 px-6 text-center">
             <div class="flex flex-col items-center"><i data-lucide="map-pin" class="w-10 h-10 text-zorko drop-shadow-md" stroke-width="2.5"></i><span class="-mt-1 w-3 h-1.5 bg-charcoal/20 rounded-full blur-[2px]"></span></div>
-            <div class="bg-white/90 backdrop-blur px-4 py-2 rounded-xl shadow-card"><p class="font-display font-bold text-sm text-charcoal">Zorko Café</p><p class="text-xs text-charcoal/60">Darwha, Yavatmal</p></div>
+            <div class="bg-white/90 backdrop-blur px-4 py-2 rounded-xl shadow-card"><p class="font-display font-bold text-sm text-charcoal">Zorko Café</p><p class="text-xs text-charcoal/70">Darwha, Yavatmal</p></div>
             <a href="https://maps.app.goo.gl/FQkL7oaog9JANKNs8" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm px-5 py-2.5 rounded-full transition-colors shadow-soft"><i data-lucide="navigation" class="w-4 h-4"></i> Open in Google Maps</a>
           </div>
         </div>
@@ -231,11 +236,13 @@
         <div class="text-center sm:text-left">
           <p class="text-xs font-bold uppercase tracking-wide text-leaf-dark mb-2">Meet the Franchise Owner</p>
           <p class="text-charcoal/80 leading-relaxed text-base sm:text-lg italic">"Welcome to Zorko Darwha! Our mission is simple: to serve our neighborhood the freshest, most delicious pure vegetarian street food at prices that put a smile on your face. We craft every burger, wrap, and pizza with love and strict hygiene. Thank you for supporting local!"</p>
-          <p class="mt-4 font-display font-bold text-charcoal">Yash Dudhe <span class="font-normal text-charcoal/50">&middot; Franchise Owner</span></p>
+          <p class="mt-4 font-display font-bold text-charcoal">Yash Dudhe <span class="font-normal text-charcoal/70">&middot; Franchise Owner</span></p>
         </div>
       </div>
     </div>
   </section>
+
+  </main>
 
   <footer class="bg-charcoal text-white/80 py-10 pb-28">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -258,11 +265,11 @@
   <!-- CART SIDE DRAWER                                              -->
   <!-- ============================================================ -->
   <div id="cart-overlay" class="hidden fixed inset-0 z-[60] bg-charcoal/50 backdrop-blur-sm opacity-0" onclick="closeCart()"></div>
-  <aside id="cart-drawer" class="fixed top-0 right-0 z-[61] h-full w-full sm:w-[430px] bg-cream shadow-2xl translate-x-full flex flex-col" role="dialog" aria-modal="true" aria-label="Your order">
+  <aside id="cart-drawer" class="fixed top-0 right-0 z-[61] h-full w-full sm:w-[430px] bg-cream shadow-2xl translate-x-full flex flex-col" role="dialog" aria-modal="true" aria-label="Your order" inert aria-hidden="true">
     <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-charcoal/10 bg-cream/90 backdrop-blur">
       <div class="flex items-center gap-2">
         <div class="w-9 h-9 rounded-full bg-zorko-light flex items-center justify-center"><i data-lucide="shopping-bag" class="w-5 h-5 text-zorko-dark"></i></div>
-        <div><h2 class="font-display font-extrabold text-lg text-charcoal leading-tight">Your Order</h2><p class="text-xs text-charcoal/55" id="drawer-count">0 items</p></div>
+        <div><h2 class="font-display font-extrabold text-lg text-charcoal leading-tight">Your Order</h2><p class="text-xs text-charcoal/70" id="drawer-count">0 items</p></div>
       </div>
       <button onclick="closeCart()" aria-label="Close cart" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-charcoal/5 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
     </div>
@@ -270,22 +277,23 @@
     <div class="flex-1 overflow-y-auto thin-scroll px-5 py-4">
       <div id="closed-banner" class="hidden mb-4 flex items-start gap-3 bg-zorko-light border border-zorko/20 rounded-2xl p-4">
         <i data-lucide="moon" class="w-5 h-5 text-zorko-dark shrink-0 mt-0.5"></i>
-        <div><p class="font-bold text-charcoal text-sm">We're closed right now</p><p class="text-charcoal/60 text-sm mt-0.5">Order requests open daily at 11:00 AM. You can still build your cart — come back during store hours to send it.</p></div>
+        <div><p class="font-bold text-charcoal text-sm">We're closed right now</p><p class="text-charcoal/70 text-sm mt-0.5">Order requests open daily at 11:00 AM. You can still build your cart — come back during store hours to send it.</p></div>
       </div>
 
       <div id="order-confirmation" class="hidden text-center py-10"></div>
       <div id="cart-empty-state" class="text-center py-16">
         <i data-lucide="shopping-bag" class="w-12 h-12 text-zorko/30 mx-auto mb-4"></i>
-        <p class="text-charcoal/60 font-medium">Your cart is empty.</p>
-        <p class="text-charcoal/40 text-sm mt-1">Add something tasty from the menu.</p>
+        <p class="text-charcoal/70 font-medium">Your cart is empty.</p>
+        <p class="text-charcoal/70 text-sm mt-1">Add something tasty from the menu.</p>
         <button onclick="closeCart()" class="mt-5 inline-flex items-center gap-2 bg-zorko-light text-zorko-dark font-bold text-sm px-5 py-2.5 rounded-full hover:bg-zorko hover:text-white transition-colors"><i data-lucide="arrow-left" class="w-4 h-4"></i> Browse Menu</button>
       </div>
 
+      <div id="cart-tools" class="hidden flex justify-end mb-2"><button onclick="clearCart()" class="text-xs font-semibold text-charcoal/70 hover:text-red-500 inline-flex items-center gap-1 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear all</button></div>
       <ul id="cart-items" class="space-y-3 hidden"></ul>
 
       <div id="cart-upsell" class="hidden mt-5"></div>
       <div id="cart-subtotal-row" class="hidden mt-5 pt-5 border-t border-charcoal/10 flex items-center justify-between">
-        <span class="font-semibold text-charcoal/70">Total <span class="text-charcoal/40 text-sm font-normal">(all inclusive)</span></span>
+        <span class="font-semibold text-charcoal/70">Total <span class="text-charcoal/70 text-sm font-normal">(all inclusive)</span></span>
         <span id="cart-subtotal-value" class="font-display font-extrabold text-2xl text-zorko-dark">&#8377;0</span>
       </div>
 
@@ -298,17 +306,17 @@
           <select id="fulfillment-method" name="fulfillment-method" onchange="handleFulfillmentChange()" class="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-surface focus:border-zorko outline-none transition-colors text-sm">
             <option value="Store Pickup">Store Pickup</option><option value="Home Delivery">Home Delivery</option>
           </select>
-          <p id="delivery-note" class="hidden mt-1.5 text-xs text-charcoal/50 font-medium flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5"></i> Home delivery has a &#8377;150 minimum order (free local delivery).</p>
+          <p id="delivery-note" class="hidden mt-1.5 text-xs text-charcoal/70 font-medium flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5"></i> Home delivery has a &#8377;150 minimum order (free local delivery).</p>
         </div>
         <div id="address-wrapper" class="addr-wrapper" style="max-height:0; opacity:0;">
           <label for="customer-address" class="block text-sm font-semibold text-charcoal/80 mb-1.5">Complete Delivery Address</label>
           <textarea id="customer-address" name="customer-address" rows="3" placeholder="Flat / House no., street, landmark, area..." class="w-full px-4 py-3 rounded-xl border border-charcoal/15 bg-surface focus:border-zorko outline-none transition-colors text-sm resize-none"></textarea>
         </div>
-        <p id="form-error" class="hidden text-sm text-red-600 font-medium"></p>
+        <p id="form-error" role="alert" aria-live="assertive" class="hidden text-sm text-red-600 font-medium"></p>
         <button type="submit" id="submit-btn" class="w-full inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm sm:text-base py-4 rounded-full shadow-soft transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
           <i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp
         </button>
-        <p class="mt-3 text-center text-xs text-charcoal/50 leading-relaxed flex items-start justify-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-leaf shrink-0 mt-0.5"></i> <span>No online payment - pay at the store or on delivery. Your order is sent to our WhatsApp.</span></p>
+        <p class="mt-3 text-center text-xs text-charcoal/70 leading-relaxed flex items-start justify-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-leaf shrink-0 mt-0.5"></i> <span>No online payment - pay at the store or on delivery. Your order is sent to our WhatsApp.</span></p>
       </form>
 
     </div>
@@ -321,14 +329,14 @@
       <div class="p-6 sm:p-8" style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
         <div class="flex justify-center mb-4"><span class="inline-flex items-center gap-2 bg-leaf-light text-leaf-dark text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"><span class="veg-mark" aria-hidden="true"></span> Welcome to Zorko Darwha</span></div>
         <h3 class="font-display font-extrabold text-2xl text-charcoal text-center leading-tight">Order in 3 easy taps</h3>
-        <p class="text-charcoal/60 text-sm text-center mt-2">No app. No login. Build your cart and send your order straight to our WhatsApp.</p>
+        <p class="text-charcoal/70 text-sm text-center mt-2">No app. No login. Build your cart and send your order straight to our WhatsApp.</p>
         <div class="mt-6 space-y-3">
           <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-zorko-light text-zorko-dark flex items-center justify-center shrink-0"><i data-lucide="utensils" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Browse the full veg menu by category</p></div>
           <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-zorko-light text-zorko-dark flex items-center justify-center shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Add items &amp; customise your add-ons</p></div>
           <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-leaf-light text-leaf-dark flex items-center justify-center shrink-0"><i data-lucide="message-circle" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Send your order request on WhatsApp</p></div>
         </div>
         <button onclick="closeWelcome(true); setTimeout(startTour, 350)" class="mt-7 w-full inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold py-4 rounded-full shadow-soft transition-colors"><i data-lucide="sparkles" class="w-4 h-4"></i> Take a quick tour</button>
-        <button onclick="startOrdering()" class="mt-3 w-full text-center text-sm font-semibold text-charcoal/50 hover:text-charcoal transition-colors">Skip - I know how</button>
+        <button onclick="startOrdering()" class="mt-3 w-full text-center text-sm font-semibold text-charcoal/70 hover:text-charcoal transition-colors">Skip - I know how</button>
       </div>
     </div>
   </div>
@@ -352,6 +360,14 @@
     </div>
   </div>
 
+  <!-- UNDO CALLOUT -->
+  <div id="undo-callout" class="hidden opacity-0 transition-opacity duration-300 fixed left-1/2 z-[62] max-w-[92vw]" style="bottom: calc(1.2rem + env(safe-area-inset-bottom)); transform: translateX(-50%);">
+    <div class="flex items-center gap-4 bg-charcoal text-white text-sm font-semibold px-4 py-3 rounded-2xl shadow-2xl">
+      <span id="undo-msg">Item removed</span>
+      <button onclick="doUndo()" class="text-zorko-light font-extrabold underline underline-offset-2">Undo</button>
+    </div>
+  </div>
+
   <!-- CUSTOMISATION SHEET -->
 
   <div id="config-sheet" class="sheet-wrap hidden fixed inset-0 z-[70] opacity-0">
@@ -362,7 +378,7 @@
           <h3 id="config-title" class="font-display font-extrabold text-xl text-charcoal leading-snug"></h3>
           <button onclick="closeConfig()" aria-label="Close" class="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-charcoal/5 hover:bg-charcoal/10 transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
         </div>
-        <p id="config-subtitle" class="text-sm text-charcoal/55 mb-5"></p>
+        <p id="config-subtitle" class="text-sm text-charcoal/70 mb-5"></p>
         <div id="config-options" class="space-y-2 mb-6"></div>
         <div class="flex items-center justify-between gap-4">
           <div class="inline-flex items-center gap-1 bg-white border border-charcoal/10 rounded-full p-1">
@@ -847,7 +863,7 @@
             '<p class="font-display font-bold text-base text-charcoal leading-snug flex-1">' + c.full + '</p>' +
             '<div class="mt-3 flex items-center justify-between gap-2">' +
               '<span class="font-display font-extrabold text-zorko-dark text-lg">₹' + c.price + '</span>' +
-              '<button onclick="openComboConfig(\'' + c.id + '\')" class="inline-flex items-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm px-4 py-2.5 rounded-full transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Add</button>' +
+              '<button onclick="openComboConfig(\'' + c.id + '\')" class="inline-flex items-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm px-4 py-2.5 rounded-full transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -873,17 +889,17 @@
         '<div class="relative h-44 sm:h-48 overflow-hidden bg-zorko-light shrink-0">' +
           '<img src="' + escapeAttr(item.image) + '" alt="' + escapeAttr(item.name) + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover">' +
           (item.tag ? '<span class="absolute top-3 left-3 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full flex items-center gap-1 z-10"><i data-lucide="star" class="w-3 h-3"></i>' + item.tag + '</span>' : '') +
-          '<span class="absolute top-3 right-3 veg-mark bg-white/90 z-10" aria-hidden="true"></span></div>' +
+          '<span class="absolute top-3 right-3 veg-mark bg-white/90 z-10" aria-hidden="true"></span><span class="sr-only">Vegetarian</span></div>' +
         '<div class="p-5 flex flex-col flex-1">' +
           '<div class="flex items-start justify-between gap-3">' +
             '<div class="min-w-0">' +
-              '<h3 class="font-display font-bold text-base text-charcoal leading-snug line-clamp-2">' + item.name + '</h3>' +
+              '<h4 class="font-display font-bold text-base text-charcoal leading-snug line-clamp-2">' + item.name + '</h4>' +
               (item.subtitle ? '<p class="text-xs font-semibold text-leaf-dark mt-0.5 line-clamp-1">' + item.subtitle + '</p>' : '') +
             '</div>' +
             '<div class="shrink-0 text-right"><span class="block font-display font-extrabold text-zorko-dark text-base">₹' + item.price + '</span>' +
-            (hasAddons ? '<span class="block text-[11px] text-charcoal/40 font-medium">customisable</span>' : '') + '</div>' +
+            (hasAddons ? '<span class="block text-[11px] text-zorko-dark font-bold">+ add-ons</span>' : '') + '</div>' +
           '</div>' +
-          '<p class="mt-2 text-sm text-charcoal/60 leading-relaxed line-clamp-3 flex-1">' + item.description + '</p>' +
+          '<p class="mt-2 text-sm text-charcoal/70 leading-relaxed line-clamp-3 flex-1">' + item.description + '</p>' +
           // No inline onclick: the id lives only in data-add-btn (a plain,
           // fully-escaped attribute, never executable JS), and a single
           // delegated listener on #menu-categories (wired up once in
@@ -901,7 +917,7 @@
         if (navEl) navEl.style.display = "none";
         const matches = menuItems.filter(function (m) { return m.name.toLowerCase().indexOf(q) !== -1 || (m.description || "").toLowerCase().indexOf(q) !== -1; });
         if (!matches.length) {
-          container.innerHTML = '<div class="text-center py-14"><i data-lucide="search-x" class="w-10 h-10 text-zorko/30 mx-auto mb-3"></i><p class="text-charcoal/60 font-medium">No items match that search</p><p class="text-charcoal/40 text-sm mt-1">Try another name.</p></div>';
+          container.innerHTML = '<div class="text-center py-14"><i data-lucide="search-x" class="w-10 h-10 text-zorko/30 mx-auto mb-3"></i><p class="text-charcoal/70 font-medium">No items match that search</p><p class="text-charcoal/70 text-sm mt-1">Try another name.</p></div>';
         } else {
           container.innerHTML = '<div><h3 class="font-display font-extrabold text-lg sm:text-xl text-zorko-dark mb-4">' + matches.length + ' result' + (matches.length > 1 ? "s" : "") + '</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 items-stretch">' + matches.map(renderMenuCard).join("") + '</div></div>';
         }
@@ -919,7 +935,7 @@
           '<div class="flex items-center gap-3 mb-2"><span class="h-px flex-1 bg-charcoal/10"></span><h3 class="font-display font-extrabold text-lg sm:text-xl text-zorko-dark uppercase tracking-wide whitespace-nowrap">' + category + '</h3><span class="h-px flex-1 bg-charcoal/10"></span></div>' +
           '<div class="text-center mb-5">' + burgerBanner + '</div>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 items-stretch">' + itemsInCategory.map(renderMenuCard).join("") + '</div>' +
-          (footnote ? '<p class="mt-5 text-center text-xs text-charcoal/50 font-medium">' + footnote + '</p>' : '') + '</div>';
+          (footnote ? '<p class="mt-5 text-center text-xs text-charcoal/70 font-medium">' + footnote + '</p>' : '') + '</div>';
       }).join("");
       if (window.lucide) lucide.createIcons();
     }
@@ -1010,14 +1026,14 @@
     function renderMenuEmpty() {
       document.getElementById("category-nav").innerHTML = "";
       document.getElementById("menu-categories").innerHTML =
-        '<p class="text-center text-charcoal/50 py-10">Menu coming soon — check back shortly.</p>';
+        '<p class="text-center text-charcoal/70 py-10">Menu coming soon — check back shortly.</p>';
     }
 
     function renderMenuError() {
       document.getElementById("category-nav").innerHTML = "";
       document.getElementById("menu-categories").innerHTML =
         '<div class="text-center py-10">' +
-          '<p class="text-charcoal/60 mb-4">Couldn\u2019t load the menu right now. Please check your connection.</p>' +
+          '<p class="text-charcoal/70 mb-4">Couldn\u2019t load the menu right now. Please check your connection.</p>' +
           '<button onclick="loadMenuFromSanity()" class="inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-sm px-5 py-2.5 rounded-full transition-colors"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Try Again</button>' +
         '</div>';
       if (window.lucide) lucide.createIcons();
@@ -1069,11 +1085,11 @@
     function renderConfigOptions() {
       const wrap = document.getElementById("config-options");
       if (!configState.options.length) {
-        wrap.innerHTML = '<p class="text-sm text-charcoal/50">No customisation needed - just add to your order.</p>';
+        wrap.innerHTML = '<p class="text-sm text-charcoal/70">No customisation needed - just add to your order.</p>';
       } else {
-        const heading = configState.kind === "combo" ? '<p class="text-xs font-bold uppercase tracking-wide text-charcoal/45 mb-2">Choose your drink</p>' : '<p class="text-xs font-bold uppercase tracking-wide text-charcoal/45 mb-2">Add-ons</p>';
+        const heading = configState.kind === "combo" ? '<p class="text-xs font-bold uppercase tracking-wide text-charcoal/70 mb-2">Choose your drink</p>' : '<p class="text-xs font-bold uppercase tracking-wide text-charcoal/70 mb-2">Add-ons</p>';
         wrap.innerHTML = heading + configState.options.map(function (o, i) {
-          const priceLabel = o.price > 0 ? '<span class="font-semibold text-zorko-dark">+₹' + o.price + '</span>' : '<span class="text-charcoal/40 text-sm">included</span>';
+          const priceLabel = o.price > 0 ? '<span class="font-semibold text-zorko-dark">+₹' + o.price + '</span>' : '<span class="text-charcoal/70 text-sm">included</span>';
           const mark = o.type === "radio"
             ? '<span class="w-5 h-5 rounded-full border-2 ' + (o.selected ? "border-zorko" : "border-charcoal/25") + ' flex items-center justify-center">' + (o.selected ? '<span class="w-2.5 h-2.5 rounded-full bg-zorko"></span>' : '') + '</span>'
             : '<span class="w-5 h-5 rounded-md border-2 ' + (o.selected ? "border-zorko bg-zorko" : "border-charcoal/25") + ' flex items-center justify-center text-white">' + (o.selected ? '<i data-lucide="check" class="w-3.5 h-3.5"></i>' : '') + '</span>';
@@ -1155,7 +1171,29 @@
       if (entry.qty <= 0) cart = cart.filter(function (e) { return e.lineId !== lineId; });
       renderCart();
     }
-    function removeFromCart(lineId) { cart = cart.filter(function (e) { return e.lineId !== lineId; }); renderCart(); }
+    var _undoFn = null;
+    function showUndo(msg, fn) {
+      _undoFn = fn;
+      var el = document.getElementById("undo-callout");
+      document.getElementById("undo-msg").textContent = msg;
+      el.classList.remove("hidden"); void el.offsetWidth; el.classList.remove("opacity-0");
+      clearTimeout(window._undoT); window._undoT = setTimeout(hideUndo, 5000);
+    }
+    function hideUndo() { var el = document.getElementById("undo-callout"); el.classList.add("opacity-0"); setTimeout(function () { el.classList.add("hidden"); }, 300); _undoFn = null; }
+    function doUndo() { if (_undoFn) { var f = _undoFn; _undoFn = null; f(); } hideUndo(); }
+    function removeFromCart(lineId) {
+      var idx = -1, removed = null;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].lineId === lineId) { idx = i; removed = cart[i]; break; } }
+      if (idx < 0) return;
+      cart.splice(idx, 1); renderCart();
+      showUndo("Item removed", function () { cart.splice(Math.min(idx, cart.length), 0, removed); renderCart(); });
+    }
+    function clearCart() {
+      if (!cart.length) return;
+      var backup = cart.slice();
+      cart = []; renderCart();
+      showUndo("Cart cleared", function () { cart = backup; renderCart(); });
+    }
     function getSubtotal() { return cart.reduce(function (sum, l) { return sum + l.unit * l.qty; }, 0); }
     function linePrefix(line) { return line.type === "combo" ? "[Combo] " : (line.type === "special" ? "[Today's Special] " : ""); }
 
@@ -1175,7 +1213,7 @@
         conf.classList.remove("hidden");
         emptyState.classList.add("hidden"); itemsList.classList.add("hidden");
         subtotalRow.classList.add("hidden"); form.classList.add("hidden");
-        document.getElementById("cart-upsell").classList.add("hidden");
+        document.getElementById("cart-upsell").classList.add("hidden"); document.getElementById("cart-tools").classList.add("hidden");
         badge.classList.add("opacity-0", "scale-0"); bar.classList.add("hidden");
         document.getElementById("drawer-count").textContent = "0 items";
         if (window.lucide) lucide.createIcons();
@@ -1202,11 +1240,12 @@
 
       if (cart.length === 0) {
         emptyState.classList.remove("hidden"); itemsList.classList.add("hidden");
-        subtotalRow.classList.add("hidden"); form.classList.add("hidden"); document.getElementById("cart-upsell").classList.add("hidden"); itemsList.innerHTML = "";
+        subtotalRow.classList.add("hidden"); form.classList.add("hidden"); document.getElementById("cart-upsell").classList.add("hidden"); document.getElementById("cart-tools").classList.add("hidden"); itemsList.innerHTML = "";
         return;
       }
       emptyState.classList.add("hidden"); itemsList.classList.remove("hidden");
       subtotalRow.classList.remove("hidden"); form.classList.remove("hidden");
+      document.getElementById("cart-tools").classList.remove("hidden");
 
       itemsList.innerHTML = cart.map(function (line) {
         const lineTotal = line.unit * line.qty;
@@ -1222,13 +1261,13 @@
         const editBtn = canEdit ? '<button onclick="openLineConfig(' + line.lineId + ')" class="text-xs font-semibold text-zorko hover:text-zorko-dark inline-flex items-center gap-1 mt-1"><i data-lucide="sliders-horizontal" class="w-3 h-3"></i> ' + (line.type === "combo" ? "Change drink" : "Customise") + '</button>' : '';
         return '<li class="flex items-start gap-3 bg-surface border border-charcoal/8 rounded-2xl p-3">' + thumb +
           '<div class="flex-1 min-w-0"><p class="font-semibold text-sm text-charcoal truncate">' + linePrefix(line) + line.name + '</p>' + metaHtml +
-          '<p class="text-xs text-charcoal/50 mt-0.5">₹' + line.unit + ' each</p>' + editBtn + '</div>' +
+          '<p class="text-xs text-charcoal/70 mt-0.5">₹' + line.unit + ' each</p>' + editBtn + '</div>' +
           '<div class="flex flex-col items-end gap-2 shrink-0">' +
             '<div class="flex items-center gap-1.5"><button onclick="updateQuantity(' + line.lineId + ', -1)" aria-label="Decrease" class="w-8 h-8 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button>' +
             '<span class="w-5 text-center text-sm font-bold">' + line.qty + '</span>' +
             '<button onclick="updateQuantity(' + line.lineId + ', 1)" aria-label="Increase" class="w-8 h-8 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button></div>' +
             '<div class="flex items-center gap-2"><span class="font-bold text-sm text-zorko-dark">₹' + lineTotal + '</span>' +
-            '<button onclick="removeFromCart(' + line.lineId + ')" aria-label="Remove" class="text-charcoal/30 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>' +
+            '<button onclick="removeFromCart(' + line.lineId + ')" aria-label="Remove" class="p-1.5 -mr-1 text-charcoal/70 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>' +
           '</div></li>';
       }).join("");
 
@@ -1242,12 +1281,14 @@
       const overlay = document.getElementById("cart-overlay"), drawer = document.getElementById("cart-drawer");
       overlay.classList.remove("hidden"); void overlay.offsetWidth;
       overlay.classList.remove("opacity-0"); drawer.classList.remove("translate-x-full");
+      drawer.removeAttribute("inert"); drawer.removeAttribute("aria-hidden");
       drawerOpen = true; syncBody();
       setTimeout(function(){ var c=drawer.querySelector("button[aria-label='Close cart']"); if(c) c.focus(); }, 60);
     }
     function closeCart() {
       const overlay = document.getElementById("cart-overlay"), drawer = document.getElementById("cart-drawer");
       overlay.classList.add("opacity-0"); drawer.classList.add("translate-x-full");
+      drawer.setAttribute("inert", ""); drawer.setAttribute("aria-hidden", "true");
       drawerOpen = false; syncBody();
       setTimeout(function () { overlay.classList.add("hidden"); }, 300);
     }
@@ -1275,8 +1316,8 @@
       toast.textContent = message; toast.classList.remove("hidden", "toast-in"); void toast.offsetWidth; toast.classList.add("toast-in");
       clearTimeout(window._zorkoToastTimer); window._zorkoToastTimer = setTimeout(function () { toast.classList.add("hidden"); }, 2800);
     }
-    function showFormError(m) { const e = document.getElementById("form-error"); e.textContent = m; e.classList.remove("hidden"); }
-    function clearFormError() { const e = document.getElementById("form-error"); e.textContent = ""; e.classList.add("hidden"); }
+    function showFormError(m, fieldId) { var e = document.getElementById("form-error"); e.textContent = m; e.classList.remove("hidden"); if (fieldId) { var f = document.getElementById(fieldId); if (f) { f.setAttribute("aria-invalid", "true"); f.setAttribute("aria-describedby", "form-error"); } } }
+    function clearFormError() { var e = document.getElementById("form-error"); e.textContent = ""; e.classList.add("hidden"); ["customer-name","customer-phone","customer-address"].forEach(function (id) { var f = document.getElementById(id); if (f) { f.removeAttribute("aria-invalid"); f.removeAttribute("aria-describedby"); } }); }
 
     function handleFormSubmit(event) {
       event.preventDefault(); clearFormError();
@@ -1286,12 +1327,12 @@
       const phone = document.getElementById("customer-phone").value.trim();
       const method = document.getElementById("fulfillment-method").value;
       const address = document.getElementById("customer-address").value.trim();
-      if (!name) { showFormError("Please enter your full name."); document.getElementById("customer-name").focus(); return; }
+      if (!name) { showFormError("Please enter your full name.", "customer-name"); document.getElementById("customer-name").focus(); return; }
       const phoneDigits = phone.replace(/\D/g, "");
-      if (phoneDigits.length < 10) { showFormError("Enter a valid 10-digit number."); document.getElementById("customer-phone").focus(); return; }
+      if (phoneDigits.length < 10) { showFormError("Enter a valid 10-digit number.", "customer-phone"); document.getElementById("customer-phone").focus(); return; }
       if (method === "Home Delivery") {
         if (getSubtotal() < DELIVERY_MIN) { showFormError("Home delivery needs a ₹" + DELIVERY_MIN + " minimum order."); return; }
-        if (!address) { showFormError("Please add a delivery address so we know where to send it."); document.getElementById("customer-address").focus(); return; }
+        if (!address) { showFormError("Please add a delivery address so we know where to send it.", "customer-address"); document.getElementById("customer-address").focus(); return; }
       }
       const itemLines = cart.map(function (line) {
         let s = line.qty + "x " + linePrefix(line) + line.name;
@@ -1305,6 +1346,7 @@
       if (method === "Home Delivery") message += "\nAddress: " + address;
       lastOrderMessage = message;
       saveProfile(name, phone);
+      var _sb = document.getElementById("submit-btn"); if (_sb) { _sb.disabled = true; _sb.textContent = "Opening WhatsApp..."; }
       window.open("https://wa.me/" + ZORKO_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message), "_blank");
       const recap = { count: cart.reduce(function (s, l) { return s + l.qty; }, 0), total: subtotal, method: method };
       cart = []; saveCart(); if (event.target && typeof event.target.reset === "function") event.target.reset(); handleFulfillmentChange();
@@ -1335,7 +1377,7 @@
         '<p class="text-sm font-bold text-charcoal flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-leaf-dark"></i> Complete your meal</p>' +
         '<div class="mt-3 flex gap-2 overflow-x-auto cat-nav-scroll pb-1">' +
         picks.map(function (it) {
-          return '<button type="button" data-quick-add="' + escapeAttr(it.id) + '" class="shrink-0 flex items-center gap-2 bg-white border border-charcoal/10 rounded-full pl-2 pr-3 py-1.5 hover:border-leaf transition-colors"><span class="w-7 h-7 rounded-full bg-leaf text-white flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></span><span class="text-xs font-bold text-charcoal">' + it.name + '</span><span class="text-xs text-charcoal/50">₹' + it.price + '</span></button>';
+          return '<button type="button" data-quick-add="' + escapeAttr(it.id) + '" class="shrink-0 flex items-center gap-2 bg-white border border-charcoal/10 rounded-full pl-2 pr-3 py-1.5 hover:border-leaf transition-colors"><span class="w-7 h-7 rounded-full bg-leaf text-white flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></span><span class="text-xs font-bold text-charcoal">' + it.name + '</span><span class="text-xs text-charcoal/70">₹' + it.price + '</span></button>';
         }).join("") + '</div></div>';
       if (window.lucide) lucide.createIcons();
     }
@@ -1354,8 +1396,8 @@
       el.innerHTML =
         '<div class="mx-auto w-16 h-16 rounded-full bg-leaf-light flex items-center justify-center mb-4"><i data-lucide="check" class="w-8 h-8 text-leaf-dark"></i></div>' +
         '<h3 class="font-display font-extrabold text-xl text-charcoal">Order request sent!</h3>' +
-        '<p class="text-charcoal/60 text-sm mt-2 max-w-xs mx-auto">We&#39;ve opened WhatsApp with your order — just hit send. Didn&#39;t open? Copy it below.</p>' +
-        '<div class="mt-5 inline-flex flex-col gap-1 bg-surface border border-charcoal/10 rounded-2xl px-5 py-4 text-sm"><span class="font-bold text-charcoal">' + recap.count + (recap.count === 1 ? " item" : " items") + ' · ₹' + recap.total + '</span><span class="text-charcoal/50">' + recap.method + '</span></div>' +
+        '<p class="text-charcoal/70 text-sm mt-2 max-w-xs mx-auto">We&#39;ve opened WhatsApp with your order — just hit send. Didn&#39;t open? Copy it below.</p>' +
+        '<div class="mt-5 inline-flex flex-col gap-1 bg-surface border border-charcoal/10 rounded-2xl px-5 py-4 text-sm"><span class="font-bold text-charcoal">' + recap.count + (recap.count === 1 ? " item" : " items") + ' · ₹' + recap.total + '</span><span class="text-charcoal/70">' + recap.method + '</span></div>' +
         '<div class="mt-6 space-y-2">' +
           '<button onclick="copyOrder()" class="w-full inline-flex items-center justify-center gap-2 bg-white border border-charcoal/15 text-charcoal font-bold text-sm py-3 rounded-full hover:border-zorko transition-colors"><i data-lucide="copy" class="w-4 h-4"></i> Copy order details</button>' +
           '<button onclick="newOrder()" class="w-full inline-flex items-center justify-center gap-2 bg-zorko text-white font-bold text-sm py-3 rounded-full hover:bg-zorko-dark transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Start a new order</button>' +
@@ -1369,7 +1411,7 @@
       function fallback() { try { var ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); } catch (e2) { showToast("Couldn't copy — please screenshot your order"); } }
       try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, fallback); } else { fallback(); } } catch (e) { fallback(); }
     }
-    function newOrder() { confirmationActive = false; renderCart(); closeCart(); }
+    function newOrder() { confirmationActive = false; renderCart(); applyStoreHours(); closeCart(); }
 
     /* ---- Persistence (cart + profile) — self-contained lines survive before Sanity resolves ---- */
     function saveCart() { try { localStorage.setItem("zorko_cart", JSON.stringify({ cart: cart, seq: lineSeq })); } catch (e) {} }
@@ -1423,10 +1465,12 @@
       { sel: "#cart-nav-btn", title: "Your basket", text: "Everything you add collects here. Tap it anytime to review your order." },
       { sel: null, title: "Send it on WhatsApp", text: "When you are ready, open your basket, add your name and number, and tap Send. No online payment - you pay at the store or on delivery. That is it!" }
     ];
-    let tourIdx = -1, tourOpen = false;
+    let tourIdx = -1, tourOpen = false, tourReturnFocus = null;
+    function reduceMotion() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
     function tourReposition() { if (tourOpen && tourIdx >= 0) { var s = TOUR_STEPS[tourIdx]; var t = s && s.sel ? document.querySelector(s.sel) : null; if (t) positionTour(t); } }
     function startTour() {
       closeWelcome(true);
+      tourReturnFocus = document.activeElement;
       tourOpen = true; tourIdx = -1;
       document.getElementById("tour-overlay").classList.add("on");
       window.addEventListener("scroll", tourReposition, true);
@@ -1437,6 +1481,7 @@
     function endTour() {
       if (!tourOpen) return;
       tourOpen = false;
+      if (tourReturnFocus && tourReturnFocus.focus) { try { tourReturnFocus.focus(); } catch (e) {} }
       document.getElementById("tour-overlay").classList.remove("on");
       window.removeEventListener("scroll", tourReposition, true);
       window.removeEventListener("resize", tourReposition);
@@ -1451,13 +1496,13 @@
       var spot = document.getElementById("tour-spot");
       var tip = document.getElementById("tour-tip");
       var isLast = i === TOUR_STEPS.length - 1;
-      var backBtn = i > 0 ? '<button onclick="tourPrev()" class="text-sm font-semibold text-charcoal/60 hover:text-charcoal px-2 py-2">Back</button>' : '';
+      var backBtn = i > 0 ? '<button onclick="tourPrev()" class="text-sm font-semibold text-charcoal/70 hover:text-charcoal px-2 py-2">Back</button>' : '';
       var nextIcon = isLast ? "check" : "arrow-right";
       var nextLabel = isLast ? "Got it!" : "Next";
       tip.innerHTML =
         '<div class="flex items-center justify-between mb-2">' +
           '<span class="text-xs font-extrabold text-zorko uppercase tracking-wide">Step ' + (i + 1) + ' of ' + TOUR_STEPS.length + '</span>' +
-          '<button onclick="endTour()" class="text-xs font-semibold text-charcoal/40 hover:text-charcoal">Skip</button>' +
+          '<button onclick="endTour()" class="text-xs font-semibold text-charcoal/70 hover:text-charcoal">Skip</button>' +
         '</div>' +
         '<h4 class="font-display font-extrabold text-charcoal text-base leading-snug">' + step.title + '</h4>' +
         '<p class="text-sm text-charcoal/70 mt-1 leading-relaxed">' + step.text + '</p>' +
@@ -1465,9 +1510,10 @@
           '<button onclick="tourNext()" class="ml-auto inline-flex items-center gap-1.5 bg-zorko text-white font-bold text-sm px-5 py-2.5 rounded-full hover:bg-zorko-dark transition-colors">' + nextLabel + ' <i data-lucide="' + nextIcon + '" class="w-4 h-4"></i></button>' +
         '</div>';
       if (window.lucide) lucide.createIcons();
+      var _fb = tip.querySelectorAll("button"); if (_fb.length) { setTimeout(function () { try { _fb[_fb.length - 1].focus(); } catch (e) {} }, 60); }
       var target = step.sel ? document.querySelector(step.sel) : null;
       if (target) {
-        target.scrollIntoView({ block: "center", behavior: "smooth" });
+        target.scrollIntoView({ block: "center", behavior: reduceMotion() ? "auto" : "smooth" });
         setTimeout(function () { positionTour(target); }, 320);
       } else {
         spot.style.opacity = "1"; spot.style.width = "0"; spot.style.height = "0";
@@ -1534,7 +1580,7 @@
       document.addEventListener("keydown", function (e) { if (e.key === "Escape") { if (tourOpen) { endTour(); return; } closeConfig(); closeCart(); closeWelcome(true); } });
       document.addEventListener("keydown", function (e) {
         if (e.key !== "Tab") return;
-        var panel = sheetOpen ? document.querySelector("#config-sheet .sheet-panel") : (drawerOpen ? document.getElementById("cart-drawer") : null);
+        var panel = tourOpen ? document.getElementById("tour-tip") : (sheetOpen ? document.querySelector("#config-sheet .sheet-panel") : (drawerOpen ? document.getElementById("cart-drawer") : (welcomeOpen ? document.querySelector("#welcome-sheet .sheet-panel") : null)));
         if (!panel) return;
         var f = Array.prototype.slice.call(panel.querySelectorAll('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])')).filter(function(el){ return el.offsetParent !== null; });
         if (!f.length) return;
