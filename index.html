@@ -492,6 +492,125 @@
        It starts empty; renderCategoryNav()/renderMenu() run once the fetch resolves. */
     let menuItems = [];
 
+    /* ---- Reference photos ----
+       Every menu item gets an appetizing stock photo by default so cards never
+       show a bare placeholder icon. The moment a real photo is uploaded for an
+       item in Sanity Studio, that real image is used instead (see the mapping in
+       loadMenuFromSanity: `d.image || referenceImage(...)` — d.image always wins).
+       Matching is by exact item name first, then a representative photo for the
+       item's category, then null (which falls back to the icon tile). */
+    var REFERENCE_IMG = {
+      "Mexican King Burger": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?q=80&w=800&auto=format&fit=crop",
+      "Spicy Salsa Barbeque Burger": "https://images.unsplash.com/photo-1627754468549-6ed1a4813a53?q=80&w=800&auto=format&fit=crop",
+      "Korean Burger": "https://images.unsplash.com/photo-1595834894604-6a38962cb666?q=80&w=800&auto=format&fit=crop",
+      "Double Tikki Burger": "https://images.unsplash.com/photo-1591972619306-0a13c4ab5c1a?q=80&w=800&auto=format&fit=crop",
+      "Classic OG Burger": "https://images.unsplash.com/photo-1552422273-f56265a5f375?q=80&w=800&auto=format&fit=crop",
+      "Royal Paneer Grilled Burger": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?q=80&w=800&auto=format&fit=crop",
+      "Peri Peri French Fries": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop",
+      "Salted French Fries": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop",
+      "Korean Cheesy Fries": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop",
+      "Sizzling Italian Fries": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop",
+      "Mexican Salsa Wrap": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=800&auto=format&fit=crop",
+      "Classic Veg Wrap": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=800&auto=format&fit=crop",
+      "Grilled Paneer Wrap": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=800&auto=format&fit=crop",
+      "Veg Exotica Pizza": "https://images.unsplash.com/photo-1617343251257-b5d709934ddd?q=80&w=800&auto=format&fit=crop",
+      "Paneer Barbeque Pizza": "https://images.unsplash.com/photo-1611007304706-279fe3d29bda?q=80&w=800&auto=format&fit=crop",
+      "Hot Te Hell Pizza": "https://images.unsplash.com/photo-1743615357618-de4ac111c79c?q=80&w=800&auto=format&fit=crop",
+      "Pizza Di Sicilia": "https://images.unsplash.com/photo-1590947132387-155cc02f3212?q=80&w=800&auto=format&fit=crop",
+      "Margherita": "https://images.unsplash.com/photo-1694717065203-8cb0de9918f3?q=80&w=800&auto=format&fit=crop",
+      "The Xplod": "https://images.unsplash.com/photo-1743615357602-f0711d1bc06f?q=80&w=800&auto=format&fit=crop",
+      "Golden Harvest Pizza": "https://images.unsplash.com/photo-1635832801146-102d3bb7f88e?q=80&w=800&auto=format&fit=crop",
+      "Four Cheese Pizza": "https://images.unsplash.com/photo-1617470703152-7bc3ab20893e?q=80&w=800&auto=format&fit=crop",
+      "Korean Pizza": "https://images.unsplash.com/photo-1617470703245-ed7bc56788e9?q=80&w=800&auto=format&fit=crop",
+      "Steam Momos": "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop",
+      "Fried Momos": "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop",
+      "Cheese Melting Gravy Momos": "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop",
+      "Cheese Volcano Kulhad Momos": "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop",
+      "Cheese Loaded Kulhad Pizza": "https://images.unsplash.com/photo-1617470702355-94a48c0b9729?q=80&w=800&auto=format&fit=crop",
+      "Cheese Chatori Kulhad Maggi": "https://images.unsplash.com/photo-1585410304004-56ae05651552?q=80&w=800&auto=format&fit=crop",
+      "Veg Mexican Sandwich": "https://images.unsplash.com/photo-1621852004158-f3bc188ace2d?q=80&w=800&auto=format&fit=crop",
+      "Paneer Maharaja Sandwich": "https://images.unsplash.com/photo-1528736235302-52922df5c122?q=80&w=800&auto=format&fit=crop",
+      "Veggie Mumbai Grilled Sandwich": "https://images.unsplash.com/photo-1709689156424-16fe0e05b47b?q=80&w=800&auto=format&fit=crop",
+      "Cheese Chilli Sandwich": "https://images.unsplash.com/photo-1700937314577-898450cafe35?q=80&w=800&auto=format&fit=crop",
+      "Alfredo": "https://images.unsplash.com/photo-1570549986390-6bd150ac3515?q=80&w=800&auto=format&fit=crop",
+      "Arrabbiata": "https://images.unsplash.com/photo-1528738064262-9f834cbdfda1?q=80&w=800&auto=format&fit=crop",
+      "Ala Rosey": "https://images.unsplash.com/photo-1573821201069-dbf297ca410a?q=80&w=800&auto=format&fit=crop",
+      "Peri Peri Pasta": "https://images.unsplash.com/photo-1579631542720-3a87824fff86?q=80&w=800&auto=format&fit=crop",
+      "Cheese Garlic Bread": "https://images.unsplash.com/photo-1556008531-57e6eefc7be4?q=80&w=800&auto=format&fit=crop",
+      "Supreme Treat Garlic Bread": "https://images.unsplash.com/photo-1587676353811-1708ddf47031?q=80&w=800&auto=format&fit=crop",
+      "Paneer Toofani Garlic Bread": "https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?q=80&w=800&auto=format&fit=crop",
+      "Cheese Pull & Tear Garlic Bun": "https://images.unsplash.com/photo-1707886114218-fb2bcfbcb1e7?q=80&w=800&auto=format&fit=crop",
+      "Korean Jalapeno Bun": "https://images.unsplash.com/photo-1716393374741-02f485f25d61?q=80&w=800&auto=format&fit=crop",
+      "Korean Spicy Paneer": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=800&auto=format&fit=crop",
+      "Peri Peri Cheese Blast": "https://images.unsplash.com/photo-1665233272941-ae681d11fc06?q=80&w=800&auto=format&fit=crop",
+      "Italian Treat": "https://images.unsplash.com/photo-1475090169767-40ed8d18f67d?q=80&w=800&auto=format&fit=crop",
+      "Cheesy Delight Nachos": "https://images.unsplash.com/photo-1775708856908-aafcf9baa5d0?q=80&w=800&auto=format&fit=crop",
+      "Nachos with Cheese Dip": "https://images.unsplash.com/photo-1775708856908-aafcf9baa5d0?q=80&w=800&auto=format&fit=crop",
+      "Nachos & Salsa": "https://images.unsplash.com/photo-1775708856908-aafcf9baa5d0?q=80&w=800&auto=format&fit=crop",
+      "Veg Masala Maggi": "https://images.unsplash.com/photo-1585410304004-56ae05651552?q=80&w=800&auto=format&fit=crop",
+      "Hot Passion Spicy Maggi": "https://images.unsplash.com/photo-1692273212247-f5efb3fc9b87?q=80&w=800&auto=format&fit=crop",
+      "Double Masala Maggi": "https://images.unsplash.com/photo-1708608291875-3be71a930202?q=80&w=800&auto=format&fit=crop",
+      "Cheese Chatori Maggi": "https://images.unsplash.com/photo-1603033172872-c2525115c7b9?q=80&w=800&auto=format&fit=crop",
+      "Premium Cold Coffee": "https://images.unsplash.com/photo-1527156231393-7023794f363c?q=80&w=800&auto=format&fit=crop",
+      "Strong Cold Coffee": "https://images.unsplash.com/photo-1527156231393-7023794f363c?q=80&w=800&auto=format&fit=crop",
+      "Chocolate Cold Coffee": "https://images.unsplash.com/photo-1527156231393-7023794f363c?q=80&w=800&auto=format&fit=crop",
+      "Surprise Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Korean Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Strawberry Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Tangy Mango Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Pineapple Punch Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Mary Litchi Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Mint Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Orange Cinderella Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Blue Heaven Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Rose Petal Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Cranberry Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Passion Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Peach Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Oreo Chocolate Shake": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=800&auto=format&fit=crop",
+      "Rose Delight Shake": "https://images.unsplash.com/photo-1553787499-6f9133860278?q=80&w=800&auto=format&fit=crop",
+      "Strawberry Shake": "https://images.unsplash.com/photo-1591864384134-8a21ffb51cb5?q=80&w=800&auto=format&fit=crop",
+      "Kitkat Chocolate Shake": "https://images.unsplash.com/photo-1696487773677-c0c8061fe3d2?q=80&w=800&auto=format&fit=crop",
+      "Brownie Blast Shake": "https://images.unsplash.com/photo-1634112957296-3f60457b21e6?q=80&w=800&auto=format&fit=crop",
+      "Lemon Ice Tea": "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop",
+      "Peach Ice Tea": "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop",
+      "Passion Fruit Ice Tea": "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop",
+      "Cranberry Ice Tea": "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop",
+      "American Blue Ice Tea": "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop",
+      "Hot Coffee": "https://images.unsplash.com/photo-1596098823457-74e360fcd023?q=80&w=800&auto=format&fit=crop",
+      "Hot Chocolate": "https://images.unsplash.com/photo-1577805947697-89e18249d767?q=80&w=800&auto=format&fit=crop",
+      "Sizzling Brownie": "https://images.unsplash.com/photo-1566855833528-35bcc17ae9ce?q=80&w=800&auto=format&fit=crop",
+      "Special Kulhad Chocolate Mud Pie": "https://images.unsplash.com/photo-1732105094945-a22182f23169?q=80&w=800&auto=format&fit=crop"
+    };
+    var CATEGORY_IMG = {
+      "Burger": "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?q=80&w=800&auto=format&fit=crop",
+      "Fries": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=800&auto=format&fit=crop",
+      "Wraps": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=800&auto=format&fit=crop",
+      "Pizza": "https://images.unsplash.com/photo-1617343251257-b5d709934ddd?q=80&w=800&auto=format&fit=crop",
+      "Momos": "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop",
+      "Kulhad": "https://images.unsplash.com/photo-1523905330026-b8bd1f5f320e?q=80&w=800&auto=format&fit=crop",
+      "Sandwiches": "https://images.unsplash.com/photo-1621852004158-f3bc188ace2d?q=80&w=800&auto=format&fit=crop",
+      "Pasta": "https://images.unsplash.com/photo-1570549986390-6bd150ac3515?q=80&w=800&auto=format&fit=crop",
+      "Garlic Bread": "https://images.unsplash.com/photo-1556008531-57e6eefc7be4?q=80&w=800&auto=format&fit=crop",
+      "Special Buns": "https://images.unsplash.com/photo-1707886114218-fb2bcfbcb1e7?q=80&w=800&auto=format&fit=crop",
+      "Toastie": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=800&auto=format&fit=crop",
+      "Nachos": "https://images.unsplash.com/photo-1775708856908-aafcf9baa5d0?q=80&w=800&auto=format&fit=crop",
+      "Maggi": "https://images.unsplash.com/photo-1585410304004-56ae05651552?q=80&w=800&auto=format&fit=crop",
+      "Cold Coffee": "https://images.unsplash.com/photo-1527156231393-7023794f363c?q=80&w=800&auto=format&fit=crop",
+      "Mojito": "https://images.unsplash.com/photo-1753263453239-fef8e92b5040?q=80&w=800&auto=format&fit=crop",
+      "Milk Shakes": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=800&auto=format&fit=crop",
+      "Ice Tea": "https://images.unsplash.com/photo-1592099759599-24b131b8e824?q=80&w=800&auto=format&fit=crop",
+      "Hot": "https://images.unsplash.com/photo-1596098823457-74e360fcd023?q=80&w=800&auto=format&fit=crop",
+      "Desserts": "https://images.unsplash.com/photo-1566855833528-35bcc17ae9ce?q=80&w=800&auto=format&fit=crop"
+    };
+    function referenceImage(name, category) {
+      if (name && REFERENCE_IMG[name]) return REFERENCE_IMG[name];
+      var n = (name || "").trim();
+      if (n && REFERENCE_IMG[n]) return REFERENCE_IMG[n];
+      if (category && CATEGORY_IMG[category]) return CATEGORY_IMG[category];
+      return null;
+    }
+
     /* ---- Reference data kept from the old hardcoded array, for local testing ----
        Uncomment and use as a fallback / offline demo set if you ever need one.
     const _sampleMenuItems = [
@@ -1060,7 +1179,7 @@
             tag: d.isBestSeller ? "Best Seller" : undefined,
             price: typeof d.price === "number" ? d.price : 0,
             description: d.description || "",
-            image: d.image || null
+            image: d.image || referenceImage(d.name, d.category)
           };
         });
 
