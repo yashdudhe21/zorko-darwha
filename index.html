@@ -88,6 +88,21 @@
   @media (prefers-reduced-motion: reduce) { #tour-spot, #tour-tip { transition: none; } }
   input::placeholder, textarea::placeholder { color: #6B7280; opacity: 1; }
   #category-nav { -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%); mask-image: linear-gradient(to right, #000 90%, transparent 100%); }
+  /* Hero food marquee */
+  .marquee { position: relative; }
+  .marquee-track { display: flex; gap: .75rem; width: max-content; animation: marquee 40s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1); }
+  .reveal-in { opacity: 1; transform: none; }
+  /* Slow bounce scroll cue */
+  @keyframes bounceSlow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  .animate-bounce-slow { animation: bounceSlow 2.4s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track, .animate-bounce-slow { animation: none !important; }
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
 </style>
 
 </head>
@@ -121,23 +136,46 @@
   <main id="main-content">
 
   <!-- HERO -->
-  <section id="hero" class="relative overflow-hidden pt-28 sm:pt-40 pb-20 sm:pb-28">
-    <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-24 w-72 h-72 sm:w-96 sm:h-96 bg-zorko-light rounded-full blur-3xl opacity-70 float-slow"></div>
-    <div aria-hidden="true" class="pointer-events-none absolute top-1/2 -left-24 w-64 h-64 sm:w-80 sm:h-80 bg-leaf/10 rounded-full blur-3xl opacity-80 float-slower"></div>
+  <section id="hero" class="relative overflow-hidden pt-28 sm:pt-36 pb-14 sm:pb-16">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute -top-24 -right-24 w-80 h-80 sm:w-[28rem] sm:h-[28rem] bg-zorko-light rounded-full blur-3xl opacity-70 float-slow"></div>
+      <div class="absolute top-1/3 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-leaf/10 rounded-full blur-3xl opacity-80 float-slower"></div>
+      <div class="absolute inset-0" style="background: radial-gradient(60% 55% at 50% 0%, rgba(194,65,12,0.07), transparent 70%);"></div>
+    </div>
     <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="fade-up inline-flex items-center gap-2 bg-leaf-light text-leaf-dark text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-1.5 rounded-full mb-6">
-        <span class="veg-mark" aria-hidden="true"></span> 100% Vegetarian &middot; Darwha Local
+      <div class="fade-up inline-flex items-center gap-2 bg-leaf-light text-leaf-dark text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-1.5 rounded-full mb-6 shadow-soft">
+        <span class="veg-mark" aria-hidden="true"></span> 100% Vegetarian · Freshly Made · Darwha
       </div>
-      <h1 class="fade-up font-display font-extrabold text-4xl sm:text-6xl leading-[1.08] tracking-tight text-charcoal" style="animation-delay:.05s">Pure Veg. Pure Joy.<br class="hidden sm:block"> Crafted Fresh Daily.</h1>
-      <p class="fade-up mt-6 text-base sm:text-lg text-charcoal/70 max-w-2xl mx-auto leading-relaxed" style="animation-delay:.12s">Browse your Darwha neighborhood Zorko favorites. Tap below to select your items and build a quick order request.</p>
-      <div class="fade-up mt-9" style="animation-delay:.2s">
-        <a href="#menu" class="group inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-base px-8 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">Explore Today's Menu <i data-lucide="arrow-down" class="w-4 h-4 transition-transform duration-300 group-hover:translate-y-1"></i></a>
+      <h1 class="fade-up font-display font-extrabold text-4xl sm:text-6xl leading-[1.05] tracking-tight text-charcoal" style="animation-delay:.05s">
+        Pure Veg. Pure Joy.<br class="hidden sm:block">
+        <span class="bg-gradient-to-r from-zorko to-leaf bg-clip-text text-transparent">Crafted Fresh, Daily.</span>
+      </h1>
+      <p class="fade-up mt-5 text-base sm:text-lg text-charcoal/70 max-w-2xl mx-auto leading-relaxed" style="animation-delay:.12s">
+        Sizzling burgers, the world&#39;s thinnest pizzas, molten kulhad specials and fizzy mojitos — all made to order in your Darwha neighbourhood. Tap, build your plate, and we&#39;ll have it ready.
+      </p>
+      <div class="fade-up mt-8 flex flex-col sm:flex-row items-center justify-center gap-3" style="animation-delay:.2s">
+        <a href="#menu" class="group inline-flex items-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold text-base px-8 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
+          Explore the Menu <i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"></i>
+        </a>
+        <a href="#combos" class="inline-flex items-center gap-2 bg-white text-charcoal font-bold text-base px-7 py-4 rounded-full border border-charcoal/10 shadow-soft hover:border-zorko/40 hover:text-zorko transition-all duration-300 active:scale-95">
+          <i data-lucide="sparkles" class="w-4 h-4 text-zorko"></i> Popular Combos
+        </a>
       </div>
-      <div class="fade-up mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-charcoal/70 font-medium" style="animation-delay:.28s">
-        <span class="inline-flex items-center gap-1.5"><i data-lucide="flame" class="w-4 h-4 text-zorko"></i>Cooked Fresh to Order</span>
-        <span class="inline-flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-zorko"></i>Darwha Neighborhood</span>
-        <span class="inline-flex items-center gap-1.5"><i data-lucide="bike" class="w-4 h-4 text-zorko"></i>Pickup &amp; Delivery</span>
+      <div class="fade-up mt-9 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm text-charcoal/70 font-medium" style="animation-delay:.28s">
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="flame" class="w-4 h-4 text-zorko"></i>Cooked fresh to order</span>
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4 text-zorko"></i>Open 11 AM &ndash; 11 PM</span>
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="bike" class="w-4 h-4 text-zorko"></i>Pickup &amp; delivery</span>
       </div>
+    </div>
+    <div id="hero-food-wrap" class="hidden fade-up mt-12 sm:mt-14 relative" style="animation-delay:.34s">
+      <div class="marquee overflow-hidden">
+        <div id="hero-food" class="marquee-track px-4"></div>
+      </div>
+      <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-20 bg-gradient-to-r from-cream to-transparent"></div>
+      <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-20 bg-gradient-to-l from-cream to-transparent"></div>
+    </div>
+    <div class="text-center">
+      <a href="#menu" aria-label="Scroll to menu" class="mt-10 inline-flex w-10 h-10 items-center justify-center rounded-full border border-charcoal/15 text-charcoal/70 hover:text-zorko hover:border-zorko/40 transition-colors animate-bounce-slow"><i data-lucide="chevron-down" class="w-5 h-5"></i></a>
     </div>
   </section>
 
@@ -152,7 +190,7 @@
   <!-- COMBOS -->
   <section id="combos" class="py-16 sm:py-24 bg-white/70 border-y border-charcoal/10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-xl mx-auto mb-12">
+      <div class="reveal text-center max-w-xl mx-auto mb-12">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Try Our Popular Combos</h2>
         <p class="mt-3 text-charcoal/70">Two favourites, one price — tap to add and pick your drink as you go.</p>
       </div>
@@ -165,7 +203,7 @@
   <!-- MENU (filtered by category) -->
   <section id="menu" class="py-16 sm:py-24">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-xl mx-auto mb-8">
+      <div class="reveal text-center max-w-xl mx-auto mb-8">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Full Menu</h2>
         <p class="mt-3 text-charcoal/70">Pick a category, add what you love, and customise the extras.</p>
       </div>
@@ -184,7 +222,7 @@
   <!-- STORE -->
   <section id="our-store" class="py-16 sm:py-24 bg-white/70 border-y border-charcoal/10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-xl mx-auto mb-12">
+      <div class="reveal text-center max-w-xl mx-auto mb-12">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Local Store</h2>
         <p class="mt-3 text-charcoal/70">Right in your neighborhood — come say hi, call us, or just drop by.</p>
       </div>
@@ -228,7 +266,7 @@
   <!-- OWNER -->
   <section id="owner-story" class="py-14 sm:py-20">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="bg-white border border-charcoal/10 rounded-3xl shadow-card p-7 sm:p-10 flex flex-col sm:flex-row items-center gap-7 sm:gap-10">
+      <div class="reveal bg-white border border-charcoal/10 rounded-3xl shadow-card p-7 sm:p-10 flex flex-col sm:flex-row items-center gap-7 sm:gap-10">
         <div class="relative shrink-0">
           <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-zorko to-leaf flex items-center justify-center ring-4 ring-zorko-light relative overflow-hidden"><span class="font-display font-extrabold text-3xl sm:text-4xl text-white">YD</span><!-- Founder photo: add src="URL" to show a real photo over the monogram --><img alt="Yash Dudhe" data-owner-photo style="display:none" onload="this.style.display=''" class="absolute inset-0 w-full h-full object-cover"></div>
           <div class="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-white border border-charcoal/10 shadow-card flex items-center justify-center"><i data-lucide="quote" class="w-4 h-4 text-zorko"></i></div>
@@ -244,10 +282,47 @@
 
   </main>
 
-  <footer class="bg-charcoal text-white/80 py-10 pb-28">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-baseline gap-1.5"><span class="font-display font-extrabold text-lg text-white">ZORKO</span><span class="font-display font-semibold text-xs text-leaf-light tracking-widest uppercase">| Darwha</span></div>
-      <p class="text-sm text-white/50 text-center sm:text-right">Pure veg, crafted fresh daily &middot; Order requests are sent straight to our WhatsApp</p>
+  <footer class="relative bg-charcoal text-white/80 pt-14 pb-28 overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-24 w-72 h-72 bg-zorko/20 rounded-full blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute -bottom-24 -left-24 w-72 h-72 bg-leaf/10 rounded-full blur-3xl"></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <div class="flex items-baseline gap-1.5 mb-3"><span class="font-display font-extrabold text-2xl text-white">ZORKO</span><span class="font-display font-semibold text-xs text-leaf-light tracking-widest uppercase">| Darwha</span></div>
+          <p class="text-sm text-white/70 leading-relaxed">Brand of food lovers. 100% pure vegetarian street food, crafted fresh to order and served with a smile.</p>
+          <span class="mt-4 inline-flex items-center gap-2 bg-white/10 text-leaf-light text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"><span class="veg-mark" aria-hidden="true"></span> 100% Pure Veg</span>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-widest text-white/55 mb-4">Explore</h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#special" class="text-white/75 hover:text-white transition-colors">Today&#39;s Special</a></li>
+            <li><a href="#menu" class="text-white/75 hover:text-white transition-colors">Full Menu</a></li>
+            <li><a href="#combos" class="text-white/75 hover:text-white transition-colors">Combos</a></li>
+            <li><a href="#our-store" class="text-white/75 hover:text-white transition-colors">Visit Us</a></li>
+            <li><button onclick="startTour()" class="text-white/75 hover:text-white transition-colors">How to order</button></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-widest text-white/55 mb-4">Visit</h3>
+          <ul class="space-y-3 text-sm text-white/75">
+            <li class="flex items-start gap-2.5"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 text-zorko shrink-0"></i><span>Darwha, Dist. Yavatmal,<br>Maharashtra 445202</span></li>
+            <li class="flex items-start gap-2.5"><i data-lucide="clock" class="w-4 h-4 mt-0.5 text-zorko shrink-0"></i><span>Open daily · 11:00 AM &ndash; 11:00 PM</span></li>
+            <li><a href="https://maps.app.goo.gl/FQkL7oaog9JANKNs8" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-leaf-light hover:text-white transition-colors font-semibold"><i data-lucide="navigation" class="w-3.5 h-3.5"></i> Open in Google Maps</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-widest text-white/55 mb-4">Order &amp; Contact</h3>
+          <ul class="space-y-3 text-sm text-white/75">
+            <li><a href="tel:+919373345225" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="phone" class="w-4 h-4 text-zorko"></i> +91 93733 45225</a></li>
+            <li><a href="https://wa.me/919373345225" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-leaf hover:bg-leaf-dark text-white font-bold px-4 py-2 rounded-full transition-colors active:scale-95"><i data-lucide="message-circle" class="w-4 h-4"></i> Order on WhatsApp</a></li>
+            <li><a href="https://instagram.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="instagram" class="w-4 h-4 text-zorko"></i> Follow us on Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55">
+        <p>&copy; <span id="year"></span> Zorko Darwha · Made fresh, with love, in Darwha.</p>
+        <a href="#hero" class="inline-flex items-center gap-1.5 hover:text-white transition-colors"><i data-lucide="arrow-up" class="w-3.5 h-3.5"></i> Back to top</a>
+      </div>
     </div>
   </footer>
 
@@ -885,9 +960,9 @@
 
     function renderMenuCard(item) {
       const hasAddons = addonsFor(item.category).length > 0;
-      return '<div class="menu-card bg-white rounded-3xl border border-charcoal/8 shadow-card overflow-hidden flex flex-col h-full">' +
+      return '<div class="menu-card group bg-white rounded-3xl border border-charcoal/8 shadow-card overflow-hidden flex flex-col h-full">' +
         '<div class="relative h-44 sm:h-48 overflow-hidden bg-zorko-light shrink-0">' +
-          '<img src="' + escapeAttr(item.image) + '" alt="' + escapeAttr(item.name) + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover">' +
+          '<img src="' + escapeAttr(item.image) + '" alt="' + escapeAttr(item.name) + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">' +
           (item.tag ? '<span class="absolute top-3 left-3 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full flex items-center gap-1 z-10"><i data-lucide="star" class="w-3 h-3"></i>' + item.tag + '</span>' : '') +
           '<span class="absolute top-3 right-3 veg-mark bg-white/90 z-10" aria-hidden="true"></span><span class="sr-only">Vegetarian</span></div>' +
         '<div class="p-5 flex flex-col flex-1">' +
@@ -906,7 +981,7 @@
           // DOMContentLoaded — see below) reads it and calls addToCart().
           // This removes the entire class of "id breaks out of the onclick
           // string" bugs for good, no matter what a CMS value contains.
-          '<button type="button" data-add-btn="' + escapeAttr(item.id) + '" class="relative z-10 mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm py-3 rounded-full transition-colors duration-300"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
+          '<button type="button" data-add-btn="' + escapeAttr(item.id) + '" class="relative z-10 mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white font-bold text-sm py-3 rounded-full transition-all duration-300 active:scale-[0.97]"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
         '</div></div>';
     }
     function renderMenu() {
@@ -998,6 +1073,7 @@
         renderMenu();
         renderCombos();
         renderCart();
+        renderHeroFood();
       } catch (err) {
         console.error("Failed to load menu from Sanity:", err);
         renderMenuError();
@@ -1561,9 +1637,47 @@
       b.style.bottom = count > 0 ? "calc(5.6rem + env(safe-area-inset-bottom))" : "calc(1rem + env(safe-area-inset-bottom))";
     }
 
+    /* Hero food marquee — brings the actual menu photos into the hero. */
+    function renderHeroFood() {
+      var track = document.getElementById("hero-food");
+      var wrap = document.getElementById("hero-food-wrap");
+      if (!track || !wrap) return;
+      var withImg = menuItems.filter(function (m) { return m.image; });
+      var best = withImg.filter(function (m) { return m.tag === "Best Seller"; });
+      var rest = withImg.filter(function (m) { return m.tag !== "Best Seller"; });
+      var picks = best.concat(rest).slice(0, 12);
+      if (picks.length < 3) { wrap.classList.add("hidden"); return; }
+      var card = function (m) {
+        return '<a href="#menu" class="hero-food-card group shrink-0 relative w-40 h-28 sm:w-52 sm:h-36 rounded-2xl overflow-hidden shadow-card block">' +
+          '<img src="' + escapeAttr(m.image) + '" alt="' + escapeAttr(m.name) + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">' +
+          '<div class="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/10 to-transparent"></div>' +
+          '<span class="absolute bottom-2 left-3 right-3 text-white text-xs sm:text-sm font-bold leading-tight line-clamp-1">' + escapeAttr(m.name) + '</span>' +
+          '</a>';
+      };
+      var seq = picks.map(card).join("");
+      track.innerHTML = seq + seq;
+      wrap.classList.remove("hidden");
+      if (window.lucide) lucide.createIcons();
+    }
+    /* Scroll reveal */
+    function initReveal() {
+      var els = document.querySelectorAll(".reveal");
+      if ((typeof reduceMotion === "function" && reduceMotion()) || typeof IntersectionObserver === "undefined") {
+        Array.prototype.forEach.call(els, function (el) { el.classList.add("reveal-in"); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("reveal-in"); io.unobserve(e.target); } });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      Array.prototype.forEach.call(els, function (el) { io.observe(el); });
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
       renderSpecial(); renderCombos(); loadCart(); prefillProfile(); renderCart();
       loadMenuFromSanity();
+      var _yr = document.getElementById("year"); if (_yr) _yr.textContent = new Date().getFullYear();
+      initReveal();
+      renderHeroFood();
       handleFulfillmentChange(); applyStoreHours();
       if (!ftuSeen()) setTimeout(openWelcome, 800);
       // One delegated listener for every "Add to Order" button, present and
