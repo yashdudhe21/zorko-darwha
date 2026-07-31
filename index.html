@@ -145,7 +145,7 @@
         <p class="mt-3 text-charcoal/60">Two favourites, one price — tap to add and pick your drink as you go.</p>
       </div>
       <!-- EDIT COMBOS HERE -> the `combos` array in JavaScript drives these cards -->
-      <div id="combos-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <div id="combos-grid" class="flex gap-4 overflow-x-auto cat-nav-scroll snap-x snap-mandatory pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5"></div>
       <p class="mt-6 text-center text-sm text-charcoal/55 font-medium">Every combo includes a drink. Swap in a Premium Cold Coffee for just &#8377;10 more.</p>
     </div>
   </section>
@@ -156,6 +156,13 @@
       <div class="text-center max-w-xl mx-auto mb-8">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Full Menu</h2>
         <p class="mt-3 text-charcoal/60">Pick a category, add what you love, and customise the extras.</p>
+      </div>
+      <div class="mb-5">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-charcoal/40 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          <input id="menu-search" type="search" inputmode="search" placeholder="Search the menu…" oninput="onSearch(this.value)" class="w-full pl-11 pr-10 py-3 rounded-full border border-charcoal/15 bg-white focus:border-zorko outline-none transition-colors text-sm">
+          <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-charcoal/5 hover:bg-charcoal/10 flex items-center justify-center" aria-label="Clear search"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        </div>
       </div>
       <div id="category-nav" class="cat-nav-scroll sticky top-16 sm:top-20 z-40 bg-cream/95 backdrop-blur -mx-4 sm:mx-0 px-4 sm:px-0 py-3 mb-8 flex gap-2 overflow-x-auto"></div>
       <div id="menu-categories" class="space-y-14"></div>
@@ -259,6 +266,7 @@
         <div><p class="font-bold text-charcoal text-sm">We're closed right now</p><p class="text-charcoal/60 text-sm mt-0.5">Order requests open daily at 11:00 AM. You can still build your cart — come back during store hours to send it.</p></div>
       </div>
 
+      <div id="order-confirmation" class="hidden text-center py-10"></div>
       <div id="cart-empty-state" class="text-center py-16">
         <i data-lucide="shopping-bag" class="w-12 h-12 text-zorko/30 mx-auto mb-4"></i>
         <p class="text-charcoal/60 font-medium">Your cart is empty.</p>
@@ -268,6 +276,7 @@
 
       <ul id="cart-items" class="space-y-3 hidden"></ul>
 
+      <div id="cart-upsell" class="hidden mt-5"></div>
       <div id="cart-subtotal-row" class="hidden mt-5 pt-5 border-t border-charcoal/10 flex items-center justify-between">
         <span class="font-semibold text-charcoal/70">Total <span class="text-charcoal/40 text-sm font-normal">(all inclusive)</span></span>
         <span id="cart-subtotal-value" class="font-display font-extrabold text-2xl text-zorko-dark">&#8377;0</span>
@@ -295,6 +304,25 @@
       </form>
     </div>
   </aside>
+
+  <!-- FIRST-TIME WELCOME (shows once per new visitor) -->
+  <div id="welcome-sheet" class="sheet-wrap hidden fixed inset-0 z-[75] opacity-0">
+    <div class="absolute inset-0 bg-charcoal/50 backdrop-blur-sm" onclick="closeWelcome(true)"></div>
+    <div class="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-md sm:h-max bg-cream rounded-t-3xl sm:rounded-3xl shadow-2xl translate-y-full sm:translate-y-4 overflow-hidden" role="dialog" aria-modal="true" aria-label="Welcome to Zorko Darwha">
+      <div class="p-6 sm:p-8" style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
+        <div class="flex justify-center mb-4"><span class="inline-flex items-center gap-2 bg-leaf-light text-leaf-dark text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"><span class="veg-mark" aria-hidden="true"></span> Welcome to Zorko Darwha</span></div>
+        <h3 class="font-display font-extrabold text-2xl text-charcoal text-center leading-tight">Order in 3 easy taps</h3>
+        <p class="text-charcoal/60 text-sm text-center mt-2">No app. No login. Build your cart and send your order straight to our WhatsApp.</p>
+        <div class="mt-6 space-y-3">
+          <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-zorko-light text-zorko-dark flex items-center justify-center shrink-0"><i data-lucide="utensils" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Browse the full veg menu by category</p></div>
+          <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-zorko-light text-zorko-dark flex items-center justify-center shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Add items &amp; customise your add-ons</p></div>
+          <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-leaf-light text-leaf-dark flex items-center justify-center shrink-0"><i data-lucide="message-circle" class="w-4 h-4"></i></div><p class="text-sm text-charcoal font-semibold">Send your order request on WhatsApp</p></div>
+        </div>
+        <button onclick="startOrdering()" class="mt-7 w-full inline-flex items-center justify-center gap-2 bg-zorko hover:bg-zorko-dark text-white font-bold py-4 rounded-full shadow-soft transition-colors"><i data-lucide="arrow-right" class="w-4 h-4"></i> Start Ordering</button>
+        <button onclick="closeWelcome(true)" class="mt-3 w-full text-center text-sm font-semibold text-charcoal/50 hover:text-charcoal transition-colors">Maybe later</button>
+      </div>
+    </div>
+  </div>
 
   <!-- CUSTOMISATION SHEET -->
   <div id="config-sheet" class="sheet-wrap hidden fixed inset-0 z-[70] opacity-0">
@@ -727,8 +755,11 @@
     let lineSeq = 1;
     let prevCount = 0;
     let activeCategory = "All"; // set to the first real category once Sanity data loads
-    let drawerOpen = false, sheetOpen = false;
-    function syncBody() { document.body.style.overflow = (drawerOpen || sheetOpen) ? "hidden" : ""; }
+    let drawerOpen = false, sheetOpen = false, welcomeOpen = false;
+    let searchQuery = "";
+    let confirmationActive = false;
+    let lastOrderMessage = "";
+    function syncBody() { document.body.style.overflow = (drawerOpen || sheetOpen || welcomeOpen) ? "hidden" : ""; }
 
     /* CATEGORY FILTER NAV */
     function renderCategoryNav() {
@@ -753,7 +784,7 @@
     /* COMBOS */
     function renderCombos() {
       document.getElementById("combos-grid").innerHTML = combos.map(function (c) {
-        return '<div class="menu-card relative bg-cream border border-zorko/20 rounded-3xl p-6 shadow-card hover:shadow-soft overflow-hidden flex flex-col">' +
+        return '<div class="menu-card snap-start shrink-0 w-[82%] sm:w-auto relative bg-cream border border-zorko/20 rounded-3xl p-5 sm:p-6 shadow-card hover:shadow-soft overflow-hidden flex flex-col">' +
           '<div aria-hidden="true" class="absolute -top-8 -right-8 w-24 h-24 bg-zorko-light rounded-full opacity-70"></div>' +
           '<div class="relative flex-1"><span class="inline-flex items-center gap-1.5 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full"><i data-lucide="' + (c.icon || "sparkles") + '" class="w-3.5 h-3.5"></i> ' + (c.meal ? "Make a Meal" : "Combo") + '</span>' +
           '<p class="mt-4 font-display font-bold text-lg text-charcoal leading-snug">' + c.full + '</p><p class="mt-2 font-display font-extrabold text-zorko-dark text-xl">₹' + c.price + '</p></div>' +
@@ -802,6 +833,20 @@
     }
     function renderMenu() {
       const container = document.getElementById("menu-categories");
+      const q = searchQuery.trim().toLowerCase();
+      const navEl = document.getElementById("category-nav");
+      if (q) {
+        if (navEl) navEl.style.display = "none";
+        const matches = menuItems.filter(function (m) { return m.name.toLowerCase().indexOf(q) !== -1 || (m.description || "").toLowerCase().indexOf(q) !== -1; });
+        if (!matches.length) {
+          container.innerHTML = '<div class="text-center py-14"><i data-lucide="search-x" class="w-10 h-10 text-zorko/30 mx-auto mb-3"></i><p class="text-charcoal/60 font-medium">No items match that search</p><p class="text-charcoal/40 text-sm mt-1">Try another name.</p></div>';
+        } else {
+          container.innerHTML = '<div><h3 class="font-display font-extrabold text-lg sm:text-xl text-zorko-dark mb-4">' + matches.length + ' result' + (matches.length > 1 ? "s" : "") + '</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 items-stretch">' + matches.map(renderMenuCard).join("") + '</div></div>';
+        }
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+      if (navEl) navEl.style.display = "";
       const cats = activeCategory === "All" ? categoryOrder : [activeCategory];
       container.innerHTML = cats.map(function (category) {
         const itemsInCategory = menuItems.filter(function (i) { return i.category === category; });
@@ -873,6 +918,7 @@
         // so the UI refreshes instantly instead of waiting on anything else.
         renderCategoryNav();
         renderMenu();
+        renderCart();
       } catch (err) {
         console.error("Failed to load menu from Sanity:", err);
         renderMenuError();
@@ -1020,6 +1066,7 @@
       showToast(wasEditing ? "Updated your order" : ('Added "' + label + '" to your order'));
     }
     function mergeLine(line) {
+      confirmationActive = false;
       const key = function (l) { return l.type + "|" + l.refId + "|" + l.addons.map(function (a) { return a.label; }).sort().join(",") + "|" + (l.drink || ""); };
       const existing = cart.find(function (l) { return key(l) === key(line); });
       if (existing) { existing.qty += line.qty; } else { line.lineId = lineSeq++; cart.push(line); }
@@ -1060,6 +1107,19 @@
       const totalCount = cart.reduce(function (sum, e) { return sum + e.qty; }, 0);
       const subtotal = getSubtotal();
 
+      const conf = document.getElementById("order-confirmation");
+      if (confirmationActive) {
+        conf.classList.remove("hidden");
+        emptyState.classList.add("hidden"); itemsList.classList.add("hidden");
+        subtotalRow.classList.add("hidden"); form.classList.add("hidden");
+        document.getElementById("cart-upsell").classList.add("hidden");
+        badge.classList.add("opacity-0", "scale-0"); bar.classList.add("hidden");
+        document.getElementById("drawer-count").textContent = "0 items";
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+      conf.classList.add("hidden");
+
       if (totalCount > 0) {
         badge.textContent = totalCount; badge.classList.remove("opacity-0", "scale-0");
         badge.classList.add("bump"); setTimeout(function () { badge.classList.remove("bump"); }, 400);
@@ -1073,10 +1133,11 @@
       }
       document.getElementById("drawer-count").textContent = totalCount + (totalCount === 1 ? " item" : " items");
       prevCount = totalCount;
+      saveCart();
 
       if (cart.length === 0) {
         emptyState.classList.remove("hidden"); itemsList.classList.add("hidden");
-        subtotalRow.classList.add("hidden"); form.classList.add("hidden"); itemsList.innerHTML = "";
+        subtotalRow.classList.add("hidden"); form.classList.add("hidden"); document.getElementById("cart-upsell").classList.add("hidden"); itemsList.innerHTML = "";
         return;
       }
       emptyState.classList.add("hidden"); itemsList.classList.remove("hidden");
@@ -1107,6 +1168,7 @@
       }).join("");
 
       document.getElementById("cart-subtotal-value").textContent = "₹" + subtotal;
+      renderUpsell();
       if (window.lucide) lucide.createIcons();
     }
 
@@ -1176,15 +1238,123 @@
       let message = "Hello Zorko (Darwha), I want to place an order request.\n\n";
       message += "Name: " + name + "\nPhone: " + phone + "\nItems:\n" + itemLines + "\nTotal: ₹" + subtotal + "\nMethod: " + method;
       if (method === "Home Delivery") message += "\nAddress: " + address;
+      lastOrderMessage = message;
+      saveProfile(name, phone);
       window.open("https://wa.me/" + ZORKO_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message), "_blank");
-      showToast("Order request ready - opening WhatsApp...");
-      cart = []; renderCart(); event.target.reset(); handleFulfillmentChange(); closeCart();
+      const recap = { count: cart.reduce(function (s, l) { return s + l.qty; }, 0), total: subtotal, method: method };
+      cart = []; saveCart(); if (event.target && typeof event.target.reset === "function") event.target.reset(); handleFulfillmentChange();
+      showOrderConfirmation(recap);
     }
 
+    /* ---- Menu search ---- */
+    function onSearch(q) { searchQuery = q; document.getElementById("search-clear").classList.toggle("hidden", !q); renderMenu(); }
+    function clearSearch() { document.getElementById("menu-search").value = ""; searchQuery = ""; document.getElementById("search-clear").classList.add("hidden"); renderMenu(); }
+
+    /* ---- Cart upsell (complete your meal) ---- */
+    function findItemByName(name) { return menuItems.find(function (m) { return m.name === name; }); }
+    function firstInCategory(cat) { return menuItems.find(function (m) { return m.category === cat; }); }
+    function renderUpsell() {
+      const el = document.getElementById("cart-upsell");
+      if (!el) return;
+      const bevCats = ["Mojito", "Ice Tea", "Cold Coffee", "Milk Shakes"];
+      const hasBeverage = cart.some(function (l) {
+        if (l.type === "combo") return true;
+        const it = getItem(l.refId);
+        return it && bevCats.indexOf(it.category) !== -1;
+      });
+      if (hasBeverage || cart.length === 0) { el.classList.add("hidden"); el.innerHTML = ""; return; }
+      const picks = [ findItemByName("Surprise Mojito") || firstInCategory("Mojito"), findItemByName("Premium Cold Coffee") || firstInCategory("Cold Coffee") ].filter(Boolean);
+      if (!picks.length) { el.classList.add("hidden"); el.innerHTML = ""; return; }
+      el.classList.remove("hidden");
+      el.innerHTML = '<div class="rounded-2xl bg-leaf-light/50 border border-leaf/20 p-4">' +
+        '<p class="text-sm font-bold text-charcoal flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-leaf-dark"></i> Complete your meal</p>' +
+        '<div class="mt-3 flex gap-2 overflow-x-auto cat-nav-scroll pb-1">' +
+        picks.map(function (it) {
+          return '<button type="button" data-quick-add="' + escapeAttr(it.id) + '" class="shrink-0 flex items-center gap-2 bg-white border border-charcoal/10 rounded-full pl-2 pr-3 py-1.5 hover:border-leaf transition-colors"><span class="w-7 h-7 rounded-full bg-leaf text-white flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></span><span class="text-xs font-bold text-charcoal">' + it.name + '</span><span class="text-xs text-charcoal/50">₹' + it.price + '</span></button>';
+        }).join("") + '</div></div>';
+      if (window.lucide) lucide.createIcons();
+    }
+    function quickAdd(itemId) {
+      const item = getItem(itemId);
+      if (!item) return;
+      mergeLine({ lineId:0, type:"item", refId:item.id, name:item.name, image:item.image, qty:1, unit:item.price, addons:[], drink:null });
+      renderCart();
+      showToast('Added "' + item.name + '" to your order');
+    }
+
+    /* ---- Post-order confirmation ---- */
+    function showOrderConfirmation(recap) {
+      confirmationActive = true;
+      const el = document.getElementById("order-confirmation");
+      el.innerHTML =
+        '<div class="mx-auto w-16 h-16 rounded-full bg-leaf-light flex items-center justify-center mb-4"><i data-lucide="check" class="w-8 h-8 text-leaf-dark"></i></div>' +
+        '<h3 class="font-display font-extrabold text-xl text-charcoal">Order request sent!</h3>' +
+        '<p class="text-charcoal/60 text-sm mt-2 max-w-xs mx-auto">We&#39;ve opened WhatsApp with your order — just hit send. Didn&#39;t open? Copy it below.</p>' +
+        '<div class="mt-5 inline-flex flex-col gap-1 bg-surface border border-charcoal/10 rounded-2xl px-5 py-4 text-sm"><span class="font-bold text-charcoal">' + recap.count + (recap.count === 1 ? " item" : " items") + ' · ₹' + recap.total + '</span><span class="text-charcoal/50">' + recap.method + '</span></div>' +
+        '<div class="mt-6 space-y-2">' +
+          '<button onclick="copyOrder()" class="w-full inline-flex items-center justify-center gap-2 bg-white border border-charcoal/15 text-charcoal font-bold text-sm py-3 rounded-full hover:border-zorko transition-colors"><i data-lucide="copy" class="w-4 h-4"></i> Copy order details</button>' +
+          '<button onclick="newOrder()" class="w-full inline-flex items-center justify-center gap-2 bg-zorko text-white font-bold text-sm py-3 rounded-full hover:bg-zorko-dark transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Start a new order</button>' +
+        '</div>';
+      renderCart();
+      if (window.lucide) lucide.createIcons();
+    }
+    function copyOrder() {
+      const text = lastOrderMessage || "";
+      function done() { showToast("Order details copied"); }
+      function fallback() { try { var ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); } catch (e2) { showToast("Couldn't copy — please screenshot your order"); } }
+      try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, fallback); } else { fallback(); } } catch (e) { fallback(); }
+    }
+    function newOrder() { confirmationActive = false; renderCart(); closeCart(); }
+
+    /* ---- Persistence (cart + profile) — self-contained lines survive before Sanity resolves ---- */
+    function saveCart() { try { localStorage.setItem("zorko_cart", JSON.stringify({ cart: cart, seq: lineSeq })); } catch (e) {} }
+    function loadCart() {
+      try {
+        const raw = localStorage.getItem("zorko_cart");
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (!data || !Array.isArray(data.cart)) return;
+        cart = data.cart.filter(function (l) { return l.type !== "combo" || !!getCombo(l.refId); });
+        lineSeq = data.seq && data.seq > 0 ? data.seq : (cart.reduce(function (m, l) { return Math.max(m, l.lineId); }, 0) + 1);
+      } catch (e) {}
+    }
+    function saveProfile(name, phone) { try { localStorage.setItem("zorko_profile", JSON.stringify({ name: name, phone: phone })); } catch (e) {} }
+    function prefillProfile() {
+      try {
+        const raw = localStorage.getItem("zorko_profile");
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (d && d.name) document.getElementById("customer-name").value = d.name;
+        if (d && d.phone) document.getElementById("customer-phone").value = d.phone;
+      } catch (e) {}
+    }
+
+    /* ---- First-time welcome ---- */
+    function ftuSeen() { try { return localStorage.getItem("zorko_ftu") === "1"; } catch (e) { return false; } }
+    function markFtuSeen() { try { localStorage.setItem("zorko_ftu", "1"); } catch (e) {} }
+    function openWelcome() {
+      const s = document.getElementById("welcome-sheet");
+      s.classList.remove("hidden"); void s.offsetWidth;
+      s.classList.remove("opacity-0");
+      s.querySelector(".sheet-panel").classList.remove("translate-y-full", "sm:translate-y-4");
+      welcomeOpen = true; syncBody();
+      setTimeout(function () { var btn = s.querySelector("button"); if (btn) btn.focus(); }, 60);
+    }
+    function closeWelcome(remember) {
+      const s = document.getElementById("welcome-sheet");
+      s.classList.add("opacity-0");
+      s.querySelector(".sheet-panel").classList.add("translate-y-full");
+      welcomeOpen = false; syncBody();
+      if (remember) markFtuSeen();
+      setTimeout(function () { s.classList.add("hidden"); }, 300);
+    }
+    function startOrdering() { closeWelcome(true); document.getElementById("menu").scrollIntoView({ block: "start" }); }
+
     document.addEventListener("DOMContentLoaded", function () {
-      renderSpecial(); renderCombos(); renderCart();
+      renderSpecial(); renderCombos(); loadCart(); prefillProfile(); renderCart();
       loadMenuFromSanity();
       handleFulfillmentChange(); applyStoreHours();
+      if (!ftuSeen()) setTimeout(openWelcome, 800);
       // One delegated listener for every "Add to Order" button, present and
       // future. #menu-categories itself is never replaced (only its
       // innerHTML is, on every renderMenu() call), so this never needs to
@@ -1194,7 +1364,12 @@
         if (!btn) return;
         addToCart(btn.getAttribute("data-add-btn"), btn);
       });
-      document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeConfig(); closeCart(); } });
+      document.getElementById("cart-drawer").addEventListener("click", function (e) {
+        const btn = e.target.closest("[data-quick-add]");
+        if (!btn) return;
+        quickAdd(btn.getAttribute("data-quick-add"));
+      });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeConfig(); closeCart(); closeWelcome(true); } });
       document.addEventListener("keydown", function (e) {
         if (e.key !== "Tab") return;
         var panel = sheetOpen ? document.querySelector("#config-sheet .sheet-panel") : (drawerOpen ? document.getElementById("cart-drawer") : null);
