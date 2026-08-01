@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Zorko | Local Order Hub — Darwha</title>
 <meta name="description" content="Browse the full Zorko Darwha menu and send an order request in seconds — no app, no login, just fresh vegetarian food.">
-<meta name="theme-color" content="#F4F1EA">
+<meta name="theme-color" content="#F6F3EC">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
         colors: {
           charcoal: '#23261F', cream: '#F6F3EC', surface: '#FFFFFF',
           zorko: { DEFAULT: '#276749', dark: '#173D29', light: '#E6F0E9' },
-          accent: { DEFAULT: '#C25A1C', dark: '#9E4512', light: '#FBE9DD' },
+          accent: { DEFAULT: '#BC5318', dark: '#9E4512', light: '#FBE9DD' },
           leaf: { DEFAULT: '#767068', dark: '#514C45', light: '#ECEAE4' }
         },
         fontFamily: { sora: ['Sora', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
@@ -44,10 +44,10 @@
   h1 { letter-spacing: -0.03em; }
   body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   .hairline { border-color: rgba(32,36,31,0.08); }
-  ::selection { background: rgba(44,96,67,0.18); }
+  ::selection { background: rgba(39,103,73,0.18); }
 
   #menu, #combos { scroll-margin-top: 140px; }
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #2C6043; outline-offset: 2px; border-radius: 4px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #276749; outline-offset: 2px; border-radius: 4px; }
 
   .veg-mark { width: 15px; height: 15px; border: 1.5px solid #16A34A; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .veg-mark::after { content: ""; width: 7px; height: 7px; background: #16A34A; border-radius: 50%; }
@@ -89,17 +89,12 @@
   /* Guided tour */
   #tour-overlay { position: fixed; inset: 0; z-index: 90; display: none; }
   #tour-overlay.on { display: block; }
-  #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(32,36,31,0.76); border: 2px solid #2C6043; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
+  #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(32,36,31,0.76); border: 2px solid #276749; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
   #tour-tip { position: absolute; max-width: min(320px, 92vw); background: #fff; border-radius: 18px; box-shadow: 0 20px 50px -12px rgba(0,0,0,.45); padding: 18px; transition: left .25s ease, top .25s ease; }
   @media (prefers-reduced-motion: reduce) { #tour-spot, #tour-tip { transition: none; } }
   input::placeholder, textarea::placeholder { color: #6B7280; opacity: 1; }
   .full-bleed { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
   #category-nav { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 2%, #000 98%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 2%, #000 98%, transparent 100%); }
-  /* Hero food marquee */
-  .marquee { position: relative; }
-  .marquee-track { display: flex; gap: .75rem; width: max-content; animation: marquee 40s linear infinite; }
-  .marquee:hover .marquee-track { animation-play-state: paused; }
-  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   /* Scroll reveal */
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1); }
   .reveal-in { opacity: 1; transform: none; }
@@ -107,7 +102,7 @@
   @keyframes bounceSlow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
   .animate-bounce-slow { animation: bounceSlow 2.4s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) {
-    .marquee-track, .animate-bounce-slow { animation: none !important; }
+    .animate-bounce-slow { animation: none !important; }
     .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   }
 </style>
@@ -134,7 +129,7 @@
         <button onclick="openCart()" id="cart-nav-btn" class="relative inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full transition-colors shadow-soft shrink-0" aria-label="View cart">
           <i data-lucide="shopping-bag" class="w-4 h-4"></i>
           <span class="hidden sm:inline">View Cart</span>
-          <span id="cart-count-badge" class="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1 flex items-center justify-center rounded-full bg-leaf-light text-leaf-dark text-xs font-extrabold border-2 border-cream opacity-0 scale-0 transition-all duration-300">0</span>
+          <span id="cart-count-badge" class="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1 flex items-center justify-center rounded-full bg-charcoal text-white text-xs font-extrabold border-2 border-cream opacity-0 scale-0 transition-all duration-300">0</span>
         </button>
       </div>
     </nav>
@@ -147,7 +142,7 @@
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
       <div class="absolute -top-24 -right-24 w-80 h-80 sm:w-[28rem] sm:h-[28rem] bg-zorko-light rounded-full blur-3xl opacity-70 float-slow"></div>
       <div class="absolute top-1/3 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-leaf/10 rounded-full blur-3xl opacity-80 float-slower"></div>
-      <div class="absolute inset-0" style="background: radial-gradient(60% 55% at 50% 0%, rgba(44,96,67,0.07), transparent 70%);"></div>
+      <div class="absolute inset-0" style="background: radial-gradient(60% 55% at 50% 0%, rgba(39,103,73,0.06), transparent 70%);"></div>
     </div>
     <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="fade-up inline-flex items-center gap-2 bg-white/70 backdrop-blur text-charcoal/75 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.16em] px-4 py-1.5 rounded-full mb-7 border border-charcoal/10">
@@ -235,7 +230,7 @@
       <div class="mb-5">
         <div class="relative">
           <i data-lucide="search" class="w-4 h-4 text-charcoal/70 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-          <input id="menu-search" type="text" inputmode="search" placeholder="Search the menu…" oninput="onSearch(this.value)" class="w-full pl-11 pr-10 py-3 rounded-full border border-charcoal/15 bg-white focus:border-zorko outline-none transition-colors text-sm">
+          <input id="menu-search" type="text" inputmode="search" aria-label="Search the menu" placeholder="Search the menu…" oninput="onSearch(this.value)" class="w-full pl-11 pr-10 py-3 rounded-full border border-charcoal/15 bg-white focus:border-zorko outline-none transition-colors text-sm">
           <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-charcoal/5 hover:bg-charcoal/10 flex items-center justify-center" aria-label="Clear search"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
         </div>
       </div>
@@ -261,8 +256,8 @@
             <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5 text-zorko-dark"></i></div>
             <div class="min-w-0 flex-1"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/70">Phone</p>
               <div class="mt-1 flex flex-wrap items-center gap-3">
-                <a href="tel:+919876543210" class="font-semibold text-charcoal hover:text-zorko transition-colors">+91 98765-43210</a>
-                <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-leaf-light hover:bg-leaf text-leaf-dark hover:text-white text-xs font-bold px-3 py-1.5 rounded-full transition-colors"><i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp</a>
+                <a href="tel:+919373345225" class="font-semibold text-charcoal hover:text-zorko transition-colors">+91 93733 45225</a>
+                <a href="https://wa.me/919373345225" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-zorko-light hover:bg-zorko text-zorko-dark hover:text-white text-xs font-bold px-3 py-1.5 rounded-full transition-colors"><i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp</a>
               </div>
             </div>
           </div>
@@ -1016,13 +1011,13 @@
                 '<span class="inline-flex items-center gap-1.5 bg-zorko text-white text-xs font-extrabold uppercase tracking-wide px-3 py-1 rounded-full"><i data-lucide="star" class="w-3.5 h-3.5"></i> Today&#39;s Special</span>' +
                 (dateStr ? '<span class="text-white/60 text-xs font-semibold">' + dateStr + '</span>' : '') +
               '</div>' +
-              '<h3 class="font-display font-extrabold text-2xl sm:text-3xl leading-tight">' + s.itemName + '</h3>' +
-              '<p class="mt-3 text-white/70 text-sm sm:text-base leading-relaxed max-w-md">' + s.description + '</p>' +
+              '<h3 class="font-display font-extrabold text-2xl sm:text-3xl leading-tight">' + escapeAttr(s.itemName) + '</h3>' +
+              '<p class="mt-3 text-white/70 text-sm sm:text-base leading-relaxed max-w-md">' + escapeAttr(s.description) + '</p>' +
               '<div class="mt-5 flex items-center gap-4">' + priceBlock + '</div>' +
               '<button onclick="addSpecial()" class="mt-6 self-start inline-flex items-center gap-2 bg-white text-charcoal hover:bg-accent hover:text-white font-semibold text-sm px-6 py-3.5 rounded-full shadow-soft transition-colors"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
             '</div>' +
             '<div class="relative min-h-[220px] sm:min-h-[320px] order-1 sm:order-2 bg-zorko-light overflow-hidden">' + saveBadge +
-              '<img src="' + s.image + '" alt="' + s.itemName + '" loading="lazy" onerror="imgFallback(this)" style="filter:saturate(1.12) brightness(1.06);" class="absolute inset-0 w-full h-full object-cover">' +
+              '<img src="' + escapeAttr(s.image) + '" alt="' + escapeAttr(s.itemName) + '" loading="lazy" onerror="imgFallback(this)" style="filter:saturate(1.12) brightness(1.06);" class="absolute inset-0 w-full h-full object-cover">' +
               '<div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/10 to-transparent sm:bg-gradient-to-r sm:from-zorko-dark/85 sm:via-zorko-dark/10 sm:to-transparent"></div>' +
             '</div>' +
           '</div>' +
@@ -1495,7 +1490,7 @@
         const canEdit = (line.type === "item" && item && addonsFor(item.category).length > 0) || (line.type === "combo" && getCombo(line.refId).drink);
         const thumb = line.type === "combo"
           ? '<div class="w-14 h-14 rounded-xl bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="gift" class="w-6 h-6 text-zorko-dark"></i></div>'
-          : '<div class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-zorko-light"><img src="' + line.image + '" alt="' + line.name + '" onerror="imgFallback(this)" class="w-14 h-14 object-cover"></div>';
+          : '<div class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-zorko-light"><img src="' + escapeAttr(line.image) + '" alt="' + escapeAttr(line.name) + '" onerror="imgFallback(this)" class="w-14 h-14 object-cover"></div>';
         const meta = [];
         if (line.addons && line.addons.length) meta.push("+ " + line.addons.map(function (a) { return a.label; }).join(", "));
         if (line.drink) meta.push("Drink: " + escapeAttr(line.drink));
@@ -1549,7 +1544,7 @@
       const banner = document.getElementById("closed-banner"), btn = document.getElementById("submit-btn"), pill = document.getElementById("store-status-pill");
       banner.classList.toggle("hidden", open);
       if (btn) { btn.disabled = !open; btn.innerHTML = open ? '<i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp' : '<i data-lucide="moon" class="w-5 h-5"></i> Closed · Opens 11:00 AM'; }
-      if (pill) { pill.className = "mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold " + (open ? "bg-leaf-light text-leaf-dark" : "bg-zorko-light text-zorko-dark"); pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + (open ? "bg-leaf" : "bg-zorko") + '"></span> ' + (open ? "Open now" : "Closed now"); }
+      if (pill) { pill.className = "mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold " + (open ? "bg-zorko-light text-zorko-dark" : "bg-charcoal/5 text-charcoal/70"); pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + (open ? "bg-zorko" : "bg-charcoal/40") + '"></span> ' + (open ? "Open now" : "Closed now"); }
       if (window.lucide) lucide.createIcons();
     }
 
@@ -1636,7 +1631,7 @@
       confirmationActive = true;
       const el = document.getElementById("order-confirmation");
       el.innerHTML =
-        '<div class="mx-auto w-16 h-16 rounded-full bg-leaf-light flex items-center justify-center mb-4"><i data-lucide="check" class="w-8 h-8 text-leaf-dark"></i></div>' +
+        '<div class="mx-auto w-16 h-16 rounded-full bg-zorko-light flex items-center justify-center mb-4"><i data-lucide="check" class="w-8 h-8 text-zorko-dark"></i></div>' +
         '<h3 class="font-display font-extrabold text-xl text-charcoal">Order request sent!</h3>' +
         '<p class="text-charcoal/70 text-sm mt-2 max-w-xs mx-auto">We&#39;ve opened WhatsApp with your order — just hit send. Didn&#39;t open? Copy it below.</p>' +
         '<div class="mt-5 inline-flex flex-col gap-1 bg-surface border border-charcoal/10 rounded-2xl px-5 py-4 text-sm"><span class="font-bold text-charcoal">' + recap.count + (recap.count === 1 ? " item" : " items") + ' · ₹' + recap.total + '</span><span class="text-charcoal/70">' + recap.method + '</span></div>' +
@@ -1803,28 +1798,6 @@
       b.style.bottom = count > 0 ? "calc(5.6rem + env(safe-area-inset-bottom))" : "calc(1rem + env(safe-area-inset-bottom))";
     }
 
-    /* Hero food marquee — brings the actual menu photos into the hero. */
-    function renderHeroFood() {
-      var track = document.getElementById("hero-food");
-      var wrap = document.getElementById("hero-food-wrap");
-      if (!track || !wrap) return;
-      var withImg = menuItems.filter(function (m) { return m.image; });
-      var best = withImg.filter(function (m) { return m.tag === "Best Seller"; });
-      var rest = withImg.filter(function (m) { return m.tag !== "Best Seller"; });
-      var picks = best.concat(rest).slice(0, 12);
-      if (picks.length < 3) { wrap.classList.add("hidden"); return; }
-      var card = function (m) {
-        return '<a href="#menu" class="hero-food-card group shrink-0 relative w-40 h-28 sm:w-52 sm:h-36 rounded-2xl overflow-hidden shadow-card block">' +
-          '<img src="' + escapeAttr(m.image) + '" alt="' + escapeAttr(m.name) + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">' +
-          '<div class="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/10 to-transparent"></div>' +
-          '<span class="absolute bottom-2 left-3 right-3 text-white text-xs sm:text-sm font-bold leading-tight line-clamp-1">' + escapeAttr(m.name) + '</span>' +
-          '</a>';
-      };
-      var seq = picks.map(card).join("");
-      track.innerHTML = seq + seq;
-      wrap.classList.remove("hidden");
-      if (window.lucide) lucide.createIcons();
-    }
     /* Scroll reveal */
     function initReveal() {
       var els = document.querySelectorAll(".reveal");
