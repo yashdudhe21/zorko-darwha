@@ -93,9 +93,8 @@
   #tour-tip { position: absolute; max-width: min(320px, 92vw); background: #fff; border-radius: 18px; box-shadow: 0 20px 50px -12px rgba(0,0,0,.45); padding: 18px; transition: left .25s ease, top .25s ease; }
   @media (prefers-reduced-motion: reduce) { #tour-spot, #tour-tip { transition: none; } }
   input::placeholder, textarea::placeholder { color: #6B7280; opacity: 1; }
-  @media (max-width: 639px) {
-    #category-nav { -webkit-mask-image: linear-gradient(to right, #000 90%, transparent 100%); mask-image: linear-gradient(to right, #000 90%, transparent 100%); }
-  }
+  .full-bleed { width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
+  #category-nav { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 2%, #000 98%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 2%, #000 98%, transparent 100%); }
   /* Hero food marquee */
   .marquee { position: relative; }
   .marquee-track { display: flex; gap: .75rem; width: max-content; animation: marquee 40s linear infinite; }
@@ -240,7 +239,7 @@
           <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-charcoal/5 hover:bg-charcoal/10 flex items-center justify-center" aria-label="Clear search"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
         </div>
       </div>
-      <div id="category-nav" class="cat-nav-scroll sticky top-16 sm:top-20 z-40 bg-cream/95 backdrop-blur -mx-4 sm:mx-0 px-4 sm:px-0 py-3 mb-8 flex gap-2 overflow-x-auto sm:flex-wrap sm:justify-center sm:overflow-visible"></div>
+      <div id="category-nav" class="cat-nav-scroll full-bleed sticky top-16 sm:top-20 z-40 bg-cream/95 backdrop-blur px-4 sm:px-6 lg:px-8 py-3 mb-8 flex flex-nowrap gap-2 overflow-x-auto"></div>
       <div id="menu-categories" class="space-y-14"></div>
     </div>
   </section>
@@ -308,7 +307,7 @@
 
   </main>
 
-  <footer class="relative bg-[#102A1B] text-white/70 overflow-hidden">
+  <footer class="relative bg-[#0C2013] text-white/70 overflow-hidden">
     <div aria-hidden="true" class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent"></div>
     <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-16 w-72 h-72 bg-accent/12 rounded-full blur-3xl"></div>
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-24">
