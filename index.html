@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Zorko | Local Order Hub — Darwha</title>
 <meta name="description" content="Browse the full Zorko Darwha menu and send an order request in seconds — no app, no login, just fresh vegetarian food.">
-<meta name="theme-color" content="#F6F3EC">
+<meta name="theme-color" content="#FFFDFB">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,14 +17,14 @@
     theme: {
       extend: {
         colors: {
-          charcoal: '#23261F', cream: '#F6F3EC', surface: '#FFFFFF',
-          zorko: { DEFAULT: '#276749', dark: '#173D29', light: '#E6F0E9' },
-          accent: { DEFAULT: '#BC5318', dark: '#9E4512', light: '#FBE9DD' },
+          charcoal: '#1B1815', cream: '#FFFDFB', surface: '#FFFFFF',
+          zorko: { DEFAULT: '#D8430F', dark: '#A8350B', light: '#FFEDE4' },
+          accent: { DEFAULT: '#D8430F', dark: '#A8350B', light: '#FFEDE4' },
           leaf: { DEFAULT: '#767068', dark: '#514C45', light: '#ECEAE4' }
         },
         fontFamily: { sora: ['Sora', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
         letterSpacing: { premium: '-0.022em' },
-        boxShadow: { soft: '0 18px 50px -24px rgba(32,36,31,0.28)', card: '0 1px 2px rgba(32,36,31,0.04), 0 12px 34px -18px rgba(32,36,31,0.13)' }
+        boxShadow: { soft: '0 12px 30px -18px rgba(27,24,21,0.18)', card: '0 1px 2px rgba(27,24,21,0.04), 0 8px 22px -16px rgba(27,24,21,0.09)' }
       }
     }
   };
@@ -40,17 +40,24 @@
 <style>
   html { scroll-behavior: smooth; }
   body { font-family: 'Inter', sans-serif; }
-  h1, h2, h3, .font-display { font-family: 'Sora', sans-serif; letter-spacing: -0.022em; }
+  h1, h2, h3, .font-display { font-family: 'Sora', sans-serif; letter-spacing: -0.022em; text-wrap: balance; }
   h1 { letter-spacing: -0.03em; }
-  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-  .hairline { border-color: rgba(32,36,31,0.08); }
-  ::selection { background: rgba(39,103,73,0.18); }
+  p { text-wrap: pretty; }
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; font-variant-numeric: tabular-nums; }
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+  .hairline { border-color: rgba(27,24,21,0.08); }
+  ::selection { background: rgba(216,67,15,0.18); }
 
   #menu, #combos { scroll-margin-top: 140px; }
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #276749; outline-offset: 2px; border-radius: 4px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #D8430F; outline-offset: 2px; border-radius: 4px; }
 
   .veg-mark { width: 15px; height: 15px; border: 1.5px solid #16A34A; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .veg-mark::after { content: ""; width: 7px; height: 7px; background: #16A34A; border-radius: 50%; }
+
+  /* Mobile: keep form controls at >=16px so iOS Safari never zooms the page on focus. */
+  @media (max-width: 640px) {
+    input, select, textarea { font-size: 16px; }
+  }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
   .fade-up { animation: fadeUp 0.7s cubic-bezier(.16,.84,.44,1) both; }
@@ -65,8 +72,8 @@
   @keyframes toastIn { from{opacity:0; transform:translate(-50%,12px);} to{opacity:1; transform:translate(-50%,0);} }
   .toast-in { animation: toastIn 0.35s ease-out both; }
 
-  .menu-card { transition: transform 0.4s cubic-bezier(.16,.84,.44,1), box-shadow 0.4s ease, border-color 0.4s ease; }
-  .menu-card:hover { transform: translateY(-6px); box-shadow: 0 28px 55px -28px rgba(32,36,31,0.28); border-color: rgba(32,36,31,0.14); }
+  .menu-card { transition: transform 0.28s cubic-bezier(.16,.84,.44,1), box-shadow 0.28s ease, border-color 0.28s ease; }
+  .menu-card:hover { transform: translateY(-3px); box-shadow: 0 14px 32px -22px rgba(27,24,21,0.20); border-color: rgba(27,24,21,0.14); }
   .addr-wrapper { transition: max-height 0.35s ease, opacity 0.3s ease; overflow: hidden; }
 
   .thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -89,7 +96,7 @@
   /* Guided tour */
   #tour-overlay { position: fixed; inset: 0; z-index: 90; display: none; }
   #tour-overlay.on { display: block; }
-  #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(32,36,31,0.76); border: 2px solid #276749; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
+  #tour-spot { position: absolute; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(27,24,21,0.76); border: 2px solid #D8430F; transition: all .3s cubic-bezier(.16,.84,.44,1); pointer-events: none; }
   #tour-tip { position: absolute; max-width: min(320px, 92vw); background: #fff; border-radius: 18px; box-shadow: 0 20px 50px -12px rgba(0,0,0,.45); padding: 18px; transition: left .25s ease, top .25s ease; }
   @media (prefers-reduced-motion: reduce) { #tour-spot, #tour-tip { transition: none; } }
   input::placeholder, textarea::placeholder { color: #6B7280; opacity: 1; }
@@ -126,7 +133,7 @@
           <a href="#combos" class="hover:text-zorko transition-colors">Combos</a>
           <a href="#our-store" class="hover:text-zorko transition-colors">Store</a>
         </div>
-        <button onclick="openCart()" id="cart-nav-btn" class="relative inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-sm px-4 sm:px-5 py-2.5 rounded-full transition-colors shadow-soft shrink-0" aria-label="View cart">
+        <button onclick="openCart()" id="cart-nav-btn" class="relative inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-sm px-4 sm:px-5 py-3 rounded-full transition-colors shadow-soft shrink-0" aria-label="View cart">
           <i data-lucide="shopping-bag" class="w-4 h-4"></i>
           <span class="hidden sm:inline">View Cart</span>
           <span id="cart-count-badge" class="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1 flex items-center justify-center rounded-full bg-charcoal text-white text-xs font-extrabold border-2 border-cream opacity-0 scale-0 transition-all duration-300">0</span>
@@ -138,62 +145,48 @@
   <main id="main-content">
 
   <!-- HERO -->
-  <section id="hero" class="relative overflow-hidden pt-28 sm:pt-36 pb-14 sm:pb-16">
+  <section id="hero" class="relative overflow-hidden flex items-center min-h-[86svh] sm:min-h-0 pt-16 sm:pt-40 pb-14 sm:pb-24">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
-      <div class="absolute -top-24 -right-24 w-80 h-80 sm:w-[28rem] sm:h-[28rem] bg-zorko-light rounded-full blur-3xl opacity-70 float-slow"></div>
-      <div class="absolute top-1/3 -left-24 w-72 h-72 sm:w-96 sm:h-96 bg-leaf/10 rounded-full blur-3xl opacity-80 float-slower"></div>
-      <div class="absolute inset-0" style="background: radial-gradient(60% 55% at 50% 0%, rgba(39,103,73,0.06), transparent 70%);"></div>
+      <div class="absolute inset-0" style="background: radial-gradient(78% 44% at 50% -8%, rgba(216,67,15,0.055), transparent 58%);"></div>
     </div>
-    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="fade-up inline-flex items-center gap-2 bg-white/70 backdrop-blur text-charcoal/75 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.16em] px-4 py-1.5 rounded-full mb-7 border border-charcoal/10">
+    <div class="relative w-full max-w-4xl mx-auto px-6 sm:px-8 text-center">
+      <p class="fade-up inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
         <span class="veg-mark" aria-hidden="true"></span> Freshly Made in Darwha
-      </div>
-      <h1 class="fade-up font-display font-extrabold text-4xl sm:text-6xl leading-[1.05] tracking-tight text-charcoal" style="animation-delay:.05s">
+      </p>
+      <h1 class="fade-up mt-5 font-display font-extrabold text-[2rem] sm:text-6xl leading-[1.1] sm:leading-[1.05] tracking-tight text-charcoal" style="animation-delay:.05s">
         Pure Veg. Pure Joy.<br class="hidden sm:block">
         <span class="bg-gradient-to-r from-charcoal to-accent bg-clip-text text-transparent">Crafted Fresh, Daily.</span>
       </h1>
-      <p class="fade-up mt-4 text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em] text-charcoal/55" style="animation-delay:.09s">100% Veg &middot; 100% Happiness &middot; 100% Affordable</p>
-      <p class="fade-up mt-5 text-base sm:text-lg text-charcoal/70 max-w-2xl mx-auto leading-relaxed" style="animation-delay:.12s">
-        Sizzling burgers, the world&#39;s thinnest pizzas, molten kulhad specials and fizzy mojitos — all made to order in your Darwha neighbourhood. Tap, build your plate, and we&#39;ll have it ready.
+      <p class="fade-up mt-5 text-[15px] sm:text-lg text-charcoal/55 leading-relaxed max-w-[18rem] sm:max-w-md mx-auto" style="animation-delay:.12s">
+        Burgers, pizzas, kulhad specials &amp; fizzy mojitos — made fresh in your neighbourhood.
       </p>
-      <div class="fade-up mt-8 flex flex-col sm:flex-row items-center justify-center gap-3" style="animation-delay:.2s">
-        <a href="#menu" class="group inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-semibold text-base px-8 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
+      <div class="fade-up mt-12 flex flex-col items-center" style="animation-delay:.2s">
+        <a href="#menu" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white font-bold text-base px-10 py-4 rounded-full shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
           Explore the Menu <i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"></i>
         </a>
-        <a href="#combos" class="inline-flex items-center gap-2 bg-white hover:bg-cream text-charcoal font-semibold text-base px-7 py-4 rounded-full border border-charcoal/15 hover:border-charcoal/30 shadow-soft transition-all duration-300 hover:-translate-y-0.5 active:scale-95">
-          <i data-lucide="sparkles" class="w-4 h-4 text-accent"></i> Popular Combos
-        </a>
       </div>
-      <div class="fade-up mt-9 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm text-charcoal/70 font-medium" style="animation-delay:.28s">
-        <span class="inline-flex items-center gap-1.5"><i data-lucide="flame" class="w-4 h-4 text-zorko"></i>Cooked fresh to order</span>
-        <span class="inline-flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4 text-zorko"></i>Open 11 AM &ndash; 11 PM</span>
-        <span class="inline-flex items-center gap-1.5"><i data-lucide="bike" class="w-4 h-4 text-zorko"></i>Pickup &amp; delivery</span>
-      </div>
-    </div>
-    <div class="text-center">
-      <a href="#menu" aria-label="Scroll to menu" class="mt-10 inline-flex w-10 h-10 items-center justify-center rounded-full border border-charcoal/15 text-charcoal/70 hover:text-zorko hover:border-zorko/40 transition-colors animate-bounce-slow"><i data-lucide="chevron-down" class="w-5 h-5"></i></a>
     </div>
   </section>
 
   <!-- TRUST / CONFIDENCE BAR -->
   <section aria-label="Why you can order with confidence" class="reveal border-y border-charcoal/8 bg-white/60 backdrop-blur-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 py-7 sm:py-8 md:gap-0 md:divide-x md:divide-charcoal/10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-6 py-6 sm:py-7 md:gap-0 md:divide-x md:divide-charcoal/10">
         <div class="flex items-center gap-3 md:justify-center md:px-6">
           <span class="veg-mark shrink-0" aria-hidden="true"></span>
-          <div><p class="text-sm font-bold text-charcoal leading-tight">100% Pure Veg</p><p class="text-xs text-charcoal/55 mt-0.5">Always. No exceptions.</p></div>
+          <div class="min-w-0"><p class="text-sm font-bold text-charcoal leading-snug">100% Pure Veg</p><p class="text-xs text-charcoal/55 mt-0.5 leading-snug">Always. No exceptions.</p></div>
         </div>
         <div class="flex items-center gap-3 md:justify-center md:px-6">
-          <i data-lucide="flame" class="w-5 h-5 text-zorko shrink-0"></i>
-          <div><p class="text-sm font-bold text-charcoal leading-tight">Cooked fresh to order</p><p class="text-xs text-charcoal/55 mt-0.5">Made after you order</p></div>
+          <i data-lucide="flame" class="w-5 h-5 text-accent shrink-0" aria-hidden="true"></i>
+          <div class="min-w-0"><p class="text-sm font-bold text-charcoal leading-snug">Cooked fresh to order</p><p class="text-xs text-charcoal/55 mt-0.5 leading-snug">Made after you order</p></div>
         </div>
         <div class="flex items-center gap-3 md:justify-center md:px-6">
-          <i data-lucide="tag" class="w-5 h-5 text-zorko shrink-0"></i>
-          <div><p class="text-sm font-bold text-charcoal leading-tight">Honestly priced</p><p class="text-xs text-charcoal/55 mt-0.5">Great taste, fair prices</p></div>
+          <i data-lucide="tag" class="w-5 h-5 text-accent shrink-0" aria-hidden="true"></i>
+          <div class="min-w-0"><p class="text-sm font-bold text-charcoal leading-snug">Honestly priced</p><p class="text-xs text-charcoal/55 mt-0.5 leading-snug">Great taste, fair prices</p></div>
         </div>
         <div class="flex items-center gap-3 md:justify-center md:px-6">
-          <i data-lucide="bike" class="w-5 h-5 text-zorko shrink-0"></i>
-          <div><p class="text-sm font-bold text-charcoal leading-tight">Pickup &amp; delivery</p><p class="text-xs text-charcoal/55 mt-0.5">Pay on pickup or delivery</p></div>
+          <i data-lucide="bike" class="w-5 h-5 text-accent shrink-0" aria-hidden="true"></i>
+          <div class="min-w-0"><p class="text-sm font-bold text-charcoal leading-snug">Pickup &amp; delivery</p><p class="text-xs text-charcoal/55 mt-0.5 leading-snug">Pay on pickup or delivery</p></div>
         </div>
       </div>
     </div>
@@ -208,9 +201,9 @@
   </section>
 
   <!-- COMBOS -->
-  <section id="combos" class="py-16 sm:py-24 bg-white/70 border-y border-charcoal/10">
+  <section id="combos" class="py-12 sm:py-24 bg-white/70 border-y border-charcoal/10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="reveal text-center max-w-xl mx-auto mb-12">
+      <div class="reveal text-center max-w-xl mx-auto mb-8 sm:mb-12">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Try Our Popular Combos</h2>
         <p class="mt-3 text-charcoal/70">Two favourites, one price — tap to add and pick your drink as you go.</p>
       </div>
@@ -221,9 +214,9 @@
   </section>
 
   <!-- MENU (filtered by category) -->
-  <section id="menu" class="py-16 sm:py-24">
+  <section id="menu" class="py-12 sm:py-24">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="reveal text-center max-w-xl mx-auto mb-8">
+      <div class="reveal text-center max-w-xl mx-auto mb-8 sm:mb-12">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Full Menu</h2>
         <p class="mt-3 text-charcoal/70">Pick a category, add what you love, and customise the extras.</p>
       </div>
@@ -234,20 +227,20 @@
           <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-charcoal/5 hover:bg-charcoal/10 flex items-center justify-center" aria-label="Clear search"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
         </div>
       </div>
-      <div id="category-nav" class="cat-nav-scroll full-bleed sticky top-16 sm:top-20 z-40 bg-cream/95 backdrop-blur px-4 sm:px-6 lg:px-8 py-3 mb-8 flex flex-nowrap gap-2 overflow-x-auto"></div>
+      <div id="category-nav" class="cat-nav-scroll full-bleed sticky top-[65px] sm:top-[81px] z-40 bg-cream/95 backdrop-blur px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 mb-5 sm:mb-8 flex flex-nowrap gap-2 overflow-x-auto"></div>
       <div id="menu-categories" class="space-y-14"></div>
     </div>
   </section>
 
   <!-- STORE -->
-  <section id="our-store" class="py-16 sm:py-24 bg-white/70 border-y border-charcoal/10">
+  <section id="our-store" class="py-12 sm:py-24 bg-white/70 border-y border-charcoal/10">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="reveal text-center max-w-xl mx-auto mb-12">
+      <div class="reveal text-center max-w-xl mx-auto mb-8 sm:mb-12">
         <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-charcoal">Our Local Store</h2>
         <p class="mt-3 text-charcoal/70">Right in your neighborhood — come say hi, call us, or just drop by.</p>
       </div>
       <div class="grid lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
-        <div class="bg-cream border border-charcoal/10 rounded-3xl p-7 sm:p-8 shadow-card flex flex-col gap-6">
+        <div class="bg-cream border border-charcoal/10 rounded-2xl p-7 sm:p-8 shadow-card flex flex-col gap-6">
           <div class="flex items-start gap-4">
             <div class="w-11 h-11 rounded-full bg-zorko-light flex items-center justify-center shrink-0"><i data-lucide="map-pin" class="w-5 h-5 text-zorko-dark"></i></div>
             <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/70">Address</p><p class="mt-1 font-semibold text-charcoal leading-relaxed">Zorko — Brand of Food Lovers, Darwha, Dist. Yavatmal, Maharashtra - 445202</p></div>
@@ -266,7 +259,7 @@
             <div class="min-w-0"><p class="text-xs font-bold uppercase tracking-wide text-charcoal/70">Store Timings</p><p class="mt-1 font-semibold text-charcoal">Open Daily: 11:00 AM - 11:00 PM</p><span id="store-status-pill" class="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"></span></div>
           </div>
         </div>
-        <div class="relative rounded-3xl overflow-hidden shadow-card border border-charcoal/10 min-h-[280px] lg:min-h-0">
+        <div class="relative rounded-2xl overflow-hidden shadow-card border border-charcoal/10 min-h-[280px] lg:min-h-0">
           <div class="absolute inset-0 bg-surface">
             <div class="absolute inset-0 opacity-60" style="background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px); background-size: 32px 32px;"></div>
             <div class="absolute inset-0 opacity-70" style="background-image: linear-gradient(120deg, transparent 46%, #ECE7DE 46%, #ECE7DE 54%, transparent 54%), linear-gradient(30deg, transparent 70%, #ECE7DE 70%, #ECE7DE 76%, transparent 76%);"></div>
@@ -284,9 +277,9 @@
   </section>
 
   <!-- OWNER -->
-  <section id="owner-story" class="py-14 sm:py-20">
+  <section id="owner-story" class="py-12 sm:py-24">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="reveal bg-white border border-charcoal/10 rounded-3xl shadow-card p-7 sm:p-10 flex flex-col sm:flex-row items-center gap-7 sm:gap-10">
+      <div class="reveal bg-white border border-charcoal/10 rounded-2xl shadow-card p-7 sm:p-10 flex flex-col sm:flex-row items-center gap-7 sm:gap-10">
         <div class="relative shrink-0">
           <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-charcoal to-accent flex items-center justify-center ring-4 ring-zorko-light relative overflow-hidden"><span class="font-display font-extrabold text-3xl sm:text-4xl text-white">YD</span><!-- Founder photo: add src="URL" to show a real photo over the monogram --><img alt="Yash Dudhe" data-owner-photo style="display:none" onload="this.style.display=''" class="absolute inset-0 w-full h-full object-cover"></div>
           <div class="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-white border border-charcoal/10 shadow-card flex items-center justify-center"><i data-lucide="quote" class="w-4 h-4 text-zorko"></i></div>
@@ -302,10 +295,10 @@
 
   </main>
 
-  <footer class="relative bg-[#0C2013] text-white/70 overflow-hidden">
+  <footer class="relative bg-[#151310] text-white/70 overflow-hidden">
     <div aria-hidden="true" class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent"></div>
     <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-16 w-72 h-72 bg-accent/12 rounded-full blur-3xl"></div>
-    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-24">
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-24">
 
       <!-- Tier 1 — brand + primary action -->
       <div class="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
@@ -331,10 +324,10 @@
       </div>
 
       <!-- Tier 2 — navigation & info -->
-      <div class="mt-10 pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-8">
+      <div class="mt-8 sm:mt-10 pt-7 sm:pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-7">
         <div>
           <h3 class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 mb-3.5">Explore</h3>
-          <ul class="space-y-2.5 text-sm">
+          <ul class="space-y-3.5 text-sm">
             <li><a href="#special" class="text-white/65 hover:text-white transition-colors">Today&#39;s Special</a></li>
             <li><a href="#menu" class="text-white/65 hover:text-white transition-colors">Full Menu</a></li>
             <li><a href="#combos" class="text-white/65 hover:text-white transition-colors">Combos</a></li>
@@ -343,7 +336,7 @@
         </div>
         <div>
           <h3 class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 mb-3.5">Visit</h3>
-          <ul class="space-y-2.5 text-sm text-white/60">
+          <ul class="space-y-3.5 text-sm text-white/60">
             <li class="flex items-start gap-2"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 text-accent shrink-0"></i><span>Darwha, Yavatmal 445202</span></li>
             <li class="flex items-start gap-2"><i data-lucide="clock" class="w-4 h-4 mt-0.5 text-accent shrink-0"></i><span>Daily &middot; 11 AM &ndash; 11 PM</span></li>
             <li><a href="https://maps.app.goo.gl/FQkL7oaog9JANKNs8" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-white/80 hover:text-white transition-colors font-semibold"><i data-lucide="navigation" class="w-3.5 h-3.5 text-accent"></i> Get directions</a></li>
@@ -351,9 +344,9 @@
         </div>
         <div class="col-span-2 sm:col-span-1">
           <h3 class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 mb-3.5">Follow &amp; Contact</h3>
-          <ul class="space-y-2.5 text-sm text-white/60 sm:block flex flex-wrap gap-x-6">
+          <ul class="space-y-3.5 text-sm text-white/60 sm:block flex flex-wrap gap-x-6 gap-y-3">
             <li><a href="tel:+919373345225" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="phone" class="w-4 h-4 text-accent shrink-0"></i> +91 93733 45225</a></li>
-            <li><a href="https://instagram.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white transition-colors"><i data-lucide="instagram" class="w-4 h-4 text-accent shrink-0"></i> Instagram</a></li>
+            <li><a href="https://instagram.com/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white transition-colors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-accent shrink-0" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><line x1="17.6" y1="6.4" x2="17.6" y2="6.4"/></svg> Instagram</a></li>
           </ul>
         </div>
       </div>
@@ -389,10 +382,10 @@
         <div class="w-9 h-9 rounded-full bg-zorko-light flex items-center justify-center"><i data-lucide="shopping-bag" class="w-5 h-5 text-zorko-dark"></i></div>
         <div><h2 class="font-display font-extrabold text-lg text-charcoal leading-tight">Your Order</h2><p class="text-xs text-charcoal/70" id="drawer-count">0 items</p></div>
       </div>
-      <button onclick="closeCart()" aria-label="Close cart" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-charcoal/5 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <button onclick="closeCart()" aria-label="Close cart" class="w-11 h-11 -mr-1.5 flex items-center justify-center rounded-full hover:bg-charcoal/5 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
     </div>
 
-    <div class="flex-1 overflow-y-auto thin-scroll px-5 py-4">
+    <div class="flex-1 overflow-y-auto thin-scroll px-5 pt-4" style="padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));">
       <div id="closed-banner" class="hidden mb-4 flex items-start gap-3 bg-zorko-light border border-zorko/20 rounded-2xl p-4">
         <i data-lucide="moon" class="w-5 h-5 text-zorko-dark shrink-0 mt-0.5"></i>
         <div><p class="font-bold text-charcoal text-sm">We're closed right now</p><p class="text-charcoal/70 text-sm mt-0.5">Order requests open daily at 11:00 AM. You can still build your cart — come back during store hours to send it.</p></div>
@@ -443,7 +436,7 @@
   <!-- FIRST-TIME WELCOME (shows once per new visitor) -->
   <div id="welcome-sheet" class="sheet-wrap hidden fixed inset-0 z-[75] opacity-0">
     <div class="absolute inset-0 bg-charcoal/50 backdrop-blur-sm" onclick="closeWelcome(true)"></div>
-    <div class="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-md sm:h-max bg-cream rounded-t-3xl sm:rounded-3xl shadow-2xl translate-y-full sm:translate-y-4 overflow-hidden" role="dialog" aria-modal="true" aria-label="Welcome to Zorko Darwha">
+    <div class="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-md sm:h-max bg-cream rounded-t-3xl sm:rounded-2xl shadow-2xl translate-y-full sm:translate-y-4 overflow-hidden" role="dialog" aria-modal="true" aria-label="Welcome to Zorko Darwha">
       <div class="p-6 sm:p-8" style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
         <div class="flex justify-center mb-4"><span class="inline-flex items-center gap-2 bg-leaf-light text-leaf-dark text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"><span class="veg-mark" aria-hidden="true"></span> Welcome to Zorko Darwha</span></div>
         <h3 class="font-display font-extrabold text-2xl text-charcoal text-center leading-tight">Order in 3 easy taps</h3>
@@ -466,7 +459,7 @@
   </div>
 
   <!-- ALWAYS-ON HELP BUTTON -->
-  <button id="help-btn" onclick="startTour()" class="fixed left-4 z-40 inline-flex items-center gap-1.5 bg-white border border-charcoal/15 text-charcoal font-bold text-sm px-4 py-2.5 rounded-full shadow-soft hover:border-zorko hover:text-zorko transition-colors" style="bottom: calc(1rem + env(safe-area-inset-bottom));" aria-label="How to order">
+  <button id="help-btn" onclick="startTour()" class="fixed left-4 z-40 inline-flex items-center gap-1.5 bg-white border border-charcoal/15 text-charcoal font-bold text-sm px-4 py-2.5 rounded-full shadow-soft hover:border-zorko hover:text-zorko transition-all duration-300" style="bottom: calc(1rem + env(safe-area-inset-bottom)); opacity:0; transform:translateY(8px); pointer-events:none;" aria-label="How to order">
     <i data-lucide="help-circle" class="w-4 h-4 text-zorko"></i> How to order
   </button>
 
@@ -490,7 +483,7 @@
 
   <div id="config-sheet" class="sheet-wrap hidden fixed inset-0 z-[70] opacity-0">
     <div class="absolute inset-0 bg-charcoal/50 backdrop-blur-sm" onclick="closeConfig()"></div>
-    <div class="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-md sm:h-max bg-cream rounded-t-3xl sm:rounded-3xl shadow-2xl translate-y-full sm:translate-y-4 overflow-hidden" role="dialog" aria-modal="true" aria-label="Customise item">
+    <div class="sheet-panel absolute inset-x-0 bottom-0 sm:inset-0 sm:m-auto sm:max-w-md sm:h-max bg-cream rounded-t-3xl sm:rounded-2xl shadow-2xl translate-y-full sm:translate-y-4 overflow-hidden" role="dialog" aria-modal="true" aria-label="Customise item">
       <div class="p-6 max-h-[80vh] overflow-y-auto thin-scroll">
         <div class="flex items-start justify-between gap-3 mb-1">
           <h3 id="config-title" class="font-display font-extrabold text-xl text-charcoal leading-snug"></h3>
@@ -1003,7 +996,7 @@
         (save ? ' <span class="text-white/50 line-through text-lg align-middle">₹' + s.originalPrice + '</span>' : '');
       const saveBadge = save ? '<span class="absolute top-4 right-4 z-10 bg-charcoal text-white text-xs font-bold tracking-wide px-3 py-1.5 rounded-full shadow-soft">SAVE ₹' + save + '</span>' : '';
       document.getElementById("special-banner").innerHTML =
-        '<div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-charcoal to-zorko-dark text-white shadow-soft">' +
+        '<div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-charcoal to-zorko-dark text-white shadow-soft">' +
           '<div aria-hidden="true" class="pointer-events-none absolute -top-16 -left-10 w-56 h-56 bg-zorko/40 rounded-full blur-3xl"></div>' +
           '<div class="grid sm:grid-cols-2 items-stretch">' +
             '<div class="relative p-7 sm:p-10 flex flex-col justify-center order-2 sm:order-1">' +
@@ -1051,7 +1044,7 @@
         const active = cat === activeCategory;
         const icon = cat === "All" ? "layout-grid" : (categoryIcons[cat] || "utensils");
         const cls = active ? "bg-zorko text-white border-zorko" : "bg-white text-charcoal/70 border-charcoal/10 hover:border-zorko hover:text-zorko";
-        return '<button type="button" onclick="setCategory(\'' + cat.replace(/'/g, "\\'") + '\')" class="shrink-0 inline-flex items-center gap-1.5 border text-xs sm:text-sm font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap ' + cls + '">' +
+        return '<button type="button" onclick="setCategory(\'' + cat.replace(/'/g, "\\'") + '\')" class="shrink-0 inline-flex items-center gap-1.5 border text-xs sm:text-sm font-semibold px-4 py-3 rounded-full transition-colors whitespace-nowrap ' + cls + '">' +
           '<i data-lucide="' + icon + '" class="w-3.5 h-3.5"></i>' + cat + '</button>';
       }).join("");
       if (window.lucide) lucide.createIcons();
@@ -1091,7 +1084,7 @@
           }
           extrasHtml += '</div>';
         }
-        return '<div class="menu-card snap-start shrink-0 w-[82%] sm:w-auto relative bg-white border border-zorko/15 rounded-3xl shadow-card hover:shadow-soft overflow-hidden flex flex-col">' +
+        return '<div class="menu-card snap-start shrink-0 w-[82%] sm:w-auto relative bg-white border border-charcoal/10 rounded-2xl shadow-card hover:shadow-soft overflow-hidden flex flex-col">' +
           '<div class="relative h-40 sm:h-44 bg-zorko-light overflow-hidden">' + heroHtml +
             '<span class="absolute top-3 left-3 bg-zorko text-white text-[11px] font-extrabold uppercase tracking-wide px-2.5 py-1 rounded-full inline-flex items-center gap-1 shadow-soft"><i data-lucide="' + (c.icon || "sparkles") + '" class="w-3 h-3"></i> ' + (c.meal ? "Make a Meal" : "Combo") + '</span>' +
             extrasHtml +
@@ -1122,7 +1115,7 @@
 
     function renderMenuCard(item) {
       const hasAddons = addonsFor(item.category).length > 0;
-      return '<div class="menu-card group bg-white rounded-3xl border border-charcoal/8 shadow-card overflow-hidden flex flex-col h-full">' +
+      return '<div class="menu-card group bg-white rounded-2xl border border-charcoal/10 shadow-card overflow-hidden flex flex-col h-full">' +
         '<div class="relative h-44 sm:h-48 overflow-hidden bg-zorko-light shrink-0">' +
           '<img src="' + escapeAttr(item.image) + '" alt="' + escapeAttr(item.name) + '" loading="lazy" onerror="imgFallback(this)" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">' +
           (item.tag ? '<span class="absolute top-3 left-3 bg-zorko text-white text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full flex items-center gap-1 z-10"><i data-lucide="star" class="w-3 h-3"></i>' + item.tag + '</span>' : '') +
@@ -1134,7 +1127,7 @@
               (item.subtitle ? '<p class="text-xs font-semibold text-leaf-dark mt-0.5 line-clamp-1">' + escapeAttr(item.subtitle) + '</p>' : '') +
             '</div>' +
             '<div class="shrink-0 text-right"><span class="block font-display font-extrabold text-zorko-dark text-base">₹' + item.price + '</span>' +
-            (hasAddons ? '<span class="block text-[11px] text-zorko-dark font-bold">+ add-ons</span>' : '') + '</div>' +
+            (hasAddons ? '<span class="block text-[10px] text-charcoal/45 font-semibold uppercase tracking-wide mt-0.5">Customisable</span>' : '') + '</div>' +
           '</div>' +
           '<p class="mt-2 text-sm text-charcoal/70 leading-relaxed line-clamp-3 flex-1">' + escapeAttr(item.description) + '</p>' +
           // No inline onclick: the id lives only in data-add-btn (a plain,
@@ -1248,7 +1241,7 @@
       document.getElementById("menu-categories").innerHTML =
         '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">' +
         Array.from({ length: 6 }).map(function () {
-          return '<div class="bg-white rounded-3xl border border-charcoal/8 shadow-card overflow-hidden">' +
+          return '<div class="bg-white rounded-2xl border border-charcoal/10 shadow-card overflow-hidden">' +
             '<div class="h-44 sm:h-48 bg-charcoal/10 animate-pulse"></div>' +
             '<div class="p-5 space-y-3">' +
               '<div class="h-4 w-3/4 rounded bg-charcoal/10 animate-pulse"></div>' +
@@ -1497,12 +1490,12 @@
         const metaHtml = meta.length ? '<p class="text-xs text-leaf-dark mt-0.5 truncate">' + meta.join(" · ") + '</p>' : '';
         const editBtn = canEdit ? '<button onclick="openLineConfig(' + line.lineId + ')" class="text-xs font-semibold text-zorko hover:text-zorko-dark inline-flex items-center gap-1 mt-1"><i data-lucide="sliders-horizontal" class="w-3 h-3"></i> ' + (line.type === "combo" ? "Change drink" : "Customise") + '</button>' : '';
         return '<li class="flex items-start gap-3 bg-surface border border-charcoal/8 rounded-2xl p-3">' + thumb +
-          '<div class="flex-1 min-w-0"><p class="font-semibold text-sm text-charcoal truncate">' + linePrefix(line) + escapeAttr(line.name) + '</p>' + metaHtml +
+          '<div class="flex-1 min-w-0"><p class="font-semibold text-sm text-charcoal leading-snug line-clamp-2">' + linePrefix(line) + escapeAttr(line.name) + '</p>' + metaHtml +
           '<p class="text-xs text-charcoal/70 mt-0.5">₹' + line.unit + ' each</p>' + editBtn + '</div>' +
           '<div class="flex flex-col items-end gap-2 shrink-0">' +
-            '<div class="flex items-center gap-1.5"><button onclick="updateQuantity(' + line.lineId + ', -1)" aria-label="Decrease" class="w-8 h-8 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button>' +
-            '<span class="w-5 text-center text-sm font-bold">' + line.qty + '</span>' +
-            '<button onclick="updateQuantity(' + line.lineId + ', 1)" aria-label="Increase" class="w-8 h-8 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button></div>' +
+            '<div class="flex items-center gap-1.5"><button onclick="updateQuantity(' + line.lineId + ', -1)" aria-label="Decrease" class="w-10 h-10 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button>' +
+            '<span class="w-6 text-center text-sm font-bold">' + line.qty + '</span>' +
+            '<button onclick="updateQuantity(' + line.lineId + ', 1)" aria-label="Increase" class="w-10 h-10 flex items-center justify-center rounded-full bg-zorko-light text-zorko-dark hover:bg-zorko hover:text-white transition-colors"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button></div>' +
             '<div class="flex items-center gap-2"><span class="font-bold text-sm text-zorko-dark">₹' + lineTotal + '</span>' +
             '<button onclick="removeFromCart(' + line.lineId + ')" aria-label="Remove" class="p-1.5 -mr-1 text-charcoal/70 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>' +
           '</div></li>';
@@ -1797,6 +1790,20 @@
       if (!b) return;
       b.style.bottom = count > 0 ? "calc(5.6rem + env(safe-area-inset-bottom))" : "calc(1rem + env(safe-area-inset-bottom))";
     }
+    // Keep the floating help button out of the hero — reveal it only once the
+    // user scrolls into the content, so the first screen stays uncluttered.
+    function updateHelpVis() {
+      var b = document.getElementById("help-btn");
+      if (!b) return;
+      // Reveal only once past the hero, and hide again near the footer so the
+      // floating pill never sits on top of the store card or footer content.
+      var doc = document.documentElement;
+      var nearBottom = (window.innerHeight + window.scrollY) >= (doc.scrollHeight - 200);
+      var show = window.scrollY > (window.innerHeight * 0.55) && !nearBottom;
+      b.style.opacity = show ? "1" : "0";
+      b.style.transform = show ? "none" : "translateY(8px)";
+      b.style.pointerEvents = show ? "auto" : "none";
+    }
 
     /* Scroll reveal */
     function initReveal() {
@@ -1816,8 +1823,10 @@
       loadMenuFromSanity();
       var _yr = document.getElementById("year"); if (_yr) _yr.textContent = new Date().getFullYear();
       initReveal();
+      updateHelpVis();
+      window.addEventListener("scroll", updateHelpVis, { passive: true });
       handleFulfillmentChange(); applyStoreHours();
-      if (!ftuSeen()) setTimeout(openWelcome, 800);
+      if (!ftuSeen()) setTimeout(openWelcome, 1400);
       // One delegated listener for every "Add to Order" button, present and
       // future. #menu-categories itself is never replaced (only its
       // innerHTML is, on every renderMenu() call), so this never needs to
