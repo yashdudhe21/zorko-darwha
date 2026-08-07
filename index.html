@@ -145,7 +145,7 @@
   <main id="main-content">
 
   <!-- HERO -->
-  <section id="hero" class="relative overflow-hidden flex items-center min-h-[68svh] sm:min-h-0 pt-20 sm:pt-40 pb-12 sm:pb-24">
+  <section id="hero" class="relative overflow-hidden flex items-center min-h-[72svh] sm:min-h-0 pt-20 sm:pt-40 pb-12 sm:pb-24">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
       <div class="absolute inset-0" style="background: radial-gradient(78% 44% at 50% -8%, rgba(216,67,15,0.055), transparent 58%);"></div>
     </div>
@@ -1136,9 +1136,33 @@
           // DOMContentLoaded — see below) reads it and calls addToCart().
           // This removes the entire class of "id breaks out of the onclick
           // string" bugs for good, no matter what a CMS value contains.
-          '<button type="button" data-add-btn="' + escapeAttr(item.id) + '" class="relative z-10 mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-accent hover:bg-accent-dark text-white font-semibold text-sm py-3 rounded-full transition-all duration-300 active:scale-[0.97]"><i data-lucide="plus" class="w-4 h-4"></i> Add to Order</button>' +
+          '<button type="button" data-add-btn="' + escapeAttr(item.id) + '" class="relative z-10 mt-5 w-full inline-flex items-center justify-center gap-1.5 bg-accent hover:bg-accent-dark text-white font-semibold text-sm py-3 rounded-full transition-all duration-300 active:scale-[0.97]"><i data-lucide="plus" class="w-4 h-4"></i> <span class="ab-label">Add to Order</span><span class="ab-count hidden items-center justify-center min-w-[20px] h-5 px-1.5 ml-0.5 rounded-full bg-white/25 text-white text-xs font-extrabold"></span></button>' +
         '</div></div>';
     }
+    // Reflect what's already in the cart onto the menu cards (scroll-safe: only
+    // updates the label + count pill, never rebuilds the grid) so people can see
+    // and keep adding without opening the drawer.
+    function syncMenuButtons() {
+      const container = document.getElementById("menu-categories");
+      if (!container) return;
+      const btns = container.querySelectorAll("[data-add-btn]");
+      for (let i = 0; i < btns.length; i++) {
+        const btn = btns[i];
+        const id = btn.getAttribute("data-add-btn");
+        let qty = 0;
+        for (let j = 0; j < cart.length; j++) { const l = cart[j]; if (l.type === "item" && l.refId === id) qty += l.qty; }
+        const label = btn.querySelector(".ab-label");
+        const count = btn.querySelector(".ab-count");
+        if (qty > 0) {
+          if (label) label.textContent = "Add more";
+          if (count) { count.textContent = qty; count.classList.remove("hidden"); count.classList.add("inline-flex"); }
+        } else {
+          if (label) label.textContent = "Add to Order";
+          if (count) { count.classList.add("hidden"); count.classList.remove("inline-flex"); }
+        }
+      }
+    }
+
     function renderMenu() {
       const container = document.getElementById("menu-categories");
       const q = searchQuery.trim().toLowerCase();
@@ -1152,6 +1176,7 @@
           container.innerHTML = '<div><h3 class="font-display font-extrabold text-lg sm:text-xl text-zorko-dark mb-4">' + matches.length + ' result' + (matches.length > 1 ? "s" : "") + '</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 items-stretch">' + matches.map(renderMenuCard).join("") + '</div></div>';
         }
         if (window.lucide) lucide.createIcons();
+        syncMenuButtons();
         return;
       }
       if (navEl) navEl.style.display = "";
@@ -1168,6 +1193,7 @@
           (footnote ? '<p class="mt-5 text-center text-xs text-charcoal/70 font-medium">' + footnote + '</p>' : '') + '</div>';
       }).join("");
       if (window.lucide) lucide.createIcons();
+      syncMenuButtons();
     }
 
     /* ------------------------------------------------------------
@@ -1503,6 +1529,9 @@
 
       document.getElementById("cart-subtotal-value").textContent = "₹" + subtotal;
       renderUpsell();
+      updateDeliveryNote();
+      updateSendButton();
+      syncMenuButtons();
       if (window.lucide) lucide.createIcons();
     }
 
@@ -1525,9 +1554,55 @@
 
     function handleFulfillmentChange() {
       const method = document.getElementById("fulfillment-method").value;
-      const wrapper = document.getElementById("address-wrapper"), note = document.getElementById("delivery-note");
-      if (method === "Home Delivery") { wrapper.style.maxHeight = "220px"; wrapper.style.opacity = "1"; note.classList.remove("hidden"); }
-      else { wrapper.style.maxHeight = "0px"; wrapper.style.opacity = "0"; note.classList.add("hidden"); }
+      const wrapper = document.getElementById("address-wrapper");
+      if (method === "Home Delivery") { wrapper.style.maxHeight = "220px"; wrapper.style.opacity = "1"; }
+      else { wrapper.style.maxHeight = "0px"; wrapper.style.opacity = "0"; }
+      updateDeliveryNote();
+      updateSendButton();
+    }
+
+    // Live delivery-minimum coaching: tell the customer exactly how much more
+    // they need for delivery *before* they fill the form, instead of rejecting
+    // them at submit. Shown only when Home Delivery is selected.
+    function updateDeliveryNote() {
+      const note = document.getElementById("delivery-note");
+      if (!note) return;
+      const method = document.getElementById("fulfillment-method").value;
+      if (method !== "Home Delivery") { note.classList.add("hidden"); return; }
+      note.classList.remove("hidden");
+      const short = DELIVERY_MIN - getSubtotal();
+      if (short > 0) {
+        note.innerHTML = '<i data-lucide="info" class="w-3.5 h-3.5 shrink-0 mt-0.5"></i> <span>Add <b class="text-charcoal">&#8377;' + short + ' more</b> to reach the &#8377;' + DELIVERY_MIN + ' delivery minimum &mdash; free local delivery.</span>';
+        note.className = "mt-1.5 text-xs text-charcoal/70 font-medium flex items-start gap-1.5";
+      } else {
+        note.innerHTML = '<i data-lucide="check-circle-2" class="w-3.5 h-3.5 shrink-0 mt-0.5"></i> <span>Your order qualifies for <b>free local delivery</b>.</span>';
+        note.className = "mt-1.5 text-xs text-zorko-dark font-semibold flex items-start gap-1.5";
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Single source of truth for the checkout button. Priority:
+    // store closed  >  delivery below minimum  >  ready to send.
+    function updateSendButton() {
+      const btn = document.getElementById("submit-btn");
+      if (!btn) return;
+      if (!isStoreOpen()) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="moon" class="w-5 h-5"></i> Closed &middot; Opens 11:00 AM';
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+      const method = document.getElementById("fulfillment-method").value;
+      const short = DELIVERY_MIN - getSubtotal();
+      if (method === "Home Delivery" && short > 0) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="lock" class="w-5 h-5"></i> Add &#8377;' + short + ' more for delivery';
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp';
+      if (window.lucide) lucide.createIcons();
     }
 
     /* STORE HOURS */
@@ -1536,7 +1611,7 @@
       const open = isStoreOpen();
       const banner = document.getElementById("closed-banner"), btn = document.getElementById("submit-btn"), pill = document.getElementById("store-status-pill");
       banner.classList.toggle("hidden", open);
-      if (btn) { btn.disabled = !open; btn.innerHTML = open ? '<i data-lucide="message-circle" class="w-5 h-5"></i> Send Order Request via WhatsApp' : '<i data-lucide="moon" class="w-5 h-5"></i> Closed · Opens 11:00 AM'; }
+      updateSendButton();
       if (pill) { pill.className = "mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold " + (open ? "bg-zorko-light text-zorko-dark" : "bg-charcoal/5 text-charcoal/70"); pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + (open ? "bg-zorko" : "bg-charcoal/40") + '"></span> ' + (open ? "Open now" : "Closed now"); }
       if (window.lucide) lucide.createIcons();
     }
